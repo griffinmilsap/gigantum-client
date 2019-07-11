@@ -1,47 +1,11 @@
 // vendor
-import React, { Component } from 'react';
-// components
-import Tooltip from 'Components/common/Tooltip';
+import React, { PureComponent } from 'react';
 // assets
 import './Summary.scss';
 // config
 import config from 'JS/config';
 
-export default class Summary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tooltipShown: false,
-    };
-    this._resetTooltip = this._resetTooltip.bind(this);
-  }
-
-  /**
-         *  @param {}
-         *  add event listeners
-     */
-  componentDidMount() {
-    window.addEventListener('click', this._resetTooltip);
-  }
-
-  /**
-         *  @param {}
-         *  cleanup event listeners
-     */
-  componentWillUnmount() {
-    window.removeEventListener('click', this._resetTooltip);
-  }
-
-  /**
-     *  @param {event} evt
-     *  resets expanded index state
-     *
-     */
-  _resetTooltip(evt) {
-    if (evt.target.className.indexOf('Summary__info') === -1) {
-      this.setState({ tooltipShown: false });
-    }
-  }
+export default class Summary extends PureComponent {
 
   render() {
     const { props } = this;
@@ -53,10 +17,7 @@ export default class Summary extends Component {
     return (
       <div className="Summary">
         <div className="Overview__container">
-          <h2>
-              Summary
-            <Tooltip section="summary" />
-          </h2>
+          <h2> Summary </h2>
         </div>
         <div className="grid">
           <div className="Summary__card Card column-1-span-12">

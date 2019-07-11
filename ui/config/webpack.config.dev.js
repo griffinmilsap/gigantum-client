@@ -34,9 +34,9 @@ module.exports = {
   watchOptions: {
     poll: true
   },
-
+  cache: true,
   devServer: {
-    hot: true
+    hot: true,
   },
 
   // These are the "entry points" to our application.
