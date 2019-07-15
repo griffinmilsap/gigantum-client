@@ -188,7 +188,7 @@ class IOManager(object):
                 continue
 
             # If object is linked to the revision already, skip
-            revision_path = os.path.join(self.manifest.cache_mgr.current_revision_dir, key)
+            revision_path = os.path.join(self.manifest.current_revision_dir, key)
             if os.path.exists(revision_path):
                 continue
 

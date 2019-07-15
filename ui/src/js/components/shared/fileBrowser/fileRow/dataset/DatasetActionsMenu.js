@@ -4,49 +4,18 @@ import classNames from 'classnames';
 import uuidv4 from 'uuid/v4';
 // queries
 import UserIdentity from 'JS/Auth/UserIdentity';
-// assets
-import './DatasetActionsMenu.scss';
 // mutations
 import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
 // store
 import store from 'JS/redux/store';
 import { setErrorMessage } from 'JS/redux/actions/footer';
+// assets
+import './DatasetActionsMenu.scss';
 
 export default class DatasetActionsMenu extends Component {
-  constructor(props) {
-  	super(props);
-  	this._closePopup = this._closePopup.bind(this);
-    this._setWrapperRef = this._setWrapperRef.bind(this);
-  }
 
   state = {
-    popupVisible: false,
     showSessionValidMessage: false,
-  }
-
-  /**
-  *  LIFECYCLE MEHTODS START
-  */
-  componentDidMount() {
-    window.addEventListener('click', this._closePopup);
-  }
-
-  componentWillMount() {
-    window.removeEventListener('click', this._closePopup);
-  }
-  /**
-  *  LIFECYCLE MEHTODS END
-  */
-
-  /**
-  *  @param {Object} event
-  *  closes popup when clicking
-  *  @return {}
-  */
-  _closePopup(evt) {
-    if (this.state.popupVisible && this[this.props.edge.node.id] && !this[this.props.edge.node.id].contains(evt.target)) {
-      this.setState({ popupVisible: false });
-    }
   }
 
   /**
@@ -54,12 +23,14 @@ export default class DatasetActionsMenu extends Component {
   *  unlinks a dataset
   *  @return {}
   */
-  _unlinkDataset() {
+  _unlinkDataset = () => {
     const labbookOwner = store.getState().routes.owner;
-    const labbookName = store.getState().routes.labbookName;
+    const { labbookName } = store.getState().routes;
     const datasetOwner = this.props.edge.node.owner;
-    const datasetName = this.props.edge.node.datasetName;
+    const { datasetName } = this.props.edge.node;
+
     this.setState({ buttonState: 'loading' });
+
     ModifyDatasetLinkMutation(
       labbookOwner,
       labbookName,
@@ -76,30 +47,18 @@ export default class DatasetActionsMenu extends Component {
   }
 
   /**
-  *  @param {Obect} evt
-  *  @param {boolean} popupVisible - boolean value for hiding and showing popup state
-  *  triggers favoirte unfavorite mutation
-  *  @return {}
-  */
-  _togglePopup(evt, popupVisible) {
-    if (!popupVisible) {
-      evt.stopPropagation(); // only stop propagation when closing popup, other menus won't close on click if propagation is stopped
-    }
-    this.setState({ popupVisible });
-  }
-
-  /**
   *  @param {event} evt - event from clicking delete button
   *  triggers DeleteLabbookFileMutation
   *  @return {}
   */
-  _triggerDeleteMutation(evt) {
+  _triggerDeleteMutation = (evt) => {
+    const { props } = this;
     const deleteFileData = {
-      filePaths: [this.props.edge.node.key],
-      edges: [this.props.edge],
+      filePaths: [props.edge.node.key],
+      edges: [props.edge],
     };
 
-    this.props.mutations.deleteLabbookFiles(deleteFileData, (reponse) => {});
+    props.mutations.deleteLabbookFiles(deleteFileData, (reponse) => {});
 
     this._togglePopup(evt, false);
   }
@@ -109,8 +68,9 @@ export default class DatasetActionsMenu extends Component {
   *  set wrapper ref
   *  @return {}
   */
-  _setWrapperRef(node) {
-    this[this.props.edge.node.id] = node;
+  _setWrapperRef = (node) => {
+    const { props } = this;
+    this[props.edge.node.id] = node;
   }
 
   /**
@@ -118,11 +78,12 @@ export default class DatasetActionsMenu extends Component {
    *  set wrapper ref
    *  @return {}
    */
-  _downloadFile(isLocal) {
+  _downloadFile = (isLocal) => {
+    const { props, state } = this;
     UserIdentity.getUserIdentity().then((response) => {
       const isSessionValid = response.data && response.data.userIdentity && response.data.userIdentity.isSessionValid;
 
-      if (!isLocal && !this.state.fileDownloading && !this.props.parentDownloading && isSessionValid) {
+      if (!isLocal && !state.fileDownloading && !props.parentDownloading && isSessionValid) {
         const id = uuidv4;
         this.setState({ fileDownloading: true });
         const searchChildren = (parent) => {
@@ -143,25 +104,25 @@ export default class DatasetActionsMenu extends Component {
           }
         };
 
-        let { key, owner, datasetName } = this.props.edge.node;
+        let { key, owner, datasetName } = props.edge.node;
         const labbookOwner = store.getState().routes.owner;
         const labbookName = store.getState().routes.labbookName;
         const splitKey = key.split('/');
 
-        if (this.props.section === 'data') {
+        if (props.section === 'data') {
           owner = labbookOwner;
           datasetName = labbookName;
         } else {
           key = splitKey.slice(1, splitKey.length).join('/');
         }
 
-        const keyArr = this.props.edge.node.isDir ? [] : [key];
-        if (this.props.folder && !this.props.isParent) {
-          searchChildren(this.props.fullEdge);
+        const keyArr = props.edge.node.isDir ? [] : [key];
+        if (props.folder && !props.isParent) {
+          searchChildren(props.fullEdge);
         }
         let data;
 
-        if (this.props.section === 'data') {
+        if (props.section === 'data') {
           data = {
             owner,
             datasetName,
@@ -176,22 +137,22 @@ export default class DatasetActionsMenu extends Component {
         }
         data.successCall = () => {
           this.setState({ fileDownloading: false });
-          if (this.props.setFolderIsDownloading) {
-            this.props.setFolderIsDownloading(false);
+          if (props.setFolderIsDownloading) {
+            props.setFolderIsDownloading(false);
           }
         };
         data.failureCall = () => {
           this.setState({ fileDownloading: false });
-          if (this.props.setFolderIsDownloading) {
-            this.props.setFolderIsDownloading(true);
+          if (props.setFolderIsDownloading) {
+            props.setFolderIsDownloading(true);
           }
         };
 
-        if (this.props.setFolderIsDownloading) {
-          this.props.setFolderIsDownloading(true);
+        if (props.setFolderIsDownloading) {
+          props.setFolderIsDownloading(true);
         }
 
-        if (this.props.isParent) {
+        if (props.isParent) {
           data.allKeys = true;
         } else {
           data.allKeys = false;
@@ -203,59 +164,31 @@ export default class DatasetActionsMenu extends Component {
             this.setState({ fileDownloading: false });
           }
         };
-        this.props.mutations.downloadDatasetFiles(data, callback);
+
+        props.mutations.downloadDatasetFiles(data, callback);
       } else if (!isSessionValid) {
         this.setState({ showSessionValidMessage: true });
 
-        setTimeout(() => { this.setState({ showSessionValidMessage: false }); }, 5000);
+        setTimeout(() => {
+          this.setState({ showSessionValidMessage: false });
+        }, 5000);
       }
     });
-  }
-
-  /**
-  *  @param {boolean} isLocal
-  *  set wrapper ref
-  *  @return {}
-  */
-  _getTooltipText(isLocal) {
-    const { props, state } = this;
-    let downloadText = isLocal ? 'Downloaded' : 'Download';
-    downloadText = props.folder && !isLocal ? 'Download Directory' : downloadText;
-    downloadText = props.isParent ? 'Download All' : downloadText;
-    downloadText = state.showSessionValidMessage ? 'A valid session is required to download a dataset file.' : downloadText;
-    downloadText = props.isDragging && !isLocal ? 'File is not downloaded. Download file to move it.' : downloadText;
-
-    return downloadText;
   }
 
   render() {
     const { props, state } = this;
     const { isLocal } = props;
-    const fileIsNotLocal = ((!props.edge.node.isLocal || (props.folder)) && !isLocal);
-    const fileIsLocal = (props.edge.node.isLocal && isLocal) || (props.isParent && isLocal);
-    const blockDownload = props.folder ? false : props.edge.node.isLocal || isLocal;
-    const downloadText = this._getTooltipText(fileIsLocal);
-    const isLoading = state.fileDownloading || ((props.parentDownloading || props.isDownloading) && !fileIsLocal);
-    const showDownloadIcon = (props.section !== 'data') && !state.fileDownloading && !isLoading;
-    const popupCSS = classNames({
-      DatasetActionsMenu__popup: true,
-      hidden: !state.popupVisible,
-      Tooltip__message: true,
-    });
+    const downloadText = isLocal ? 'Downloaded' : 'Download';
+    const isLoading = state.fileDownloading
+      || ((props.parentDownloading || props.isDownloading) && !isLocal);
+    // declare css
     const downloadCSS = classNames({
-      'DatasetActionsMenu__item Btn--round': true,
-      'Tooltip-data Tooltip-data--small': !isLoading,
-      'Tooltip-data--visible': state.showSessionValidMessage || (!props.isLocal && props.isDragging),
-      'DatasetActionsMenu__item--download': fileIsNotLocal && showDownloadIcon,
-      'DatasetActionsMenu__item--downloaded': fileIsLocal && showDownloadIcon,
-      Btn__download: (fileIsNotLocal) && (props.section === 'data') && !state.fileDownloading && !isLoading,
-      Btn__downloaded: fileIsLocal && (props.section === 'data') && !state.fileDownloading && !isLoading,
-      'DatasetActionsMenu__item--loading': isLoading,
-    });
-    const unlinkCSS = classNames({
-      'DatasetActionsMenu__item DatasetActionsMenu__item--unlink': true,
-      'DatasetActionsMenu__popup-visible': state.popupVisible,
-      'Tooltip-data Tooltip-data--small': !state.popupVisible,
+      'Btn Btn__FileBrowserAction DatasetActionsMenu__item': true,
+      'Btn__FileBrowserAction--download': !isLocal,
+      'Btn__FileBrowserAction--downloaded': isLocal,
+      'Btn__FileBrowserAction--loading': isLoading,
+      'Btn--first': props.section === 'input',
     });
 
     return (
@@ -265,37 +198,14 @@ export default class DatasetActionsMenu extends Component {
         key={`${props.edge.node.id}-action-menu}`}
         ref={this._setWrapperRef}
       >
-        {
-            this.props.isParent
-              && (
-              <div
-                className={unlinkCSS}
-                data-tooltip="Unlink Dataset"
-                onClick={(evt) => { this._togglePopup(evt, true); }}
-              >
-
-                <div className={popupCSS}>
-                  <div className="Tooltip__pointer" />
-                  <p>Are you sure?</p>
-                  <div className="flex justify--space-around">
-                    <button
-                      className="File__btn--round File__btn--cancel"
-                      onClick={(evt) => { this._togglePopup(evt, false); }}
-                    />
-                    <button
-                      className="File__btn--round File__btn--add"
-                      onClick={(evt) => { this._unlinkDataset(); }}
-                    />
-                  </div>
-                </div>
-              </div>
-              )
-          }
         <button
-          onClick={() => this._downloadFile(fileIsLocal)}
+          onClick={() => this._downloadFile(isLocal)}
           className={downloadCSS}
-          data-tooltip={downloadText}
-        />
+          disabled={isLocal || isLoading}
+          type="button"
+        >
+          {downloadText}
+        </button>
       </div>
     );
   }

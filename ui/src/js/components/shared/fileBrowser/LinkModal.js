@@ -36,6 +36,12 @@ export const LinkModalQuery = graphql`
                     isManaged
                     icon
                 }
+                overview {
+                  id
+                  numFiles
+                  totalBytes
+                  localBytes
+                }
               }
               cursor
             }

@@ -539,7 +539,7 @@ def download_dataset_files(logged_in_username: str, access_token: str, id_token:
             failure_str = ""
             for f in failure_keys:
                 # If any failed files partially downloaded, remove them.
-                abs_dataset_path = os.path.join(m.cache_mgr.current_revision_dir, f)
+                abs_dataset_path = os.path.join(m.current_revision_dir, f)
                 abs_object_path = m.dataset_to_object_path(f)
                 if os.path.exists(abs_dataset_path):
                     os.remove(abs_dataset_path)

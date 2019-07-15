@@ -26,8 +26,8 @@
 
     opacity: 0.3 !important;
     border-width: 1px;
-    border-color: #007ea8 !important;
-    background-color: #007ea8 !important;
+    border-color: #00487c !important;
+    background-color: #00487c !important;
   }
 }
 
@@ -50,15 +50,14 @@
   }
 }
 
-.Modal__content{
-
+.Modal__content {
+  border-top: 7px solid $azure !important;
+  border-bottom: 7px solid $azure !important;
   &--large{
     padding: 0 60px 20px 60px;
     @include modal(500px, 960px);
   }
   &--large-full {
-    border-top: 7px solid $azure !important;
-    border-bottom: 7px solid $azure !important;
     padding: 0;
     @include modal(500px, 960px);
     .Modal__container {
@@ -137,7 +136,7 @@
 
   text-align: center;
 
-  color: #007ea8;
+  color: #00487c;
 }
 
 // modal header

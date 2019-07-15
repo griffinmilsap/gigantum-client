@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>File/Downloaded Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0 27.6386896 0 27.6386896 20.3372899 0 20.3372899"></polygon>
+    </defs>
+    <g id="Datasets-with-Unmanaged" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Files-and-Datasets-Expanded" transform="translate(-811.000000, -812.000000)">
+            <g id="Group" transform="translate(116.034535, 590.017391)">
+                <g id="File/Downloaded-Copy" transform="translate(687.515050, 212.516340)">
+                    <g id="Group-3" transform="translate(0.428571, 0.428571)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Clip-2"></g>
+                        <path d="M16.1659209,9.33638522 L11.1432499,14.1943535 L8.95048781,11.8578545 C8.66767573,11.5613397 8.20784535,11.5613397 7.92473526,11.8578545 C7.64192319,12.1540568 7.64192319,12.6361667 7.92473526,12.9333064 L10.612791,15.788472 C10.7543461,15.937198 10.9665296,16.0112486 11.1432499,16.0112486 C11.3202682,16.0112486 11.4969885,15.9740671 11.6385436,15.8256535 L17.1910774,10.4862002 C17.5099488,10.226242 17.5099488,9.74413211 17.1910774,9.37356674 C16.9085634,9.0767395 16.448733,9.03987043 16.1659209,9.33638522 L16.1659209,9.33638522 Z" id="Fill-1" fill="#06A51A" mask="url(#mask-2)"></path>
+                    </g>
+                    <path d="M8.42857143,18.6129464 L17.5714286,18.6129464" id="Line-4-Copy" stroke="#06A51A" stroke-linecap="round"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

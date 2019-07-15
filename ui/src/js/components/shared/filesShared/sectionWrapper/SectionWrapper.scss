@@ -3,9 +3,8 @@
 .SectionWrapper {
   width: 100%;
   position: relative;
-  text-align: center;
 
-  padding: 20px 0 100px;
+  padding: 0 0 100px;
   hr {
     margin: 0 !important;
   }
@@ -76,7 +75,6 @@
 }
 
 .SectionWrapper__file-browser {
-  margin-top: 30px !important;
   padding: 10px 15px;
 
   background-color: $white;

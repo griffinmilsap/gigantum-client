@@ -8,7 +8,6 @@
 //generic
 @import '_variables';
 @import '_mixins';
-@import '_utilities';
 @import '_fonts';
 @import '_base';
 @import '_grid';
@@ -30,6 +29,8 @@
 @import 'atoms/containerStatus.scss';
 @import 'atoms/dropdown.scss';
 @import 'atoms/readme.scss';
+
+@import '_utilities';
 
 body * {
   font-family: "NunitoSans";
@@ -115,5 +116,3 @@ code {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-

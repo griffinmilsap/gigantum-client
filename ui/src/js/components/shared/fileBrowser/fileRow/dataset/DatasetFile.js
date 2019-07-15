@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import Moment from 'moment';
 import fileIconsJs from 'file-icons-js';
 import classNames from 'classnames';
-import { DragSource, DropTarget } from 'react-dnd';
-import { NativeTypes } from 'react-dnd-html5-backend';
 import TextTruncate from 'react-text-truncate';
 // config
 import config from 'JS/config';
@@ -14,78 +12,18 @@ import ActionsMenu from './DatasetActionsMenu';
 import './DatasetFile.scss';
 
 class File extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isSelected: (props.isSelected || this.props.childrenState[this.props.fileData.edge.node.key].isSelected) || false,
-      stateSwitch: false,
-    };
-    this._setSelected = this._setSelected.bind(this);
-  }
-
-  static getDerivedStateFromProps(nextProps, state) {
-    const isSelected = (nextProps.multiSelect === 'all')
-      ? true
-      : (nextProps.multiSelect === 'none')
-        ? false
-        : state.isSelected;
-
-    if ((nextProps.isOverCurrent !== nextProps.isOverChildFile) && !nextProps.isDragging && state.hover) {
-      nextProps.updateParentDropZone(nextProps.isOverCurrent);
-    }
-    return {
-      ...state,
-      isSelected,
-    };
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.state.renameEditMode) {
-      this.reanmeInput.focus();
-    }
-  }
-
-  /**
-  *  @param {boolean} isSelected - sets if file has been selected
-  *  sets elements to be selected and parent
-  */
-  _setSelected(isSelected) {
-    this.props.updateChildState(this.props.fileData.edge.node.key, isSelected, false);
-    this.setState({ isSelected }, () => {
-      Object.keys(this.refs).forEach((ref) => {
-        this.refs[ref]._setSelected();
-      });
-      if (this.props.checkParent) {
-        this.props.checkParent();
-      }
-    });
-  }
-
   render() {
-    const { props, state } = this;
+    const { props } = this;
     const { node } = props.fileData.edge;
     const { index } = props.fileData;
     const fileName = props.filename;
     const fileRowCSS = classNames({
       File__row: true,
-      'File__row--hover': state.hover,
-      'File__row--background': props.isDragging,
     });
-
-
-    const buttonCSS = classNames({
-      CheckboxMultiselect: true,
-      CheckboxMultiselect__uncheck: !state.isSelected,
-      CheckboxMultiselect__check: state.isSelected,
-    });
-
 
     const textIconsCSS = classNames({
       'File__cell File__cell--name': true,
-      hidden: state.renameEditMode,
     });
-
 
     const paddingLeft = 40 * index;
 
@@ -96,7 +34,6 @@ class File extends Component {
         style={props.style}
         className="File"
       >
-
         <div
           className={fileRowCSS}
           style={rowStyle}
@@ -108,16 +45,16 @@ class File extends Component {
 
             <div className="File__text">
               {
-                    this.props.expanded
-                    && (
-                    <TextTruncate
-                      className="File__paragragh"
-                      line={1}
-                      truncateText="…"
-                      text={fileName}
-                    />
-                    )
-                  }
+                props.expanded
+                && (
+                  <TextTruncate
+                    className="File__paragragh"
+                    line={1}
+                    truncateText="…"
+                    text={fileName}
+                  />
+                )
+               }
             </div>
 
           </div>
@@ -132,6 +69,7 @@ class File extends Component {
 
           <div className="File__cell File__cell--menu">
             <ActionsMenu
+              section={props.section}
               edge={props.fileData.edge}
               isLocal={props.fileData.edge.node.isLocal}
               mutationData={props.mutationData}

@@ -87,6 +87,19 @@
 
 }
 
+.Dataset {
+  .Folder__cell--menu,
+  .FileBrowser__header--menu,
+  .File__cell--menu {
+    width: 260px;
+  }
+
+  .ActionsMenu {
+    width: auto;
+    padding: 2px 0;
+  }
+}
+
 
 .Folder__btn{
 

@@ -172,9 +172,9 @@ export default class AddPackageForm extends Component {
           <div
             className="AddPackageForm__manager flex align-items--center"
           >
-            <span>Package Manager</span>
+            <div className="AddPackageForm__label">Package Manager</div>
             <Dropdown
-              customStyle="addPackages"
+              customStyle="addPackages margin--0"
               listItems={packageManagers}
               visibility={state.managerDropdownVisible}
               listAction={this._setManagerDropdownVisibility}
@@ -185,7 +185,7 @@ export default class AddPackageForm extends Component {
           <div
             className="AddPackageForm__name flex align-items--center"
           >
-            <span>Package Name</span>
+            <div className="AddPackageForm__label">Package Name</div>
             <input
               type="text"
               id="packageNameInput"
@@ -263,7 +263,7 @@ export default class AddPackageForm extends Component {
               Clear
             </button>
             <button
-              className="Btn"
+              className="Btn Btn__add"
               disabled={state.packageName.length === 0}
               type="button"
               onClick={() => this._sendQueuePackage()}

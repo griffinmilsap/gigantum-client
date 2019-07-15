@@ -13,6 +13,7 @@ from lmsrvlabbook.tests.fixtures import fixture_working_dir_env_repo_scoped, fix
 from gtmcore.configuration.utils import call_subprocess
 from gtmcore.dispatcher import Dispatcher
 from gtmcore.inventory.inventory import InventoryManager
+from gtmcore.dataset.manifest import Manifest
 
 from gtmcore.fixtures.datasets import mock_dataset_with_cache_dir, mock_dataset_with_manifest, helper_append_file
 
@@ -755,11 +756,30 @@ class TestDatasetMutations(object):
         im = InventoryManager(fixture_working_dir[0])
         lb = im.create_labbook('default', 'default', 'test-lb', 'testing dataset links')
         ds = im.create_dataset('default', 'default', "dataset100", storage_type="gigantum_object_v1", description="100")
+        manifest = Manifest(ds, 'default')
+        helper_append_file(manifest.cache_mgr.cache_root, manifest.dataset_revision,
+                           "test1.txt", "12345")
+        manifest.sweep_all_changes()
 
         # Fake publish to a local bare repo
         _MOCK_create_remote_repo2(ds, 'default', None, None)
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is False
+
+        overview_query = """
+                {
+                  labbook(owner: "default", name:"test-lb")
+                  {
+                    linkedDatasets{
+                      name
+                      overview {
+                          localBytes
+                          totalBytes
+                      }
+                    }
+                  }
+                }
+                """
 
         query = """
                    mutation myMutation($lo: String!, $ln: String!, $do: String!, $dn: String!,
@@ -793,6 +813,12 @@ class TestDatasetMutations(object):
         with open(os.path.join(lb.root_dir, '.gitmodules'), 'rt') as mf:
             data = mf.read()
         assert len(data) > 0
+
+        # check overview
+        result = fixture_working_dir[2].execute(overview_query)
+        assert "errors" not in result
+        assert result['data']['labbook']['linkedDatasets'][0]['overview']['localBytes'] == '5'
+        assert result['data']['labbook']['linkedDatasets'][0]['overview']['totalBytes'] == '5'
 
         # Make change to published dataset
         git_dir = os.path.join(tempfile.gettempdir(), 'test_update_dataset_link_mutation')

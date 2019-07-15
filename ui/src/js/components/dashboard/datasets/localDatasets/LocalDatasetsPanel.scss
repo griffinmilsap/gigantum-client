@@ -16,10 +16,14 @@
 .LocalDatasets__row{
 
   &--icons{
-    height: 68px;
-    padding: 20px 20px 10px;
-
+    margin: -10px;
+    font-size: 15px;
+    border-bottom: 1px solid $grey-border;
     @include flex(space-between, row);
+    height: 40px;
+    width: calc(100% + 20px);
+    align-items: center;
+
   }
 
   &--text {
@@ -32,16 +36,28 @@
   }
 }
 
+.LocalDatasets__dataset-icon {
+  width: 20px;
+  height: 20px;
+  background: url('~Images/icons/datasets-azure.svg') no-repeat 50%;
+  background-size: 20px;
+  margin-right: 28px;
+}
+
 .LocalDatasets__paragraph{
   font-size: 14px;
-
+  margin-top: 5px;
   &--owner{
     color: $jet;
-    font-size: 12px;
-    height: 14px;
-    margin: 2px;
+    font-size: 15px;
+    margin: 2px 0 10px 0;
+  }
 
-    line-height: 14px;
+  &--metadata{
+    color: $jet;
+    font-size: 10px;
+    line-height: 1.5;
+    margin: 0;
   }
 
   &--description{
@@ -68,36 +84,37 @@
 }
 
 .LocalDatasetPanel__private{
-  align-self: flex-end;
+  align-self: center;
 
-  width: 24px;
+  width: 30px;
   height: 24px;
-  padding: 20px;
 
-  background: url(~Images/icons/lock-grey.svg) no-repeat center center;
-  background-size: 18px;
+  background: $lightGrey url(~Images/icons/lock-grey.svg) no-repeat center center;
+  background-size: 11px;
+  left: 28px;
+  border-radius: 25px;
 }
 
 .LocalDatasetPanel__public{
-  align-self: flex-end;
+  align-self: center;
 
-  width: 24px;
+  width: 30px;
   height: 24px;
-  padding: 20px;
 
-  background: url(~Images/icons/earth-grey.svg) no-repeat center center;
-  background-size: 18px;
-
+  background: $lightGrey url(~Images/icons/earth-grey.svg) no-repeat center center;
+  background-size: 14px;
+  left: 28px;
+  border-radius: 25px;
 }
 
 .LocalDatasetPanel__loading{
-  align-self: flex-end;
+  align-self: center;
 
   width: 18px;
   height: 18px;
   margin: 8px;
   padding: 14px;
-
+  left: 28px;
   opacity: 0.5;
   border-radius: 50%;
   background: $grey !important;
@@ -211,6 +228,8 @@
   text-overflow: ellipsis;
   word-break: break-all;
   overflow: hidden;
-  line-height: 30px;
   width: 250px;
+  font-size: 19px;
+  color: $azure;
+  margin: 10px 0 0 0;
 }

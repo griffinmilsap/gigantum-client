@@ -8,14 +8,18 @@
   }
 }
 
+.AddPackageForm__label {
+  width: 140px;
+}
+
 .AddPackageForm__name {
-  span {
+  div {
     white-space: nowrap;
-    margin-right: 20px;
-    margin-left: 19px;
   }
   input {
     background: $white;
+    width: 290px;
+    padding: 0 10px !important;
   }
 }
 
@@ -27,6 +31,7 @@
   &--active {
     input {
       background: $white;
+      padding: 0 10px !important;
     }
   }
 }

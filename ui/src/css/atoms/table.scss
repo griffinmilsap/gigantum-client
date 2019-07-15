@@ -10,9 +10,14 @@ tbody {
   }
 }
 .Table {
-
+  &--padded {
+    padding: 25px;
+  }
   &__Header {
     border-bottom: 2px solid $romanSilver;
+    &--medium{
+      height: 50px;
+    }
     &--sort {
       position: relative;
     }
@@ -40,5 +45,12 @@ tbody {
     border-bottom: 1px solid $romanSilver;
     height: 100px;
     padding-top: 20px;
+
+    &--secrets {
+      height: auto;
+      min-height: 50px;
+      max-height: 80px;
+      padding: 0;
+    }
   }
 }

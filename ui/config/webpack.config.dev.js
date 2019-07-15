@@ -34,9 +34,9 @@ module.exports = {
   watchOptions: {
     poll: true
   },
-
+  cache: true,
   devServer: {
-    hot: true
+    hot: true,
   },
 
   // These are the "entry points" to our application.
@@ -111,7 +111,7 @@ module.exports = {
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
-    extensions: ['.js', '.json', '.jsx', '.scss'],
+    extensions: ['.js', '.json', '.jsx', '.scss', '.svg', '.png', '.jpg', '.jpeg'],
     alias: {
 
       // Support React Native Web
@@ -311,7 +311,7 @@ module.exports = {
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
-    //new CaseSensitivePathsPlugin(),
+    // new CaseSensitivePathsPlugin(),
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.

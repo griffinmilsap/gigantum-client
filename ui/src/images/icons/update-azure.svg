@@ -5,7 +5,7 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="icon/general/update-version" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M8,12 L8,5" id="Shape" stroke="#007fa4" stroke-linecap="round" stroke-linejoin="round"></path>
-        <polyline id="Shape" stroke="#007fa4" stroke-linecap="round" stroke-linejoin="round" points="4 8 8 4 12 8"></polyline>
+        <path d="M8,12 L8,5" id="Shape" stroke="#00487c" stroke-linecap="round" stroke-linejoin="round"></path>
+        <polyline id="Shape" stroke="#00487c" stroke-linecap="round" stroke-linejoin="round" points="4 8 8 4 12 8"></polyline>
     </g>
 </svg>

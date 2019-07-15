@@ -491,6 +491,8 @@ class Dataset extends Component {
 
                           <Data
                             dataset={dataset}
+                            owner={dataset.owner}
+                            name={dataset.name}
                             datasetId={dataset.id}
                             isManaged={dataset.datasetType.isManaged}
                             type="dataset"

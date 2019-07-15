@@ -9,7 +9,7 @@ from gtmcore.dataset import Manifest
 from gtmcore.inventory.inventory import InventoryManager
 
 from gtmcore.fixtures.datasets import mock_dataset_with_cache_dir, mock_dataset_with_manifest, helper_append_file, \
-    USERNAME, mock_legacy_dataset
+    USERNAME, mock_legacy_dataset, mock_config_class, mock_enable_unmanaged_for_testing
 
 
 class TestManifest(object):
@@ -950,3 +950,67 @@ class TestManifest(object):
         assert manifest.manifest['test3.txt']['b'] == '17'
 
         assert len(glob.glob(os.path.join(ds.root_dir, 'manifest', 'manifest-*'))) == 3
+
+    def test_evict(self, mock_config_class):
+        im, conf_file, working_dir = mock_config_class
+        ds = im.create_dataset(USERNAME, USERNAME, 'dataset-1', description="my dataset 1",
+                               storage_type="local_filesystem")
+        m = Manifest(ds, USERNAME)
+
+        helper_append_file(m.cache_mgr.cache_root, m.dataset_revision, "test1.txt", "asdfasdf")
+        helper_append_file(m.cache_mgr.cache_root, m.dataset_revision, "test2.txt", "asdfasdf")
+        m.sweep_all_changes()
+
+        assert len(m.manifest) == 2
+        file_info = m.get("test1.txt")
+        assert file_info['key'] == "test1.txt"
+        file_info = m.get("test2.txt")
+        assert file_info['key'] == "test2.txt"
+
+        # Remove checkout context so a new manifest file gets made
+        checkout_file = os.path.join(ds.root_dir, '.gigantum', '.checkout')
+        os.remove(checkout_file)
+
+        # Reload classes
+        ds = im.load_dataset(USERNAME, USERNAME, 'dataset-1')
+        m = Manifest(ds, USERNAME)
+
+        # Add file and verify
+        helper_append_file(m.cache_mgr.cache_root, m.dataset_revision, "test3.txt", "new content")
+        m.sweep_all_changes()
+
+        assert len(m.manifest) == 3
+        file_info = m.get("test1.txt")
+        assert file_info['key'] == "test1.txt"
+        file_info = m.get("test2.txt")
+        assert file_info['key'] == "test2.txt"
+        file_info = m.get("test3.txt")
+        assert file_info['key'] == "test3.txt"
+
+        # Remove NEW manifest file
+        _, checkout_id = ds.checkout_id.rsplit('-', 1)
+        manifest_file = f'manifest-{checkout_id}.json'
+        os.remove(os.path.join(ds.root_dir, 'manifest', manifest_file))
+
+        # Reload classes
+        ds = im.load_dataset(USERNAME, USERNAME, 'dataset-1')
+        m = Manifest(ds, USERNAME)
+
+        # Verify manifest hasn't changed
+        assert len(m.manifest) == 3
+        file_info = m.get("test1.txt")
+        assert file_info['key'] == "test1.txt"
+        file_info = m.get("test2.txt")
+        assert file_info['key'] == "test2.txt"
+        file_info = m.get("test3.txt")
+        assert file_info['key'] == "test3.txt"
+
+        # Evict from cache
+        m.force_reload()
+
+        # Verify manifest HAS changed
+        assert len(m.manifest) == 2
+        file_info = m.get("test1.txt")
+        assert file_info['key'] == "test1.txt"
+        file_info = m.get("test2.txt")
+        assert file_info['key'] == "test2.txt"

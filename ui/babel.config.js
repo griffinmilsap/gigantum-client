@@ -30,7 +30,8 @@ module.exports = {
          "Mutations": "./src/js/mutations",
          "JS": "./src/js",
          "Components": "./src/js/components",
-         "Submodules": "./submodules"
+         "Submodules": "./submodules",
+         "Images": './src/images'
        }
      }
    ]

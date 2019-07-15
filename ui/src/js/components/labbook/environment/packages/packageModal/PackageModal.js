@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import { boundMethod } from 'autobind-decorator';
 // components
 import Modal from 'Components/common/Modal';
 import BuildProgress from 'Components/common/BuildProgress';
@@ -17,8 +16,7 @@ export default class PackageModal extends Component {
     @param {String} buildId
     updates buildId in state
   */
-  @boundMethod
-  _setBuildId(buildId) {
+  _setBuildId = (buildId) => {
     this.setState({ buildId });
   }
 
@@ -43,7 +41,7 @@ export default class PackageModal extends Component {
                 name={props.name}
                 owner={props.owner}
               />
-            )
+            );
           }
           return (
             <BuildProgress
@@ -53,7 +51,7 @@ export default class PackageModal extends Component {
               name={props.name}
               owner={props.owner}
             />
-          )
+          );
         }}
       />
     );

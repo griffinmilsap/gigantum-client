@@ -2,6 +2,7 @@ import base64
 from typing import List
 import graphene
 import os
+import flask
 
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
@@ -9,9 +10,12 @@ from gtmcore.dispatcher import Dispatcher
 from gtmcore.environment import BaseRepository
 from gtmcore.labbook.schemas import CURRENT_SCHEMA
 from gtmcore.dataset.storage import get_storage_backend_descriptions
+from gtmcore.inventory.inventory import InventoryManager
+from gtmcore.workflows.gitlab import GitLabManager
 
 from lmsrvcore.api.objects.user import UserIdentity
 from lmsrvcore.api.connections import ListBasedConnection
+from lmsrvcore.auth.user import get_logged_in_username
 
 from lmsrvlabbook.api.objects.labbook import Labbook
 from lmsrvlabbook.api.objects.labbooklist import LabbookList
@@ -141,6 +145,9 @@ class LabbookQuery(AppQueries, graphene.ObjectType):
     # List available types of datasets
     available_dataset_types = graphene.List(DatasetType)
 
+    # Boolean indicating if a project or dataset name is available for use
+    repository_name_is_available = graphene.Boolean(name=graphene.String())
+
     def resolve_nodes(self, info, ids):
         return [graphene.relay.Node.get_node_from_global_id(info, x) for x in ids]
 
@@ -226,3 +233,35 @@ class LabbookQuery(AppQueries, graphene.ObjectType):
             d.url = metadata['url']
             dataset_types.append(d)
         return dataset_types
+
+    def resolve_repository_name_is_available(self, info, name: str):
+        """Resolver to check if a repository name is in use locally or remotely
+
+        Args:
+            info:
+            name: desired name for the repository
+
+        Returns:
+
+        """
+        # Check if repository exists locally
+        logged_in_username = get_logged_in_username()
+        im = InventoryManager()
+        if im.repository_exists(logged_in_username, logged_in_username, name):
+            return False
+
+        # Check if repository exists remotely
+        remote_config = Configuration().get_remote_configuration()
+        auth_service = None
+        remote = None
+        if remote_config:
+            auth_service = remote_config.get('admin_service')
+            remote = remote_config.get('git_remote')
+
+        # Get collaborators from remote service
+        mgr = GitLabManager(remote, auth_service, flask.g.access_token)
+        if mgr.repository_exists(logged_in_username, name):
+            return False
+
+        # If you get here the name is available
+        return True

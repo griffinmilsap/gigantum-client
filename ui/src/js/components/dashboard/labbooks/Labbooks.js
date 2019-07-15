@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { boundMethod } from 'autobind-decorator';
 // components
-import WizardModal from 'Components/shared/modals/wizard/WizardModal';
+import CreateModal from 'Components/shared/modals/create/CreateModal';
 import Loader from 'Components/common/Loader';
 import LocalLabbooksContainer, { LocalLabbooks } from 'Components/dashboard/labbooks/localLabbooks/LocalLabbooks';
 import RemoteLabbooks from 'Components/dashboard/labbooks/remoteLabbooks/RemoteLabbooks';
@@ -318,7 +318,7 @@ class Labbooks extends Component {
   @boundMethod
   _showModal() {
     // TODO remove refs this is deprecated
-    this.refs.wizardModal._showModal();
+    this.createModal._showModal();
   }
 
   /**
@@ -404,8 +404,8 @@ class Labbooks extends Component {
   _setFilterValue(evt) {
     setFilterText(evt.target.value);
     // TODO remove refs
-    if (this.refs.labbookSearch.value !== evt.target.value) {
-      this.refs.labbookSearch.value = evt.target.value;
+    if (this.labbookSearch.value !== evt.target.value) {
+      this.labbookSearch.value = evt.target.value;
     }
   }
 
@@ -461,8 +461,8 @@ class Labbooks extends Component {
 
         <div className={labbooksCSS}>
 
-          <WizardModal
-            ref="wizardModal"
+          <CreateModal
+            ref={(modal) => { this.createModal = modal; }}
             handler={this.handler}
             history={props.history}
             {...props}
@@ -502,14 +502,14 @@ class Labbooks extends Component {
                   }
                 <input
                   type="text"
-                  ref="labbookSearch"
+                  ref={(modal) => { this.labbookSearch = modal; }}
                   className="margin--0"
                   placeholder="Filter Projects by name or description"
                   defaultValue={props.filterText}
                   onKeyUp={evt => this._setFilterValue(evt)}
                   onFocus={() => this.setState({ showSearchCancel: true })}
                 />
-               </div>
+              </div>
             </div>
 
             <FilterByDropdown

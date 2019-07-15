@@ -412,22 +412,22 @@ class File extends Component {
               )
             }
             {
-                    (props.section === 'data')
-                    && (
-                    <DatasetActionsMenu
-                      edge={props.fileData.edge}
-                      section={props.section}
-                      mutationData={props.mutationData}
-                      mutations={props.mutations}
-                      renameEditMode={this._renameEditMode}
-                      isDownloading={props.isDownloading}
-                      parentDownloading={props.parentDownloading}
-                      setFolderIsDownloading={props.setFolderIsDownloading}
-                      isLocal={props.fileData.edge.node.isLocal}
-                      isDragging={props.isDragging}
-                    />
-                    )
-                  }
+              (props.section === 'data')
+              && (
+              <DatasetActionsMenu
+                edge={props.fileData.edge}
+                section={props.section}
+                mutationData={props.mutationData}
+                mutations={props.mutations}
+                renameEditMode={this._renameEditMode}
+                isDownloading={props.isDownloading}
+                parentDownloading={props.parentDownloading}
+                setFolderIsDownloading={props.setFolderIsDownloading}
+                isLocal={props.fileData.edge.node.isLocal}
+                isDragging={props.isDragging}
+              />
+              )
+            }
           </div>
 
         </div>

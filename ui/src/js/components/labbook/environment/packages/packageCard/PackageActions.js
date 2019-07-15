@@ -45,22 +45,47 @@ export default class PackageActions extends Component {
     props.packageMutations.removePackages(data, callback);
   }
 
+  /**
+  *  @param {}
+  *  returns tooltip info
+  *  @return {}
+  */
+  _getTooltip() {
+    const { props } = this;
+    let deleteTooltip = 'Delete Package';
+    deleteTooltip = props.isLocked ? 'Cannot modify while environment is in use' : deleteTooltip;
+    deleteTooltip = props.fromBase ? 'Cannot modify base packages' : deleteTooltip;
+    let updateTooltip = 'Update Package';
+    updateTooltip = props.isLocked ? 'Cannot modify while environment is in use' : updateTooltip;
+    updateTooltip = (!props.latestVersion) ? 'Please wait while latest version is fetched' : updateTooltip;
+    updateTooltip = (props.version === props.latestVersion) ? 'Up to date' : updateTooltip;
+    updateTooltip = props.fromBase ? 'Cannot modify base packages' : updateTooltip;
+    return {
+      deleteTooltip,
+      updateTooltip,
+    }
+  }
+
   render() {
     const { props } = this;
-    const disableUpdate = (!props.latestVersion) || (props.version === props.latestVersion) || props.isLocked;
+    const disableUpdate = (!props.latestVersion) || (props.version === props.latestVersion) || props.isLocked || props.fromBase;
     const disableDelete = (props.fromBase) || (props.isLocked);
+    const { deleteTooltip, updateTooltip } = this._getTooltip();
+
 
     return (
       <div className="PackageActions flex flex--column justify--space-between">
         <button
-          className="Btn Btn--medium Btn--round Btn__upArrow-grey"
+          className="Btn Btn--medium Btn--round Btn__upArrow-secondary Tooltip-data"
           type="button"
           onClick={() => this._updatePackage()}
+          data-tooltip={updateTooltip}
           disabled={disableUpdate}
         />
         <button
-          className="Btn Btn--medium Btn--round Btn__delete-grey"
+          className="Btn Btn--medium Btn--round Btn__delete-secondary Tooltip-data"
           type="button"
+          data-tooltip={deleteTooltip}
           onClick={() => this._removePackage()}
           disabled={disableDelete}
         />

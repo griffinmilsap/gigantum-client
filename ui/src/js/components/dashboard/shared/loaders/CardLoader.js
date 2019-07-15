@@ -10,7 +10,7 @@ export default class CardLoader extends Component {
 
 
     const loaderCSS = classNames({
-      [`Card Card--300 column-4-span-3 flex flex--column justify--space-between CardLoader CardLoader--${props.index}`]: props.isLoadingMore,
+      [`Card Card--225 column-4-span-3 flex flex--column justify--space-between CardLoader CardLoader--${props.index}`]: props.isLoadingMore,
       'CardLoader--hidden': !props.isLoadingMore,
     });
 

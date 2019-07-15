@@ -58,6 +58,7 @@ exports[`Project File component File Snapshot 1`] = `
         />
         <button
           className="File__btn--round File__btn--add File__btn--rename-add"
+          disabled={true}
           onClick={[Function]}
           type="button"
         />
@@ -66,7 +67,7 @@ exports[`Project File component File Snapshot 1`] = `
     <div
       className="File__cell File__cell--size"
     >
-      3.3 kB
+      3.3 KB
     </div>
     <div
       className="File__cell File__cell--date"
@@ -80,9 +81,10 @@ exports[`Project File component File Snapshot 1`] = `
         className="ActionsMenu"
       >
         <button
-          className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn--bordered Btn__addFolder visibility-hidden"
+          className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn__addFolder visibility-hidden"
           data-click-id="addFolder"
           data-tooltip="Add Subfolder"
+          disabled={false}
           onClick={[Function]}
           type="button"
         />
@@ -90,7 +92,7 @@ exports[`Project File component File Snapshot 1`] = `
           className="relative"
         >
           <button
-            className="ActionsMenu__item Btn Btn--fileBrowser Btn__delete Btn--round Btn--bordered Tooltip-data Tooltip-data--small"
+            className="ActionsMenu__item Btn Btn--fileBrowser Btn__delete-secondary Btn--round Tooltip-data Tooltip-data--small"
             data-tooltip="Delete"
             disabled={false}
             onClick={[Function]}
@@ -122,7 +124,7 @@ exports[`Project File component File Snapshot 1`] = `
           </div>
         </div>
         <button
-          className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--bordered Btn--round"
+          className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--round"
           data-tooltip="Rename"
           disabled={false}
           onClick={[Function]}

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { boundMethod } from 'autobind-decorator';
 // components
-import WizardModal from 'Components/shared/modals/wizard/WizardModal';
+import CreateModal from 'Components/shared/modals/create/CreateModal';
 import Loader from 'Components/common/Loader';
 import LocalDatasetsContainer, { LocalDatasets } from 'Components/dashboard/datasets/localDatasets/LocalDatasets';
 import RemoteDatasets from 'Components/dashboard/datasets/remoteDatasets/RemoteDatasets';
@@ -295,10 +295,9 @@ class Datasets extends Component {
     * fires when handleSortFilter triggers refetch
     * references child components and triggers their refetch functions
   */
-  @boundMethod
-  _showModal() {
+  _showModal = () => {
     // TODO remove refs this is deprecated
-    this.refs.wizardModal._showModal();
+    this.createModal._showModal();
   }
 
   /**
@@ -384,8 +383,8 @@ class Datasets extends Component {
   _setFilterValue(evt) {
     setFilterText(evt.target.value);
     // TODO remove refs this is deprecated
-    if (this.refs.datasetSearch.value !== evt.target.value) {
-      this.refs.datasetSearch.value = evt.target.value;
+    if (this.datasetSearch.value !== evt.target.value) {
+      this.datasetSearch.value = evt.target.value;
     }
   }
 
@@ -439,8 +438,8 @@ class Datasets extends Component {
 
         <div className={datasetsCSS}>
 
-          <WizardModal
-            ref="wizardModal"
+          <CreateModal
+            ref={(modal) => { this.createModal = modal; }}
             handler={this.handler}
             history={props.history}
             datasets
@@ -481,14 +480,14 @@ class Datasets extends Component {
                   }
                 <input
                   type="text"
-                  ref="datasetSearch"
+                  ref={(modal) => { this.datasetSearch = modal; }}
                   className="Datasets__search margin--0"
                   placeholder="Filter Datasets by name or description"
                   defaultValue={props.filterText}
                   onKeyUp={evt => this._setFilterValue(evt)}
                   onFocus={() => this.setState({ showSearchCancel: true })}
                 />
-               </div>
+              </div>
             </div>
 
             <FilterByDropdown

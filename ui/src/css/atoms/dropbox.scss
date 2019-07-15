@@ -8,11 +8,32 @@
   background-size: 40px;
   min-height: 234px;
   &--hovered {
-    padding-top: 100px;
     background: $lightblue url('~Images/icons/cloud-upload-white.svg') no-repeat center 25px;
     color: $white;
     background-size: 40px;
     border: 2px dashed $white;
+    span {
+      display: none;
+    }
+    label {
+      display: none;
+    }
+  }
+  &--fileBrowser {
+    margin-top: 20px;
+    span {
+      font-size: 15px;
+      color: $romanSilver;
+      &:before,
+      &:after {
+        display: inline-block;
+        content: "";
+        border-top: 1px solid $romanSilver;
+        width: 4rem;
+        margin: -13px 1rem;
+        transform: translateY(-1rem);
+      }
+    }
   }
 }
 

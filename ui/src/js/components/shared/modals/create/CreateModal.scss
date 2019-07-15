@@ -1,41 +1,41 @@
 @import '~Styles/_imports.scss';
 
-.WizardModal {
+.CreateModal {
   height: 100%;
 }
 
-.WizardModal__actions {
+.CreateModal__actions {
   @include flex(flex-end, row);
   align-items: center;
   flex-wrap: nowrap;
 }
 
-.WizardModal__buttons {
+.CreateModal__buttons {
   @include flex(flex-end, row);
-  width: 350px;
+  width: 400px;
 }
 
-.WizardModal__modalWrap-enter {
+.CreateModal__modalWrap-enter {
   opacity: 0.01;
 }
 
-.WizardModal__modalWrap-enter.WizardModal__modalWrap-enter-active {
+.CreateModal__modalWrap-enter.CreateModal__modalWrap-enter-active {
   opacity: 1;
   transition: opacity .5s ease-in;
 }
 
 
-.WizardModal__modal-inner-container {
+.CreateModal__modal-inner-container {
     height: calc(100% - 40px);
     padding: 20px;
 }
 
-.WizardModal__title {
+.CreateModal__title {
   color: $jet;
   text-align: center;
 }
 
-.WizardModal__modal-close {
+.CreateModal__modal-close {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -43,12 +43,12 @@
   @include close();
 }
 
-.WizardModal__progress{
+.CreateModal__progress{
     margin-top: 25px;
     width: 100%;
 }
 
-.WizardModal__progress-bar {
+.CreateModal__progress-bar {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -69,6 +69,6 @@
     }
 }
 
-.WizardModal__progress-button {
+.CreateModal__progress-button {
   margin: 0 10px;
 }

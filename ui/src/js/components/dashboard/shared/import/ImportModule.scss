@@ -9,11 +9,13 @@
   &--azure {
     color: $azure;
   }
+  font-size: 24px;
+  font-weight: bold;
 }
 .Card--add {
   align-items: center;
 
-  height: 300px !important;
+  height: 225px !important;
 
   cursor: auto;
 
@@ -44,8 +46,8 @@
 }
 
 .Import__icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   margin: 0 10px 0 -10px;
 
   -webkit-transition: all .25s;
@@ -53,14 +55,14 @@
   transition: all .25s;
   &--labbook {
     background: url('~Images/icons/labbooks-dark-blue.svg') no-repeat 50%;
-    background-size: 50px;
+    background-size: 30px;
   }
   &--dataset {
     background: url('~Images/icons/datasets-dark-blue.svg') no-repeat 50%;
-    background-size: 50px;
+    background-size: 30px;
     .Import__add-icon {
-      top: 43px;
-      left: 25px;
+      top: 29px;
+      left: 5px;
     }
   }
 }
@@ -135,16 +137,16 @@ input.Import__input--paste{
     align-self: center;
 
     width: 85%;
-    height: 60px;
+    height: 43px;
     margin: 5px;
 
     cursor: pointer;
 
-    color: $tintBlue;
-    border: 3px solid $tintBlue;
+    color: $azure;
+    border: 2px solid $azure;
     background: $white;
 
-    font-size: 22px;
+    font-size: 19px;
   }
 
   &--collapse {
@@ -326,11 +328,11 @@ input.Import__input--paste{
 
 .Import__add-icon{
   position: absolute;
-  top: 48px;
-  left: 28px;
+  top: 35px;
+  left: 11px;
 
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 
   -webkit-transition: all .3s;
   -o-transition: all .3s;
@@ -338,8 +340,8 @@ input.Import__input--paste{
 
   border: 0px solid $romanSilver;
   border-radius: 12px;
-  background: #007ea8 url('~Images/icons/add.svg') no-repeat 50%;
-  background-size: 12px;
+  background: $green url('~Images/icons/add.svg') no-repeat 50%;
+  background-size: 8px;
 }
 
 .Import__section--import {
@@ -387,23 +389,6 @@ input.Import__input--paste{
 ********************/
 
 .btn {
-  &--import {
-    position: relative;
-
-    align-self: center;
-
-    width: 85%;
-    height: 60px;
-    margin: 5px;
-
-    cursor: pointer;
-
-    color: $tintBlue;
-    border: 3px solid $tintBlue;
-    background: $white;
-
-    font-size: 22px;
-  }
 
   &--collapse {
     animation: collapse 0.25s linear forwards;

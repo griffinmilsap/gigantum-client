@@ -217,24 +217,33 @@ export default class RemoteLabbookPanel extends Component {
      blur: state.isImporting,
    });
    const deleteCSS = classNames({
-     Button__icon: true,
+     'Btn__dashboard Btn--action': true,
      'Tooltip-data Tooltip-data--wide': localStorage.getItem('username') !== edge.node.owner,
-     'Button__icon--delete': localStorage.getItem('username') === edge.node.owner,
-     'Button__icon--delete-disabled': localStorage.getItem('username') !== edge.node.owner,
+     'Btn__dashboard--delete': localStorage.getItem('username') === edge.node.owner,
+     'Btn__dashboard--delete-disabled': localStorage.getItem('username') !== edge.node.owner,
    });
 
    return (
      <div
        key={edge.node.name}
-       className="Card Card--300 column-4-span-3 flex flex--column justify--space-between"
+       className="Card Card--225 column-4-span-3 flex flex--column justify--space-between"
      >
        <div className="RemoteLabbooks__row RemoteLabbooks__row--icon">
+         {
+        !(edge.node.visibility === 'local')
+          && (
+          <div
+            data-tooltip={`${edge.node.visibility}`}
+            className={`Tooltip-Listing RemoteLabbooks__${edge.node.visibility} Tooltip-data Tooltip-data--small`}
+          />
+          )
+         }
          {
           props.existsLocally
             ? (
               <button
                 type="button"
-                className="Button__icon Button__icon--cloud Tooltip-data"
+                className="Btn__dashboard Btn--action Btn__dashboard--cloud Btn__Tooltip-data"
                 data-tooltip="This Project has already been imported"
                 disabled
               >
@@ -245,7 +254,7 @@ export default class RemoteLabbookPanel extends Component {
               <button
                 type="button"
                 disabled={state.isImporting}
-                className="Button__icon Button__icon--cloud-download"
+                className="Btn__dashboard Btn--action Btn__dashboard--cloud-download"
                 onClick={() => this._importLabbook(edge.node.owner, edge.node.name)}
               >
               Import
@@ -280,8 +289,16 @@ export default class RemoteLabbookPanel extends Component {
          </div>
 
          <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--owner">{edge.node.owner}</p>
-         <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--owner">{`Created on ${Moment(edge.node.creationDateUtc).format('MM/DD/YY')}`}</p>
-         <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--owner">{`Modified ${Moment(edge.node.modifiedDateUtc).fromNow()}`}</p>
+         <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--metadata">
+           <span className="bold">Created:</span>
+           {' '}
+           {Moment(edge.node.creationDateUtc).format('MM/DD/YY')}
+         </p>
+         <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--metadata">
+           <span className="bold">Modified:</span>
+           {' '}
+           {Moment(edge.node.modifiedDateUtc).fromNow()}
+         </p>
 
          <p className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--description">
            {
@@ -299,15 +316,6 @@ export default class RemoteLabbookPanel extends Component {
            }
          </p>
        </div>
-
-       { !(edge.node.visibility === 'local')
-          && (
-          <div
-            data-tooltip={`${edge.node.visibility}`}
-            className={`Tooltip-Listing RemoteLabbooks__${edge.node.visibility} Tooltip-data Tooltip-data--small`}
-          />
-          )
-       }
 
        { state.isImporting
           && (

@@ -51,13 +51,14 @@
   width: 28px;
   top: 7px;
   right: 7px;
-  background: url('~Images/icons/close.svg') no-repeat center center;
+  background: url('~Images/icons/close.svg') no-repeat center center !important;
   background-size: 28px;
   cursor: pointer;
 
   &:hover {
     background: url('~Images/icons/close.svg') no-repeat center center;
-    background-size: 30px;
+    background-size: 34px !important;
+    padding: 1rem !important;
   }
 }
 

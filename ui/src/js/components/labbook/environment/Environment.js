@@ -14,6 +14,7 @@ import Tooltip from 'Components/common/Tooltip';
 import Loader from 'Components/common/Loader';
 import Base from './Base';
 import Packages from './packages/Packages';
+import Secrets from './secrets/Secrets';
 import CustomDockerfile from './CustomDockerfile';
 // assets
 import './Environment.scss';
@@ -163,6 +164,13 @@ class Environment extends Component {
             buildCallback={this._buildCallback}
             isLocked={props.isLocked}
           />
+          <Secrets
+            environment={props.labbook.environment}
+            environmentId={props.labbook.environment.id}
+            owner={props.owner}
+            name={props.name}
+            isLocked={props.isLocked}
+          />
         </div>
       );
     }
@@ -188,6 +196,7 @@ export default createFragmentContainer(
 
       ...Base_environment
       ...Packages_environment
+      ...Secrets_environment
     }
   }`,
 );

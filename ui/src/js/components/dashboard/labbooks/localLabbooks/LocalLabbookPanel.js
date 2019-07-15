@@ -179,10 +179,18 @@ export default class LocalLabbookPanel extends Component {
         to={`/projects/${edge.node.owner}/${edge.node.name}`}
         onClick={() => props.goToLabbook(edge.node.name, edge.node.owner)}
         key={`local${edge.node.name}`}
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
       >
 
         <div className="LocalLabbooks__row--icons">
+          { !(props.visibility === 'local')
+            && (
+            <div
+              data-tooltip={`${props.visibility}`}
+              className={`Tooltip-Listing LocalLabbookPanel__${props.visibility} Tooltip-data Tooltip-data--small`}
+            />
+            )
+          }
 
           <div className="LocalLabbooks__containerStatus">
 
@@ -225,8 +233,16 @@ export default class LocalLabbookPanel extends Component {
           </div>
 
           <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner ">{edge.node.owner}</p>
-          <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner">{`Created on ${Moment(edge.node.creationDateUtc).format('MM/DD/YY')}`}</p>
-          <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner">{`Modified ${Moment(edge.node.modifiedOnUtc).fromNow()}`}</p>
+          <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata">
+            <span className="bold">Created:</span>
+            {' '}
+            {Moment(edge.node.creationDateUtc).format('MM/DD/YY')}
+          </p>
+          <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata">
+            <span className="bold">Modified:</span>
+            {' '}
+            {Moment(edge.node.modifiedOnUtc).fromNow()}
+          </p>
 
           <p className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description">
             {
@@ -247,15 +263,6 @@ export default class LocalLabbookPanel extends Component {
           </p>
 
         </div>
-
-        { !(props.visibility === 'local')
-          && (
-          <div
-            data-tooltip={`${props.visibility}`}
-            className={`Tooltip-Listing LocalLabbookPanel__${props.visibility} Tooltip-data Tooltip-data--small`}
-          />
-          )
-        }
       </Link>
     );
   }

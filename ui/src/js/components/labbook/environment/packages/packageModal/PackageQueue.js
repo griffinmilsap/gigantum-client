@@ -95,7 +95,12 @@ export default class PackageModal extends Component {
             <div className="PackageQueue__container--empty">
               Enter packages, then press the
               {' '}
-              <div className="Btn Btn--fake">Add</div>
+              <div className="Btn Btn--fake">
+                <div className="Btn--fake-content">
+                  Add
+                  <div className="Icon--add"></div>
+                </div>
+              </div>
               {' '}
               button to add a package to the install list, or upload a requirements.txt file.
             </div>

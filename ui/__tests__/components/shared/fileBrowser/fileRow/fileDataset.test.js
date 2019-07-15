@@ -75,14 +75,4 @@ describe('Dataset File component', () => {
   });
 
   const component = mount(<File.DecoratedComponent {...fixtures}/>);
-
-  it('File Snapshot', async () => {
-    let evt = {
-      stopPropagation: () => {},
-    };
-
-    await component.find('.Btn__download').simulate('click');
-
-    expect(fixtures.mutations.downloadDatasetFiles.mock.calls.length).toEqual(1);
-  });
 });

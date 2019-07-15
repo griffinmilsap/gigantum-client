@@ -16,6 +16,11 @@ export default createFragmentContainer(
           name
           owner
           commitsBehind
+          overview{
+            numFiles
+            localBytes
+            totalBytes
+          }
           allFiles{
             edges{
               node{

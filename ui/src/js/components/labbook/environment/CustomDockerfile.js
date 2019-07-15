@@ -142,7 +142,7 @@ export default class CustomDockerfile extends Component {
     const renderedContent = state.dockerfileContent ? `\`\`\`\n${state.dockerfileContent}\n\`\`\`` : 'No commands provided.';
 
     return (
-      <div className="CustomDockerfile column-1-span-12">
+      <div className="CustomDockerfile">
 
         <div className="Environment__headerContainer">
 

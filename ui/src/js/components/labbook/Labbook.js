@@ -871,6 +871,8 @@ class Labbook extends Component {
                             refetch={this._refetchSection}
                             containerStatus={containerStatus}
                             lockFileBrowser={props.isUploading}
+                            owner={labbook.owner}
+                            name={labbook.name}
                             section="input"
                           />
                         </ErrorBoundary>)}

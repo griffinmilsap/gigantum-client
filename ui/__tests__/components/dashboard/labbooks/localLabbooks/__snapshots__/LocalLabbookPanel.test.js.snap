@@ -2,7 +2,7 @@
 
 exports[`Test LocalLabbooks rendering 1`] = `
 <a
-  className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+  className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
   href="/projects/uitest/ui-test-remote"
   onClick={[Function]}
 >
@@ -57,14 +57,36 @@ exports[`Test LocalLabbooks rendering 1`] = `
       uitest
     </p>
     <p
-      className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+      className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
     >
-      Created on Fri Jan 18 2019
+      <span
+        className="bold"
+      >
+        Created:
+      </span>
+       
+      Fri Jan 18 2019
     </p>
     <p
-      className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+      className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
     >
-      Modified Fri Jan 18 2019
+      <span
+        className="bold"
+      >
+        Modified:
+      </span>
+       
+      Fri Jan 18 2019
+    </p>
+    <p
+      className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+    >
+      <span
+        className="bold"
+      >
+        Current Branch:
+      </span>
+       
     </p>
     <p
       className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"

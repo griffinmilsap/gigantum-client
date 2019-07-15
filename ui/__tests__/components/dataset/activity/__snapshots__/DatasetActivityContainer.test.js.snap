@@ -110,7 +110,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                       <p
                         className="ActivityCard__time"
                       >
-                        12:15pm
+                        5:15pm
                       </p>
                       <div
                         className="ActivityCard__user"
@@ -156,7 +156,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                       <p
                         className="ActivityCard__time"
                       >
-                        12:14pm
+                        5:14pm
                       </p>
                       <div
                         className="ActivityCard__user"
@@ -202,7 +202,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                       <p
                         className="ActivityCard__time"
                       >
-                        12:12pm
+                        5:12pm
                       </p>
                       <div
                         className="ActivityCard__user"
@@ -248,7 +248,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                       <p
                         className="ActivityCard__time"
                       >
-                        12:10pm
+                        5:10pm
                       </p>
                       <div
                         className="ActivityCard__user"
@@ -294,7 +294,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                       <p
                         className="ActivityCard__time"
                       >
-                        12:10pm
+                        5:10pm
                       </p>
                       <div
                         className="ActivityCard__user"

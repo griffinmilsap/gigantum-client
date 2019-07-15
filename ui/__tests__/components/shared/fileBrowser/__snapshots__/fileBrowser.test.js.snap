@@ -9,49 +9,11 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
     }
   }
 >
-  <div
-    className="FileBrowser__menu"
+  <h4
+    className="margin--0"
   >
-    <h5>
-      Files
-    </h5>
-    <div
-      className="FileBrowser__menu-buttons"
-    >
-      <div>
-        <label
-          className="FileBrowser__upload-label"
-          htmlFor="browser_upload"
-        >
-          <div
-            className="Btn--fileBrowser Btn--round Btn--bordered Btn__upArrow inline-block Btn"
-          />
-          <span>
-            Upload Files
-          </span>
-          <input
-            className="hidden"
-            id="browser_upload"
-            multiple={true}
-            onChange={[Function]}
-            type="file"
-          />
-        </label>
-        <button
-          className="Btn Btn__menuButton Btn--noShadow FileBrowser__newFolder"
-          data-click-id="addFolder"
-          onClick={[Function]}
-          type="button"
-        >
-          <div
-            className="Btn--fileBrowser Btn--round Btn--bordered Btn__addFolder Btn"
-            data-click-id="addFolder"
-          />
-          New Folder
-        </button>
-      </div>
-    </div>
-  </div>
+    Files
+  </h4>
   <div
     className="FileBrowser__tools flex justify--space-between"
   >
@@ -66,6 +28,35 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
         type="text"
       />
     </div>
+    <div
+      className="flex"
+    >
+      <button
+        className="Btn Btn--action Btn__FileBrowserAction Btn__FileBrowserAction--newFolder"
+        data-click-id="addFolder"
+        onClick={[Function]}
+        type="button"
+      >
+        New Folder
+      </button>
+      <label
+        className="FileBrowser__upload-label"
+        htmlFor="browser_upload"
+      >
+        <div
+          className="Btn__FileBrowserAction Btn__FileBrowserAction--upload inline-block Btn"
+        >
+          Add Files
+        </div>
+        <input
+          className="hidden"
+          id="browser_upload"
+          multiple={true}
+          onChange={[Function]}
+          type="file"
+        />
+      </label>
+    </div>
   </div>
   <div
     className="FileBrowser__header"
@@ -78,35 +69,6 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
         onClick={[Function]}
         type="button"
       />
-      <button
-        className="Btn Btn--fileBrowser Btn--round Btn__delete Btn--action hidden"
-        onClick={[Function]}
-        type="button"
-      />
-      <div
-        className="FileBrowser__popup hidden Tooltip__message"
-      >
-        <div
-          className="Tooltip__pointer"
-        />
-        <p>
-          Are you sure?
-        </p>
-        <div
-          className="flex justify--space-around"
-        >
-          <button
-            className="File__btn--round File__btn--cancel File__btn--delete"
-            onClick={[Function]}
-            type="button"
-          />
-          <button
-            className="File__btn--round File__btn--add File__btn--delete-files"
-            onClick={[Function]}
-            type="button"
-          />
-        </div>
-      </div>
     </div>
     <button
       className="FileBrowser__name-text FileBrowser__header--name flex justify--start Btn--noStyle FileBroser__sort--asc"
@@ -131,7 +93,9 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
     </button>
     <div
       className="FileBrowser__header--menu flex flex--row justify--right"
-    />
+    >
+      Actions
+    </div>
   </div>
   <div
     className="FileBrowser__body"
@@ -173,11 +137,33 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
       </div>
     </div>
     <div
-      className="FileBrowser__empty"
+      className="Dropbox Dropbox--fileBrowser flex flex--column align-items--center"
     >
-      <h5>
-        Upload Files by Dragging & Dropping Here
-      </h5>
+      <div
+        className="Dropbox--menu"
+      >
+        Drag and drop files here
+        <br />
+        <span>
+          or
+        </span>
+      </div>
+      <label
+        className="flex justify--center"
+        htmlFor="add_file"
+      >
+        <div
+          className="Btn Btn--allStyling"
+        >
+          Choose Files...
+        </div>
+        <input
+          className="hidden"
+          id="add_file"
+          onChange={[Function]}
+          type="file"
+        />
+      </label>
     </div>
   </div>
 </div>

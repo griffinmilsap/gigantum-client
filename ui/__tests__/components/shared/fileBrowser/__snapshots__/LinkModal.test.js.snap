@@ -17,7 +17,7 @@ exports[`Test LinkModal 1`] = `
     }
   >
     <button
-      className="Modal__close Btn Btn--flat"
+      className="Btn Btn--flat Modal__close padding--small "
       onClick={[Function]}
       type="button"
     />

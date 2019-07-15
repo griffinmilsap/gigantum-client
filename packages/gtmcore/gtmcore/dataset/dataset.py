@@ -228,3 +228,17 @@ class Dataset(Repository):
             import json
             errmsg = f"Schema in Dataset {str(self)} does not match indicated version {self.schema}"
             raise ValueError(errmsg)
+
+    def linked_to(self) -> Optional[str]:
+        """Method that provides an identifier to a Project if this instance is linked to a Project (embedded as a
+        submodule)
+
+        Returns:
+            str
+        """
+        labbook_key = None
+        if ".gigantum/datasets/" in self.root_dir:
+            _, username, owner, _, labbook_name, _, _, _, _ = self.root_dir.rsplit("/", 8)
+            labbook_key = f"{username}|{owner}|{labbook_name}"
+
+        return labbook_key

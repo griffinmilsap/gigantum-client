@@ -11,7 +11,7 @@ from gtmcore.gitlib.git import GitAuthor
 from gtmcore.fixtures import mock_config_file
 
 
-class TestInventory(object):
+class TestInventoryLabbooks(object):
     def test_uses_config(self, mock_config_file):
         i = InventoryManager(mock_config_file[0])
         assert i.inventory_root == mock_config_file[1]

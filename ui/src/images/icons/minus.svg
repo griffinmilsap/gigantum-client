@@ -11,7 +11,7 @@
             <g id="Group-3">
                 <g id="Button/Add-activity">
                     <g id="Oval-2">
-                        <use fill="#007EA8" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <use fill="#00487c" fill-rule="evenodd" xlink:href="#path-1"></use>
                         <circle stroke="#E3E4E5" stroke-width="2" cx="14" cy="14" r="13"></circle>
                     </g>
                     <path d="M21,14 L7,14" id="Line" stroke="#FFFFFF" stroke-linecap="round"></path>

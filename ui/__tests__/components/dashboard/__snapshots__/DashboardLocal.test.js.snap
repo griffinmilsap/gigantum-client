@@ -268,7 +268,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         />
       </div>
       <a
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
         href="/projects/uitest/ui-test-remote"
         onClick={[Function]}
       >
@@ -323,14 +323,36 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             uitest
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Created on Fri Jan 18 2019
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Fri Jan 18 2019
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Modified Fri Jan 18 2019
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Fri Jan 18 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Current Branch:
+            </span>
+             
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -346,7 +368,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         />
       </a>
       <a
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
         href="/projects/uitest/ui-test-project"
         onClick={[Function]}
       >
@@ -401,14 +423,36 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             uitest
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Created on Fri Jan 18 2019
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Fri Jan 18 2019
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Modified Fri Jan 18 2019
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Fri Jan 18 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Current Branch:
+            </span>
+             
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -429,7 +473,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         />
       </a>
       <a
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
         href="/projects/uitest/test-tt"
         onClick={[Function]}
       >
@@ -484,14 +528,36 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             uitest
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Created on Fri Jan 11 2019
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Fri Jan 11 2019
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Modified Fri Jan 11 2019
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Fri Jan 11 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Current Branch:
+            </span>
+             
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -507,7 +573,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         />
       </a>
       <a
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
         href="/projects/uitest/new-project"
         onClick={[Function]}
       >
@@ -562,14 +628,36 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             uitest
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Created on Wed Jan 16 2019
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Wed Jan 16 2019
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Modified Thu Jan 24 2019
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Thu Jan 24 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Current Branch:
+            </span>
+             
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -585,7 +673,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         />
       </a>
       <a
-        className="Card Card--300 Card--text column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
         href="/projects/uitest/awful-intersections-demo"
         onClick={[Function]}
       >
@@ -640,14 +728,36 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             uitest
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Created on Thu May 24 2018
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Thu May 24 2018
           </p>
           <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner"
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
           >
-            Modified Fri Jan 11 2019
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Fri Jan 11 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Current Branch:
+            </span>
+             
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"

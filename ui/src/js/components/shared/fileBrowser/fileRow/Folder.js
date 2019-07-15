@@ -550,6 +550,7 @@ class Folder extends Component {
             !props.readOnly
             && (
             <button
+              disabled={node.key === 'untracked/'}
               type="button"
               className={buttonCSS}
               onClick={evt => this._setSelected(evt, !state.isSelected)}

@@ -1,8 +1,12 @@
 @import '~Styles/_imports.scss';
 
+.LinkCard__dataset {
+    padding: 10px 10px;
+}
 .LinkCard__dataset img {
     align-self: flex-start;
-    margin: 10px 20px 0;
+    margin: 18px 20px 0;
+
 }
 
 .LinkCard__text{
@@ -13,7 +17,6 @@
     p {
       align-self: flex-start;
       max-width: 375px;
-      padding: 15px;
       word-break: break-word;
     }
     ul {
@@ -21,14 +24,29 @@
     }
 }
 
+.LinkCard__header {
+  color: $azure;
+}
+
+.LinkCard__paragraph {
+
+  padding-right: 10px;
+  line-height: 18px;
+
+  &--grey {
+    color: $romanSilver;
+    font-size: $small-fontsize;
+  }
+}
+
 .LinkCard__details{
 
     color: $slateBlue;
-    margin: 0 40px 10px 0;
+    margin: 0 20px 10px 0;
     word-break: break-word;
-    max-width: 350px;
+    width: 240px;
 
-    @include flex(space-around, column);
+    @include flex(flex-start, column);
 
     p {
         margin: 2px 0;

@@ -90,15 +90,18 @@ class Packages extends Component {
             />
           )
         }
-        <PackageCard
-          base={props.base}
-          togglePackageModal={this._togglePackageModalVisibility}
-          packages={flatPackages}
-          packageMutations={state.packageMutations}
-          buildCallback={props.buildCallback}
-          setBuildingState={setBuildingState}
-          isLocked={props.isLocked}
-        />
+
+        <div className="grid">
+          <PackageCard
+            base={props.base}
+            togglePackageModal={this._togglePackageModalVisibility}
+            packages={flatPackages}
+            packageMutations={state.packageMutations}
+            buildCallback={props.buildCallback}
+            setBuildingState={setBuildingState}
+            isLocked={props.isLocked}
+          />
+        </div>
       </div>
     );
   }

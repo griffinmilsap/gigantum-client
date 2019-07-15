@@ -122,7 +122,7 @@ def generate_bg_hash_job_list(filenames: List[str],
     num_cores = manifest.get_num_hashing_cpus()
     file_lists: List[List] = [list() for _ in range(num_cores)]
     size_sums = [0 for _ in range(num_cores)]
-    revision_dir = manifest.cache_mgr.current_revision_dir
+    revision_dir = manifest.current_revision_dir
 
     for filename in filenames:
         index = size_sums.index(min(size_sums))

@@ -266,20 +266,25 @@ class PresignedS3Upload(object):
         while try_count < 3:
             async with session.post(f"{self.service_root}/{self.object_id}/multipart",
                                     headers=self.object_service_headers) as response:
-                if response.status != 200:
-                    # An error occurred
-                    logger.warning(f"Failed to push {self.object_details.dataset_path}. Try {try_count + 1} of 3")
-                    error_msg = await response.text()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
-                else:
+                if response.status == 200:
                     data = await response.json()
                     self.multipart_upload_id = data['upload_id']
                     logger.info(f"Created multipart upload for {self.object_details.dataset_path} at"
                                 f" {self.object_details.revision[0:8]}, with {len(self._multipart_parts)} "
                                 f"parts: {self.multipart_upload_id}")
                     return
+                elif response.status == 403:
+                    # Forbidden indicates Object already exists,
+                    # don't need to re-push since we deduplicate so mark it skip
+                    self.skip_object = True
+                    return
+                else:
+                    # An error occurred
+                    logger.warning(f"Failed to push {self.object_details.dataset_path}. Try {try_count + 1} of 3")
+                    error_msg = await response.text()
+                    error_status = response.status
+                    await asyncio.sleep(try_count ** 2)
+                    try_count += 1
 
         raise IOError(f"Failed to push {self.object_details.dataset_path} to storage backend."
                       f" Status: {error_status}. Response: {error_msg}")
@@ -697,13 +702,10 @@ to Gigantum Cloud will count towards your storage quota and include all versions
                     if not presigned_request.is_presigned:
                         # Fetch the signed URL
                         await presigned_request.get_presigned_s3_url(session)
-                        logger.info("GOT URL")
                         queue.put_nowait(presigned_request)
                     else:
                         # Process S3 Upload, mark the part as done, and requeue it
-                        logger.info(f"PUTTING OBJECT PART {presigned_request.current_part.part_number}")
                         etag = await presigned_request.put_object(session, progress_update_fn)
-                        logger.info(f"DONE PUTTING OBJECT PART {presigned_request.current_part.part_number}")
                         presigned_request.mark_current_part_complete(etag)
                         queue.put_nowait(presigned_request)
                 else:

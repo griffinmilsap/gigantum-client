@@ -1245,3 +1245,58 @@ class TestStorageBackendGigantum(object):
             with open(helper_write_large_file, 'rb') as source:
                 data = source.read()
                 assert data == saved_data
+
+    def test_push_objects_multipart_with_skip(self, mock_dataset_with_cache_dir, temp_directories, mock_dataset_head):
+        with aioresponses() as mocked_responses:
+            sb = get_storage_backend("gigantum_object_v1")
+
+            ds = mock_dataset_with_cache_dir[0]
+
+            sb.set_default_configuration(ds.namespace, "abcd", '1234')
+
+            object_dir, compressed_dir = temp_directories
+
+            obj1_id = uuid.uuid4().hex
+            obj2_id = uuid.uuid4().hex
+
+            obj1_src_path = helper_write_object(object_dir, obj1_id, 'abcd')
+            obj2_src_path = helper_write_object(object_dir, obj2_id,
+                                                ''.join(random.choices(string.ascii_uppercase + string.digits,
+                                                                       k=(60 * (10 ** 6)))))
+            assert os.path.isfile(obj1_src_path) is True
+            assert os.path.isfile(obj2_src_path) is True
+
+            objects = [PushObject(object_path=obj1_src_path,
+                                  revision=ds.git.repo.head.commit.hexsha,
+                                  dataset_path='myfile1.txt'),
+                       PushObject(object_path=obj2_src_path,
+                                  revision=ds.git.repo.head.commit.hexsha,
+                                  dataset_path='myfile2.txt')
+                       ]
+
+            mocked_responses.put(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj1_id}',
+                                 payload={
+                                         "presigned_url": f"https://dummyurl.com/{obj1_id}?params=1",
+                                         "namespace": ds.namespace,
+                                         "key_id": "hghghg",
+                                         "obj_id": obj1_id,
+                                         "dataset": ds.name
+                                 },
+                                 status=200)
+            mocked_responses.put(f"https://dummyurl.com/{obj1_id}?params=1",
+                                 headers={'Etag': 'asdfasf'},
+                                 status=200)
+
+            mocked_responses.post(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/multipart',
+                                  payload={},
+                                  status=403)
+
+            sb.prepare_push(ds, objects)
+            result = sb.push_objects(ds, objects, chunk_update_callback)
+            assert len(result.success) == 2
+            assert len(result.failure) == 0
+            assert isinstance(result, PushResult) is True
+            assert isinstance(result.success[0], PushObject) is True
+            assert result.success[0].object_path != result.success[1].object_path
+            assert result.success[0].object_path in [obj1_src_path, obj2_src_path]
+            assert result.success[1].object_path in [obj1_src_path, obj2_src_path]

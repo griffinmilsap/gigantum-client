@@ -44,7 +44,7 @@ export default class Modal extends Component {
               && (
               <button
                 type="button"
-                className="Modal__close Btn Btn--flat"
+                className="Btn Btn--flat Modal__close padding--small "
                 onClick={() => props.handleClose()}
               />
               )

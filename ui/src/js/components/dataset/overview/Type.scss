@@ -14,30 +14,32 @@
   padding: 30px;
 
   color: $romanSilver;
-
+  border-left: 3px solid $azure;
+  border-right: 1.5px solid $azure;
   @include flex(space-between, row);
 }
 
 .Type__image{
-  min-width: 70px;
-  margin: 0 10px 0 0;
+  min-width: 50px;
+  margin: 20px;
 }
 
 
 .Type__imageContainer{
-  width: 250px;
+  width: 100px;
   margin: 0 20px 0 0;
 
   @include flex(space-between, row);
 }
 
 .Type__paragraph{
-   font-size: 16px;
+   font-size: 15px;
    font-weight: 400;
  }
 
 .Type__name{
-  font-weight: bold;
+  font-size: 24px;
+  white-space: nowrap;
 }
 
 .Type__title{

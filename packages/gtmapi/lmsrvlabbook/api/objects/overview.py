@@ -285,7 +285,7 @@ class DatasetOverview(graphene.ObjectType, interfaces=(graphene.relay.Node, GitR
         m = Manifest(dataset, get_logged_in_username())
         total_size = 0
 
-        for dirpath, dirnames, filenames in os.walk(m.cache_mgr.current_revision_dir):
+        for dirpath, dirnames, filenames in os.walk(m.current_revision_dir):
             for f in filenames:
                 if f == '.smarthash':
                     continue

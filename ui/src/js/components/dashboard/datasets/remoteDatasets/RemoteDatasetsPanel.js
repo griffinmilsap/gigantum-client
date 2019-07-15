@@ -196,22 +196,30 @@ export default class RemoteDatasetPanel extends Component {
       blur: state.isImporting,
     });
     const deleteCSS = classNames({
-      Button__icon: true,
-      'Button__icon--delete': localStorage.getItem('username') === edge.node.owner,
-      'Button__icon--delete-disabled Tooltip-data': localStorage.getItem('username') !== edge.node.owner,
+      'Btn__dashboard Btn--action': true,
+      'Btn__dashboard--delete': localStorage.getItem('username') === edge.node.owner,
+      'Btn__dashboard--delete-disabled Tooltip-data': localStorage.getItem('username') !== edge.node.owner,
     });
 
     return (
       <div
         key={edge.node.name}
-        className="Card Card--300 column-4-span-3 flex flex--column justify--space-between"
+        className="Card Card--225 column-4-span-3 flex flex--column justify--space-between"
       >
         <div className="RemoteDatasets__row RemoteDatasets__row--icon">
+          { !(edge.node.visibility === 'local')
+            && (
+              <div
+                data-tooltip={`${edge.node.visibility}`}
+                className={`Tooltip-Listing RemoteDatasets__${edge.node.visibility} Tooltip-data Tooltip-data--small`}
+              />
+            )
+          }
           { props.existsLocally
             ? (
               <button
                 type="button"
-                className="Button__icon Button__icon--cloud Tooltip-data"
+                className="Btn__dashboard Btn--action Btn__dashboard--cloud Tooltip-data"
                 data-tooltip="This Dataset has already been imported"
                 disabled
               >
@@ -222,7 +230,7 @@ export default class RemoteDatasetPanel extends Component {
               <button
                 type="button"
                 disabled={state.isImporting}
-                className="Button__icon Button__icon--cloud-download"
+                className="Btn__dashboard Btn--action Btn__dashboard--cloud-download"
                 onClick={() => this._importDataset(edge.node.owner, edge.node.name)}
               >
               Import
@@ -255,8 +263,16 @@ export default class RemoteDatasetPanel extends Component {
           </div>
 
           <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--owner">{edge.node.owner}</p>
-          <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--owner">{`Created on ${Moment(edge.node.creationDateUtc).format('MM/DD/YY')}`}</p>
-          <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--owner">{`Modified ${Moment(edge.node.modifiedDateUtc).fromNow()}`}</p>
+          <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--metadata">
+            <span className="bold">Created:</span>
+            {' '}
+            {Moment(edge.node.creationDateUtc).format('MM/DD/YY')}
+          </p>
+          <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--metadata">
+            <span className="bold">Modified:</span>
+            {' '}
+            {Moment(edge.node.modifiedDateUtc).fromNow()}
+          </p>
           <p className="RemoteDatasets__paragraph RemoteDatasets__paragraph--description">
 
             { edge.node.description && edge.node.description.length
@@ -273,15 +289,6 @@ export default class RemoteDatasetPanel extends Component {
            }
           </p>
         </div>
-
-        { !(edge.node.visibility === 'local')
-        && (
-          <div
-            data-tooltip={`${edge.node.visibility}`}
-            className={`Tooltip-Listing RemoteDatasets__${edge.node.visibility} Tooltip-data Tooltip-data--small`}
-          />
-        )
-       }
 
         { state.isImporting
           && <div className="RemoteDatasets__loader"><Loader /></div>

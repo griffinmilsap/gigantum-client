@@ -6,8 +6,8 @@
     <defs></defs>
     <g id="icon/activity/action-delete" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <circle id="Oval-Copy" fill="#FFFFFF" cx="11" cy="11" r="11"></circle>
-        <circle id="Oval" stroke="#007EA8" stroke-width="2" fill="#FFFFFF" cx="11" cy="11" r="9"></circle>
-        <path d="M14.5355339,7.46446609 L7.46446609,14.5355339" id="Shape" stroke="#007EA8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M14.5355339,14.5355339 L7.46446609,7.46446609" id="Shape" stroke="#007EA8" stroke-width="2" stroke-linecap="round"></path>
+        <circle id="Oval" stroke="#00487c" stroke-width="2" fill="#FFFFFF" cx="11" cy="11" r="9"></circle>
+        <path d="M14.5355339,7.46446609 L7.46446609,14.5355339" id="Shape" stroke="#00487c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M14.5355339,14.5355339 L7.46446609,7.46446609" id="Shape" stroke="#00487c" stroke-width="2" stroke-linecap="round"></path>
     </g>
 </svg>

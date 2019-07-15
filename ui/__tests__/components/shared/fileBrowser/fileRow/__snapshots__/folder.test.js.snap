@@ -19,6 +19,7 @@ exports[`File component File Snapshot 1`] = `
   >
     <button
       className="CheckboxMultiselect CheckboxMultiselect__check"
+      disabled={false}
       onClick={[Function]}
       type="button"
     />
@@ -61,6 +62,7 @@ exports[`File component File Snapshot 1`] = `
         />
         <button
           className="File__btn--round File__btn--add File__input--rename-add"
+          disabled={true}
           onClick={[Function]}
           type="button"
         />
@@ -81,9 +83,10 @@ exports[`File component File Snapshot 1`] = `
         className="ActionsMenu"
       >
         <button
-          className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn--bordered Btn__addFolder"
+          className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn__addFolder"
           data-click-id="addFolder"
           data-tooltip="Add Subfolder"
+          disabled={false}
           onClick={[Function]}
           type="button"
         />
@@ -91,7 +94,7 @@ exports[`File component File Snapshot 1`] = `
           className="relative"
         >
           <button
-            className="ActionsMenu__item Btn Btn--fileBrowser Btn__delete Btn--round Btn--bordered Tooltip-data Tooltip-data--small"
+            className="ActionsMenu__item Btn Btn--fileBrowser Btn__delete-secondary Btn--round Tooltip-data Tooltip-data--small"
             data-tooltip="Delete"
             disabled={false}
             onClick={[Function]}
@@ -123,7 +126,7 @@ exports[`File component File Snapshot 1`] = `
           </div>
         </div>
         <button
-          className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--bordered Btn--round"
+          className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--round"
           data-tooltip="Rename"
           disabled={false}
           onClick={[Function]}

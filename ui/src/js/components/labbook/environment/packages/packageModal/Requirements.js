@@ -4,6 +4,8 @@ import { NativeTypes } from 'react-dnd-html5-backend';
 import { boundMethod } from 'autobind-decorator';
 import { DropTarget } from 'react-dnd';
 import classNames from 'classnames';
+// store
+import { setErrorMessage } from 'JS/redux/actions/footer';
 // assets
 import './Requirements.scss';
 
@@ -26,8 +28,8 @@ class Requirements extends Component {
     const self = this;
     const reader = new FileReader();
     if (!state.droppedFile) {
-      this.setState({ droppedFile: file.name, fileParsing: true });
       if (file.type === 'text/plain') {
+        this.setState({ droppedFile: file.name, fileParsing: true });
         reader.onload = (evt) => {
           const rejectedPackages = [];
           const packages = evt.target.result.split('\n').filter(line => (line[0] !== '#') && (line !== ''));
@@ -47,6 +49,8 @@ class Requirements extends Component {
           });
         };
         reader.readAsText(file);
+      } else {
+        setErrorMessage('Requirements file must be a text file');
       }
     }
   }

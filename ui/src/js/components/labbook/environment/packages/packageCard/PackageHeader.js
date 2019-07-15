@@ -4,7 +4,7 @@ import classNames from 'classnames';
 // components
 import Tooltip from 'Components/common/Tooltip';
 // assets
-import './PackageTable.scss';
+import './PackageHeader.scss';
 
 export default class PackageHeader extends Component {
   /**
@@ -64,13 +64,11 @@ export default class PackageHeader extends Component {
     });
     const managerHeaderCSS = classNames({
       'Table__Header--sort Btn--noStyle': true,
-      PackageHeader__manager: true,
       'Table__Header--asc': props.sort === 'manager' && !props.reverse,
       'Table__Header--desc': props.sort === 'manager' && props.reverse,
     });
     const nameHeaderCSS = classNames({
       'Table__Header--sort Btn--noStyle flex-1': true,
-      PackageHeader__name: true,
       'Table__Header--asc': props.sort === 'package' && !props.reverse,
       'Table__Header--desc': props.sort === 'package' && props.reverse,
     });
@@ -109,30 +107,34 @@ export default class PackageHeader extends Component {
           </div>
           )
         }
-        <div className="flex align-items--end">
-          <button
-            className={multiSelectButtonCSS}
-            onClick={() => { props.selectPackages(); }}
-            type="button"
-          />
-          <button
-            className={managerHeaderCSS}
-            onClick={() => props.handleSort('manager')}
-            type="button"
-          >
-            Package Manager
-          </button>
-          <button
-            className={nameHeaderCSS}
-            onClick={() => props.handleSort('package')}
-            type="button"
-          >
-            Package Name
-          </button>
-          <div className="flex">
-            <div className="PackageHeader__version">Version</div>
-            <div className="PackageHeader__actions">Actions</div>
+        <div className="PackageHeader__row flex align-items--end">
+          <div className="PackageHeader__multiselect">
+            <button
+              className={multiSelectButtonCSS}
+              onClick={() => { props.selectPackages(); }}
+              type="button"
+            />
           </div>
+          <div className="PackageHeader__manager">
+            <button
+              className={managerHeaderCSS}
+              onClick={() => props.handleSort('manager')}
+              type="button"
+            >
+              Package Manager
+            </button>
+          </div>
+          <div className="PackageHeader__name">
+            <button
+              className={nameHeaderCSS}
+              onClick={() => props.handleSort('package')}
+              type="button"
+            >
+              Package Name
+            </button>
+          </div>
+          <div className="PackageHeader__version">Version</div>
+          <div className="PackageHeader__actions">Actions</div>
         </div>
       </div>
     );

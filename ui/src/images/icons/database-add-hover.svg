@@ -11,7 +11,7 @@
                 <path d="M0,11 L7.28445816,14.8227126 C7.7349022,15.0590958 8.2650978,15.0590958 8.71554184,14.8227126 L16,11" id="Shape"></path>
             </g>
             <g id="Group" transform="translate(8.000000, 8.000000)">
-                <circle id="Oval" fill="#007fa4" cx="4.5" cy="4.5" r="4.5"></circle>
+                <circle id="Oval" fill="#00487c" cx="4.5" cy="4.5" r="4.5"></circle>
                 <path d="M4.5,2 L4.5,7" id="Shape" stroke-linecap="round" stroke-linejoin="round"></path>
                 <path d="M7,4.5 L2,4.5" id="Shape" stroke-linecap="round"></path>
             </g>

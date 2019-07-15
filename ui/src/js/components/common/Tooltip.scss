@@ -104,7 +104,7 @@
   }
   .Tooltip__message{
     top: 11px;
-    right: -268px;
+    right: -320px;
   }
 }
 
@@ -155,16 +155,16 @@
 
 .Tooltip.actionMenu{
   .Tooltip__toggle{
-    top: 27px;
-    right: 46px;
+    top: 5px;
+    right: -24px;
   }
   .Tooltip__pointer{
-    top: 48px;
-    right: 40px;
+    top: 23px;
+    right: -30px;
   }
   .Tooltip__message{
-    top: 62px;
-    right: -7px;
+    top: 36px;
+    right: -32px;
   }
 }
 
@@ -249,7 +249,7 @@
     bottom: 38px;
   }
   .Tooltip__message{
-    bottom: -35px;
+    bottom: -14px;
     left: 10px;
   }
 }
@@ -258,27 +258,30 @@
 .Tooltip.importLabbook{
   .Tooltip__toggle{
     right: -90px;
-    bottom: 100px;
+    bottom: 72px;
   }
   .Tooltip__pointer{
     right: -107px;
-    bottom: 94px;
+    bottom: 66px;
 
     @include triangle('left', 14px, $slateBlue);
   }
   .Tooltip__message{
-    bottom: 80px;
+    bottom: 52px;
     left: 103px;
   }
 }
 
 .Tooltip.cloudLocal{
+  .Tooltip__toggle {
+      top: 10px;
+  }
   .Tooltip__pointer{
-    top: 20px;
+    top: 30px;
     left: -7px;
   }
   .Tooltip__message{
-    top: 33px;
+    top: 43px;
     left: -100px;
   }
 

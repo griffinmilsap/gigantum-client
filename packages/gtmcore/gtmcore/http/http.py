@@ -48,7 +48,9 @@ class ConcurrentRequestManager(object):
     def __init__(self, timeout: int = 60, semaphore_limit: int = 1000) -> None:
         self.timeout = timeout
         self._client_session: Optional[aiohttp.ClientSession] = None
-        self.semaphore = asyncio.Semaphore(semaphore_limit)
+
+        self.semaphore_limit = semaphore_limit
+        self._semaphore: Optional[asyncio.Semaphore] = None
 
     @property
     def session(self) -> aiohttp.ClientSession:
@@ -60,6 +62,17 @@ class ConcurrentRequestManager(object):
         if not self._client_session:
             self._client_session = aiohttp.ClientSession()
         return self._client_session
+
+    @property
+    def semaphore(self) -> asyncio.Semaphore:
+        """Property to get an asyncio.Semaphore. Only one should exist at a time, so keep returning the same semaphore.
+
+        Returns:
+             asyncio.Semaphore
+        """
+        if not self._semaphore:
+            self._semaphore = asyncio.Semaphore(self.semaphore_limit)
+        return self._semaphore
 
     async def _fetch(self, url_obj: ConcurrentRequest) -> ConcurrentRequest:
         """Private method to resolve a URL and parse it.

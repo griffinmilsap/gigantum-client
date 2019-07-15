@@ -1,0 +1,22 @@
+@import '~Styles/_imports.scss';
+
+.DatasetsBrowser {
+  background: $lightGrey;
+  min-height: 50px;
+  padding: 12px 30px;
+  margin-bottom: 20px;
+  &__header{
+    margin-bottom: 15px;
+    &--empty {
+      padding-bottom: 20px;
+      border-bottom: 1px solid $grey-border
+    }
+  }
+}
+
+.DatasetsBrowser__empty {
+  align-self: center;
+  margin: 0 auto;
+  color: $romanSilver;
+  font-size: 19px;
+}

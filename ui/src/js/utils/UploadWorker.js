@@ -2,7 +2,7 @@ import AddDatasetFileMutation from 'Mutations/fileBrowser/AddDatasetFileMutation
 import AddLabbookFileMutation from 'Mutations/fileBrowser/AddLabbookFileMutation';
 import ImportLabbookMutation from 'Mutations/ImportLabbookMutation';
 import ImportDatasetMutation from 'Mutations/ImportDatasetMutation';
-
+import UploadSecretsFileMutation from 'Mutations/environment/UploadSecretsFileMutation';
 
 /* eslint-disable */
 const addFileUpload = (data) => {
@@ -87,13 +87,20 @@ const addFileUpload = (data) => {
 }
 
 const importFileUpload = (data, connection) => {
-  const { file, mutationData } = data;
+  const { file } = data;
   const {
     accessToken,
     idToken,
     transactionId,
     chunkId,
   } = file;
+  const {
+    owner,
+    name,
+    environmentId,
+    id,
+    filename,
+  } = file.mutationData;
   const {
     fullPath,
   } = file.file.entry;
@@ -139,8 +146,20 @@ const importFileUpload = (data, connection) => {
       accessToken,
       idToken,
       callback,
-      callback,
     );
+  } else if (connection === 'Secrets_secretsFileMapping') {
+    UploadSecretsFileMutation(
+      owner,
+      name,
+      environmentId,
+      id,
+      filename,
+      accessToken,
+      idToken,
+      chunk,
+      transactionId,
+      callback,
+    )
   }
 }
 

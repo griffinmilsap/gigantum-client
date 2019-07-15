@@ -87,20 +87,8 @@ describe('FileBrowser component', () => {
      expect(component.state('multiSelect')).toEqual('all');
    });
 
-
-   it('Shows delete popup', () => {
-     component.find('.Btn__delete').simulate('click');
-     expect(component.state('popupVisible')).toEqual(true);
-   });
-
    it('Cancel delete popup', () => {
      component.find('.File__btn--delete').simulate('click');
-     expect(component.state('popupVisible')).toEqual(false);
-   });
-
-   it('Delete Files', () => {
-     component.find('.Btn__delete').simulate('click');
-     component.find('.File__btn--delete-files').simulate('click');
      expect(component.state('popupVisible')).toEqual(false);
    });
 

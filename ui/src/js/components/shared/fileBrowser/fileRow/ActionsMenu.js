@@ -114,12 +114,12 @@ export default class ActionsMenu extends Component {
       Tooltip__message: true,
     });
     const deleteCSS = classNames({
-      'ActionsMenu__item Btn Btn--fileBrowser Btn__delete Btn--round Btn--bordered': true,
+      'ActionsMenu__item Btn Btn--fileBrowser Btn__delete-secondary Btn--round': true,
       'Tooltip-data Tooltip-data--small': !state.popupVisible,
       'ActionsMenu__popup-visible': state.popupVisible,
     });
     const folderCSS = classNames({
-      'ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn--bordered': true,
+      'ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round': true,
       Btn__addFolder: true,
       'visibility-hidden': !props.folder,
     });
@@ -131,6 +131,7 @@ export default class ActionsMenu extends Component {
         ref={this._setWrapperRef}
       >
         <button
+          disabled={props.edge.node.key === 'untracked/'}
           onClick={() => { props.folder && props.addFolderVisible(true); }}
           className={folderCSS}
           data-click-id="addFolder"
@@ -169,7 +170,7 @@ export default class ActionsMenu extends Component {
               <button
                 disabled={disableButtons}
                 onClick={() => { props.renameEditMode(true); }}
-                className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--bordered Btn--round"
+                className="ActionsMenu__item Btn Btn--fileBrowser Btn__rename Tooltip-data Tooltip-data--small Btn--round"
                 data-tooltip={renameTooltip}
                 type="button"
               />

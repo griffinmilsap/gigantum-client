@@ -1,5 +1,5 @@
 # source: http://localhost:10000/api/labbook/
-# timestamp: Fri Jun 21 2019 14:30:11 GMT-0400 (Eastern Daylight Time)
+# timestamp: Tue Jul 09 2019 14:48:04 GMT-0400 (Eastern Daylight Time)
 
 schema {
   query: LabbookQuery
@@ -601,7 +601,7 @@ type DatasetList implements Node {
 
 """
 A type representing the overview of a Dataset
-
+    
 """
 type DatasetOverview implements Node & GitRepository {
   """The ID of the object."""
@@ -755,7 +755,7 @@ input DeleteSecretsFileInput {
 
 """
 Delete the secrets file on the host, but without removing the
-corresponding entry in the registry.
+corresponding entry in the registry. 
 """
 type DeleteSecretsFilePayload {
   environment: Environment
@@ -914,7 +914,7 @@ input InsertSecretsEntryInput {
 """
 Creates an entry in the Project's Secret Store. Note, you will
 need to use the Upload mutation to actually put the file content in
-the secret store.
+the secret store. 
 """
 type InsertSecretsEntryPayload {
   environment: Environment
@@ -937,7 +937,7 @@ type JobStatus implements Node {
 }
 
 """
-A Connection for paging through all background jobs the system is aware of.
+A Connection for paging through all background jobs the system is aware of. 
 """
 type JobStatusConnection {
   pageInfo: PageInfo!
@@ -1158,11 +1158,12 @@ type LabbookQuery {
   datasetList: DatasetList
   availableBases(before: String, after: String, first: Int, last: Int): BaseComponentConnection
   availableDatasetTypes: [DatasetType]
+  repositoryNameIsAvailable(name: String): Boolean
 }
 
 """
 A type representing a section within a LabBook (i.e., code, input, output)
-
+    
 """
 type LabbookSection implements Node & GitRepository {
   """The ID of the object."""
@@ -1209,7 +1210,7 @@ input MergeFromBranchInput {
 }
 
 """
-Merge from another branch into the current active branch. Force if necessary.
+Merge from another branch into the current active branch. Force if necessary. 
 """
 type MergeFromBranchPayload {
   labbook: Labbook
@@ -1507,7 +1508,7 @@ input RemoveSecretsEntryInput {
 
 """
 Removes the entry from the Project's SecretStore. Will also remove
-any associated files. This undoes the InsertSecretsEntry mutation.
+any associated files. This undoes the InsertSecretsEntry mutation. 
 """
 type RemoveSecretsEntryPayload {
   environment: Environment
@@ -1535,7 +1536,7 @@ input ResetBranchToRemoteInput {
 """
 Undo all local history and then set current branch tip to match remote.
 
-Very useful when changes are made to master that cannot be pushed.
+Very useful when changes are made to master that cannot be pushed. 
 """
 type ResetBranchToRemotePayload {
   labbook: Labbook
@@ -1543,7 +1544,7 @@ type ResetBranchToRemotePayload {
 }
 
 """
-Represents a secret vault - i.e., a directory that contains secret key files.
+Represents a secret vault - i.e., a directory that contains secret key files. 
 """
 type SecretFileMapping implements Node & GitRepository {
   """The ID of the object."""
@@ -1592,7 +1593,7 @@ input SetBundledAppInput {
 
 """
 Mutation to add or update a bundled app configuration to a project
-
+    
 """
 type SetBundledAppPayload {
   environment: Environment
@@ -1750,7 +1751,7 @@ input UploadSecretsFileInput {
 
 """
 Uploades the actual secrets file pertaining to the given filename in the
-SecretStore registry. The InsertSecretsEntry must be called first.
+SecretStore registry. The InsertSecretsEntry must be called first. 
 """
 type UploadSecretsFilePayload {
   environment: Environment

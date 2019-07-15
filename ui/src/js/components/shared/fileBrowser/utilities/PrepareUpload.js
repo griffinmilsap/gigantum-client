@@ -95,7 +95,7 @@ const checkFileSize = (files, promptType) => {
   const tenMB = 10 * 1000 * 1000;
   const oneHundredMB = 10 * tenMB;
   const fiveHundredMB = oneHundredMB * 5;
-  const fiveGigs = oneHundredMB * 50;
+  const fifteenGigs = oneHundredMB * 150;
   const filesAllowed = [];
   const fileSizePrompt = [];
   const fileSizeNotAllowed = [];
@@ -120,7 +120,7 @@ const checkFileSize = (files, promptType) => {
         filesAllowed.push(file);
       }
     } else if (promptType === 'DataBrowser_allFiles') {
-      if (fileSize > fiveGigs) {
+      if (fileSize > fifteenGigs) {
         fileSizeNotAllowed.push(file);
       } else {
         filesAllowed.push(file);

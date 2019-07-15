@@ -8,6 +8,7 @@ from gtmcore.logging import LMLogger
 
 logger = LMLogger.get_logger()
 
+
 class SmartHash(object):
     """Class to handle file hashing that is operationally optimized for Gigantum"""
 
@@ -23,8 +24,6 @@ class SmartHash(object):
     @property
     def fast_hash_file(self):
         hash_file_dir = os.path.join(self.file_cache_root, self.current_revision)
-        if os.path.isdir(hash_file_dir) is False:
-            os.makedirs(hash_file_dir)
         return os.path.join(hash_file_dir, ".smarthash")
 
     def _load_fast_hash_file(self) -> dict:

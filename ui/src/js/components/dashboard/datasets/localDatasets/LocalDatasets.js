@@ -233,6 +233,10 @@ export default createPaginationContainer(
             owner
             createdOnUtc
             modifiedOnUtc
+            overview {
+              numFiles
+              totalBytes
+            }
           }
           cursor
         }

@@ -9,7 +9,7 @@ import { setErrorMessage } from 'JS/redux/actions/footer';
 // components
 import Modal from 'Components/common/Modal';
 import ButtonLoader from 'Components/common/ButtonLoader';
-import SelectBase from './wizard/SelectBase';
+import SelectBase from './create/SelectBase';
 // assets
 import './SelectBaseModal.scss';
 

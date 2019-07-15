@@ -15,6 +15,7 @@ import CompleteDatasetUploadTransactionMutation
 // footer utils
 import FooterUtils from 'Components/common/footer/FooterUtils';
 import UpdateFileBrowserStore from 'Mutations/localCommits/FileBrowserStore';
+import UpdateSecretsStore from 'Mutations/localCommits/SecretsStore';
 
 
 const chunkSize = 16 * 1000 * 1000;
@@ -145,6 +146,9 @@ const getType = (connection) => {
       break;
     case 'ImportDatasetMutation':
       type = 'importDataset';
+      break;
+    case 'Secrets_secretsFileMapping':
+      type = 'uploadSecretsFile';
       break;
     default:
       type = 'addLabbookFile';
@@ -330,11 +334,19 @@ export default class MultithreadUploader {
       const { response } = data;
       if (response[this.type]) {
         const fileType = this.type === 'addLabbookFile' ? 'newLabbookFileEdge' : 'newDatasetFileEdge';
+        const secretsType = this.type === 'uploadSecretsFile';
         if (response[this.type]
           && response[this.type][fileType]
           && response[this.type][fileType].node) {
           UpdateFileBrowserStore.insertFileBrowserEdge(
             response[this.type][fileType],
+            this.mutationData,
+            this.component,
+          );
+        } else if (response[this.type]
+          && secretsType) {
+          UpdateSecretsStore.insertSecretsEdge(
+            response[this.type].environment.secretsFileMapping.edges,
             this.mutationData,
             this.component,
           );
@@ -363,7 +375,7 @@ export default class MultithreadUploader {
       worker.terminate();
     };
 
-    worker.onerror = (data) => {
+    worker.onerror = () => {
       this.addToDeadLetter(chunk);
       worker.terminate();
     };
@@ -459,6 +471,11 @@ export default class MultithreadUploader {
 
         // setFinishedUploading();
       }
+    } else if (connection === 'Secrets_secretsFileMapping') {
+      callback();
+      setTimeout(() => {
+        setUploadMessageRemove('Completed Upload', null, 100);
+      }, 1000);
     } else {
       const { importJobKey } = this;
       if (importJobKey) {

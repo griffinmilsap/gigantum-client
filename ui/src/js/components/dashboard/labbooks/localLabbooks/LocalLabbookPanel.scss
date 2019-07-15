@@ -17,10 +17,9 @@
 
   &--icons{
     width: calc(100% + 20px);
-    height: 68px;
-    padding: 0px 0px 10px;
-    margin: 0 -10px;
-
+    margin: -10px;
+    font-size: 15px;
+    border-bottom: 1px solid $grey-border;
     @include flex(space-between, row);
   }
 
@@ -35,17 +34,22 @@
 }
 
 .LocalLabbooks__paragraph{
+  margin-top: 5px;
   color: $mineShaft;
 
   font-size: 14px;
 
   &--owner{
     color: $jet;
-    font-size: 12px;
-    height: 14px;
-    margin: 2px;
+    font-size: 15px;
+    margin: 2px 0 10px 0;
+  }
 
-    line-height: 14px;
+  &--metadata{
+    color: $jet;
+    font-size: 10px;
+    line-height: 1.5;
+    margin: 0;
   }
 
   &--description{
@@ -72,34 +76,37 @@
 }
 
 .LocalLabbookPanel__private{
-  align-self: flex-end;
+  align-self: center;
 
-  width: 24px;
+  width: 30px;
   height: 24px;
 
-  background: url(~Images/icons/lock-grey.svg) no-repeat center center;
-  background-size: 18px;
+  background: $lightGrey url(~Images/icons/lock-grey.svg) no-repeat center center;
+  background-size: 11px;
+  left: 28px;
+  border-radius: 25px;
 }
 
 .LocalLabbookPanel__public{
-  align-self: flex-end;
+  align-self: center;
 
-  width: 24px;
+  width: 30px;
   height: 24px;
 
-  background: url(~Images/icons/earth-grey.svg) no-repeat center center;
-  background-size: 18px;
-
+  background: $lightGrey url(~Images/icons/earth-grey.svg) no-repeat center center;
+  background-size: 14px;
+  left: 28px;
+  border-radius: 25px;
 }
 
 .LocalLabbookPanel__loading{
-  align-self: flex-end;
+  align-self: center;
 
   width: 18px;
   height: 18px;
   margin: 8px;
   padding: 14px;
-
+  left: 28px;
   opacity: 0.5;
   border-radius: 50%;
   background: $grey !important;
@@ -115,8 +122,6 @@
   color: white;
 
   font-weight: 100;
-
-  border-bottom: 1px solid $romanSilver;
 
   @include flex(flex-end, row);
 }
@@ -226,5 +231,7 @@
   word-break: break-all;
   overflow: hidden;
   line-height: 30px;
-  width: 250px;
+  font-size: 19px;
+  color: $azure;
+  margin: 10px 0 0 0;
 }

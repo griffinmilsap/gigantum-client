@@ -266,8 +266,6 @@ export default class CollaboratorsModal extends Component {
               this.collaboratorSearch.value = '';
 
               if (error) {
-                setErrorMessage('Could not add collaborator', error);
-
                 this.setState({ buttonLoaderAddCollaborator: 'error' });
               } else {
                 this.setState({ buttonLoaderAddCollaborator: 'finished' });

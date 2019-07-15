@@ -75,6 +75,31 @@ class InventoryManager(object):
             raise InventoryException(f'Unexpected root in {str(dataset)}')
         return tokens[-2]
 
+    def repository_exists(self, username: str, owner: str, repository_name: str) -> bool:
+        """Method indicating if a repository (project or dataset) exists locally
+
+        Args:
+            username: currently logged in user
+            owner: the owner of the project/dataset
+            repository_name: the name of the project/dataset
+
+        Returns:
+            bool
+        """
+        # Check if Project exists locally
+        labbooks = self.list_repository_ids(username, 'labbook')
+        for l in labbooks:
+            if l[1] == owner and l[2] == repository_name:
+                return True
+
+        # Check if Dataset exists locally
+        datasets = self.list_repository_ids(username, 'dataset')
+        for d in datasets:
+            if d[1] == owner and d[2] == repository_name:
+                return True
+
+        return False
+
     def _put_labbook(self, path: str, username: str, owner: str) -> LabBook:
         # Validate that given path contains labbook
         temp_lb = self.load_labbook_from_directory(path)
@@ -219,7 +244,7 @@ class InventoryManager(object):
             repository_type(str): type of repository to list (labbook or dataset)
 
         Returns:
-            List of 3-tuples containing (username, owner, labook-name)
+            List of 3-tuples containing (username, owner, labbook-name)
         """
         if repository_type not in ["labbook", "dataset"]:
             raise ValueError(f"Unsupported repository type: {repository_type}")
@@ -839,7 +864,7 @@ class InventoryManager(object):
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
-    def update_linked_dataset_reference(self, dataset_namespace: str, dataset_name: str, labbook: LabBook) -> None:
+    def update_linked_dataset_reference(self, dataset_namespace: str, dataset_name: str, labbook: LabBook) -> Dataset:
         """Method to update a linked dataset reference to the latest revision
 
         Args:
@@ -878,6 +903,8 @@ class InventoryManager(object):
             ar.add_detail_object(adr)
             ars = ActivityStore(labbook)
             ars.create_activity_record(ar)
+
+        return ds
 
     def get_linked_datasets(self, labbook: LabBook) -> List[Dataset]:
         """Method to get all datasets linked to a project

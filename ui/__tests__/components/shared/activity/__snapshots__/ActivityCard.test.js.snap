@@ -25,7 +25,7 @@ exports[`Activity renders a snapshot 1`] = `
           <p
             className="ActivityCard__time"
           >
-            9:59am
+            2:59pm
           </p>
           <div
             className="ActivityCard__user"

@@ -7,6 +7,41 @@
     &:hover{
         box-shadow: none;
     }
+    progress {
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+        border: none;
+        background-color: transparent;
+        height: 3px;
+
+        /* Progress bar value for IE10+ */
+        color: $azure;
+        margin-bottom: 10px;
+        width: 100%;
+      }
+
+      progress::-webkit-progress-value {
+        background-color: $azure;
+        border-radius: 20px;
+      }
+
+      progress::progress-value {
+        background-color: $azure;
+        border-radius: 20px;
+      }
+      progress::-webkit-progress-bar {
+        background-color: $lightGrey;
+        border-radius: 20px;
+      }
+      progress::-moz-progress-bar {
+        background-color: $lightGrey;
+        border-radius: 20px;
+      }
+}
+
+.Summary__disk-size {
+  padding: 13px 10% 0 10%;
 }
 
 .Summary__subheader{
@@ -20,7 +55,6 @@
     font-size: 28px;
     font-weight: 100;
     padding-bottom: 10px;
-    text-align: center;
 }
 
 .Summary__file-count{
@@ -30,13 +64,23 @@
 }
 .Summary__size {
     @include flex(space-around, row);
+    padding: 0 7%;
     width: 32.5%;
     border-right: 1px solid $azure;
+    progress[value] {
+        &::-webkit-progress-value{
+            &:before {
+                content: '80%';
+                position: absolute;
+                right: 0;
+                top: -125%;
+            }
+        }
+    }
 }
 .Summary__file-type {
     padding: 0 20px;
     width: 32%;
-    border-right: 1px solid $azure;
 }
 .Summary__list{
     white-space: nowrap;
@@ -62,4 +106,26 @@
     right: -18px;
     top: 10px;
     cursor: pointer;
+}
+
+
+.Summary__onDisk{
+color: $azure;
+    &--primary{
+      font-size: 14px
+    }
+    &--secondary{
+      font-size: 12px;
+    }
+}
+
+.Summary__toDownload{
+color: $mineShaft;
+text-align: right;
+    &--primary{
+      font-size: 14px
+    }
+    &--secondary{
+      font-size: 12px;
+    }
 }

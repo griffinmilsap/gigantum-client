@@ -67,3 +67,19 @@ class TestDataset(object):
         assert (datetime.datetime.now(datetime.timezone.utc) - modified_1).total_seconds() < 10
         assert (datetime.datetime.now(datetime.timezone.utc) - modified_2).total_seconds() < 10
 
+    def test_linked_to(self, mock_config_file):
+        im = InventoryManager(mock_config_file[0])
+        lb = im.create_labbook("test", "test", "lb1", "testing")
+        ds = im.create_dataset("test", "test", "dataset1", "gigantum_object_v1",
+                               description="my first dataset",
+                               author=GitAuthor(name="test", email="test@test.com"))
+
+        assert ds.linked_to() is None
+
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "test", "dataset1", lb)
+
+        assert ds.linked_to() is None
+
+        linked_datasets = im.get_linked_datasets(lb)
+        assert len(linked_datasets) == 1
+        assert linked_datasets[0].linked_to() == "test|test|lb1"

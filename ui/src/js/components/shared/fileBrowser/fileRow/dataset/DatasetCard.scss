@@ -1,0 +1,187 @@
+@import '~Styles/_imports.scss';
+
+.DatasetCard {
+  margin: 13px 0;
+  padding: 20px 0;
+  position: relative;
+
+  progress {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    border: none;
+    background-color: transparent;
+    height: 3px;
+
+    /* Progress bar value for IE10+ */
+    color: $azure;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  progress::-webkit-progress-value {
+    background-color: $azure;
+    border-radius: 20px;
+  }
+
+  progress::progress-value {
+    background-color: $azure;
+    border-radius: 20px;
+  }
+  progress::-webkit-progress-bar {
+    background-color: $lightGrey;
+    border-radius: 20px;
+  }
+  progress::-moz-progress-bar {
+    background-color: $lightGrey;
+    border-radius: 20px;
+  }
+}
+
+.DatasetCard__chevron {
+  &--collapsed {
+    padding: 0;
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 29px;
+    @include triangle('right', 7px, $azure);
+  }
+  &--expanded {
+    padding: 0;
+    content: '';
+    left: 12px;
+    top: 35px;
+    position: absolute;
+    @include triangle('down', 7px, $azure);
+  }
+}
+
+.DatasetCard__progress {
+  padding: 13px 10% 0 10%;
+  &--downloaded {
+    .flex {
+      justify-content: center;
+    }
+    .DatasetCard__onDisk {
+      margin-top: 4px;
+      flex-direction: row;
+      color: $mineShaft;
+      align-items: flex-end;
+    }
+    .DatasetCard__onDisk--primary {
+      margin-right: 3px;
+    }
+  }
+}
+
+.DatasetCard__summary {
+  height: 70px;
+  padding: 0 30px;
+}
+
+.DatasetCard__owner{
+  color: $mineShaft;
+}
+
+.DatasetCard__icon {
+  width: 25px;
+  height: 25px;
+  background: url('~Images/icons/datasets-jet.svg') no-repeat 50%;
+  background-size: 25px;
+  margin-right: 20px;
+  margin-top: 6px;
+}
+
+.DatasetCard__name {
+  color: $azure;
+  font-size: 19px;
+  text-decoration: none;
+  margin: 0;
+}
+
+.DatasetCard__details {
+  font-size: 12px;
+  color: $romanSilver;
+  min-width: 100px;
+}
+
+.DatasetCard__popup {
+  width: 140px;
+  position: absolute;
+  top: 34px;
+  right: 25px;
+  text-align: center;
+  z-index: index($elements, popup);
+
+  .Tooltip__pointer {
+    top: -6px;
+    right: 54px;
+  }
+}
+
+.DatasetCard__onDisk{
+  color: $azure;
+  &--primary{
+    font-size: 14px
+  }
+  &--secondary{
+    font-size: 12px;
+  }
+}
+
+.DatasetCard__toDownload{
+  color: $mineShaft;
+  text-align: right;
+  &--primary{
+    font-size: 14px
+  }
+  &--secondary{
+    font-size: 12px;
+  }
+}
+
+.DatasetsCard__commitsContainer {
+  background: $lightGrey;
+  height: 30px;
+  padding: 0px 30px;
+  margin: 20px 2px -18px 2px;
+}
+
+.DatasetCard__commits {
+  @include flex(space-around, row);
+  align-items: center;
+  flex-wrap: nowrap;
+  color: $white;
+  font-weight: 100;
+  font-size: 12px;
+  margin: 2px;
+  padding: 2px;
+  background: $azure;
+  border-radius: 10px;
+  height: 20px;
+
+  &--commits-behind {
+      padding: 2px 15px 2px 2px;
+      background: url(~Images/icons/branches/commit-behind.svg) no-repeat right -5px bottom;
+      background-size: 25px;
+  }
+  &--loading {
+    background: transparent url('~Images/loaders/status-spinner.svg') no-repeat center center !important;
+    background-size: 16px !important;
+    width: 20px;
+  }
+}
+
+.DatasetCard__tooltip{
+  margin-left: auto;
+  position: relative;
+
+  width: 15px;
+  height: 15px;
+
+  cursor: pointer;
+
+  background: url('~Images/icons/info-icon.svg') no-repeat center center;
+  background-size: 15px;
+}
