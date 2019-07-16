@@ -167,16 +167,18 @@ class ChangeLabbookBase(graphene.relay.ClientIDMutation):
 
 
 class SetLabbookDescription(graphene.relay.ClientIDMutation):
-    class Input(LabbookMutationInput):
+    class Input:
+        owner = graphene.String(required=True)
+        labbook_name = graphene.String(required=True)
         description_content = graphene.String(required=True)
 
     success = graphene.Boolean()
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, owner, name,
+    def mutate_and_get_payload(cls, root, info, owner, labbook_name,
                                description_content, client_mutation_id=None):
         username = get_logged_in_username()
-        lb = InventoryManager().load_labbook(username, owner, name,
+        lb = InventoryManager().load_labbook(username, owner, labbook_name,
                                              author=get_logged_in_author())
         lb.description = description_content
         with lb.lock():
