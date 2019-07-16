@@ -28,7 +28,7 @@ from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.configuration import Configuration
 
-from lmsrvcore.middleware.cache import RepoCacheController
+from lmsrvcore.caching import RepoCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.connections import ListBasedConnection
 from lmsrvcore.auth.identity import parse_token

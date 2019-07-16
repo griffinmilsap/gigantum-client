@@ -13,7 +13,7 @@ from gtmcore.workflows import LabbookWorkflow
 from gtmcore.files import FileOperations
 from gtmcore.environment.utils import get_package_manager
 
-from lmsrvcore.middleware.cache import RepoCacheController
+from lmsrvcore.caching import RepoCacheController
 from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 from lmsrvcore.api.interfaces import GitRepository
 from lmsrvcore.auth.identity import parse_token

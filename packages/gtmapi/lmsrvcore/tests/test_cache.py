@@ -1,7 +1,5 @@
-import datetime
-
 import gtmcore.configuration
-from lmsrvcore.middleware.cache import RepoCacheEntry, RepoCacheController
+from lmsrvcore.caching import RepoCacheController, RepoCacheEntry
 
 from gtmcore.fixtures import mock_labbook
 
