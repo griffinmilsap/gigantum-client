@@ -151,7 +151,7 @@ class LabbookQuery(AppQueries, graphene.ObjectType):
     def resolve_nodes(self, info, ids):
         return [graphene.relay.Node.get_node_from_global_id(info, x) for x in ids]
 
-    def resolve_labbook(self, info, owner: str, name: str):
+    def resolve_labbook(self, info, owner, name):
         """Method to return a graphene Labbook instance based on the name
 
         Uses the "currently logged in" user

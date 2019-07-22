@@ -216,7 +216,7 @@ def fixture_working_dir_env_repo_scoped():
             flask.g.user_obj = app.config["LABMGR_ID_MGR"].get_user_profile()
 
             # Create a test client
-            client = Client(schema, middleware=[DataloaderMiddleware(), error_middleware, RepositoryCacheMiddleware], context_value=ContextMock())
+            client = Client(schema, middleware=[DataloaderMiddleware(), error_middleware, RepositoryCacheMiddleware()], context_value=ContextMock())
 
             # name of the config file, temporary working directory, the schema
             yield config_file, temp_dir, client, schema
