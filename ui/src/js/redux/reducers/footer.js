@@ -35,8 +35,9 @@ export default (state = {
     return messageStackHistory;
   };
   const date = new Date();
+
   if (action.type === types.ERROR_MESSAGE) {
-    const id = types.ERROR_MESSAGE + tempId++;
+    const id = uuidv4();
     const messageStack = state.messageStack;
     let messageStackHistory = state.messageStackHistory;
 
@@ -72,7 +73,7 @@ export default (state = {
       viewHistory: false,
     };
   } if (action.type === types.INFO_MESSAGE) { // this is for only updating a single message
-    const id = types.INFO_MESSAGE + tempId++;
+    const id = uuidv4();
     const messageStack = state.messageStack;
     let messageStackHistory = state.messageStackHistory;
 
@@ -110,7 +111,7 @@ export default (state = {
       viewHistory: false,
     };
   } if (action.type === types.WARNING_MESSAGE) { // this is for only updating a single message
-    const id = types.INFO_MESSAGE + tempId++;
+    const id = uuidv4();
     const messageStack = state.messageStack;
     let messageStackHistory = state.messageStackHistory;
 

@@ -47,7 +47,7 @@ export default function AddDatasetFileMutation(
       datasetName,
       filePath,
       chunkUploadParams: {
-        fileSizeKb: chunk.fileSizeKb,
+        fileSize: chunk.fileSize,
         chunkSize: chunk.chunkSize,
         totalChunks: chunk.totalChunks,
         chunkIndex: chunk.chunkIndex,

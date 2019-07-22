@@ -22,6 +22,7 @@ export default class Modal extends Component {
     const { props } = this;
     const modalContentCSS = classNames({
       Modal__content: true,
+      'Modal__content--noPadding': props.noPaddingModal,
       [`Modal__content--${props.size}`]: props.size, // large, medium, small
       [props.icon]: !!props.icon,
     });

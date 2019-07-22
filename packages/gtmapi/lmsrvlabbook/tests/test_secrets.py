@@ -192,7 +192,7 @@ class TestSecretsMutations:
                         chunkSize: {chunk_size},
                         totalChunks: {total_chunks},
                         chunkIndex: {chunk_index},
-                        fileSizeKb: {file_size},
+                        fileSize: "{file_size}",
                         filename: "{os.path.basename(mock_upload_key.name)}"
                     }}
                 }}) {{

@@ -3,9 +3,12 @@ import unicodedata
 from pathlib import PosixPath
 
 import os
-import tempfile
+import subprocess
+import flask
+
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
+from gtmcore.files.lock import FileWriteLock
 
 logger = LMLogger.get_logger()
 
@@ -16,23 +19,24 @@ class ChunkUploadInput(graphene.InputObjectType):
     To use, add a field `chunk_upload_params` to your mutation input
 
     """
-    # Total file size in kilobytes
-    file_size_kb = graphene.Int(required=True)
+    file_size = graphene.String(required=True,
+                                description='Total file size in bytes represented as a string due to '
+                                            'limitations in JSON int encoding')
 
-    # Number of bytes in a single chunk (note, last chunk will be <= chunk_size
-    chunk_size = graphene.Int(required=True)
+    chunk_size = graphene.Int(required=True,
+                              description='Number of bytes in a single chunk (note, last chunk will be <= chunk_size)')
 
-    # Total number of chunks in the file
-    total_chunks = graphene.Int(required=True)
+    total_chunks = graphene.Int(required=True,
+                                description="Total number of chunks in the file")
 
-    # An index value for which chunk is currently being uploaded, starting at 0
-    chunk_index = graphene.Int(required=True)
+    chunk_index = graphene.Int(required=True,
+                               description="An index value for which chunk is currently being uploaded, starting at 0")
 
-    # The name of the file being uploaded
-    filename = graphene.String(required=True)
+    filename = graphene.String(required=True,
+                               description="The name of the file being uploaded")
 
-    # A UUID for an entire upload job
-    upload_id = graphene.String(required=True)
+    upload_id = graphene.String(required=True,
+                                description="A UUID for an entire upload job")
 
 
 class ChunkUploadMutation(object):
@@ -69,9 +73,7 @@ class ChunkUploadMutation(object):
         if args['chunk_index'] >= args['total_chunks']:
             raise ValueError("Invalid args. chunk_index >= total_chunks")
 
-        file_size_bytes = args['file_size_kb'] * 1000
-        # Do to loss of precision when rounding to kb, add roughly 1 kb
-        if args['chunk_size'] * args['total_chunks'] < file_size_bytes + 1001:
+        if args['chunk_size'] * args['total_chunks'] < int(args['file_size']):
             raise ValueError("Invalid args. Not enough chunks expected")
 
     @staticmethod
@@ -121,6 +123,23 @@ class ChunkUploadMutation(object):
         """Method to generate the desired target filename"""
         return os.path.basename(ChunkUploadMutation.py_secure_filename(filename))
 
+    @staticmethod
+    def _prepare_file(filename: str, total_file_size: int) -> None:
+        """Method to check if a file has started to be written, and if not, create a file of the correct size that
+        is sparsely padded. This will be fast but also let seek operations properly occur when chunks arrive out of
+        order.
+
+        Args:
+            filename: name of the file to prepare
+            total_file_size: total size in bytes to pad
+
+        Returns:
+            None
+        """
+        if not os.path.exists(filename):
+            args = ['dd', 'if=/dev/null', f'of={filename}', 'bs=1', 'count=1', f'seek={total_file_size - 1}']
+            subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+
     @classmethod
     def mutate_and_get_payload(cls, root, info, **kwargs):
         try:
@@ -136,16 +155,21 @@ class ChunkUploadMutation(object):
             # Validate input arguments
             cls.validate_args(chunk_params)
 
-            # Write chunk to file
-            with open(cls.get_temp_filename(chunk_params['upload_id'], chunk_params['filename']), 'ab') as f:
-                f.seek(chunk_params['chunk_index'] * chunk_params['chunk_size'])
-                f.write(info.context.files.get('uploadChunk').stream.read())
+            upload_file_path = cls.get_temp_filename(chunk_params['upload_id'], chunk_params['filename'])
+
+            with FileWriteLock(upload_file_path, flask.current_app.config['LABMGR_CONFIG']).lock():
+                # Create a file with the proper total size, but punched out
+                cls._prepare_file(upload_file_path, int(chunk_params['file_size']))
+
+                # Write chunk to file
+                with open(upload_file_path, 'r+b') as f:
+                    f.seek(chunk_params['chunk_index'] * chunk_params['chunk_size'])
+                    f.write(info.context.files.get('uploadChunk').stream.read())
 
             # If last chunk, move on to mutation
             logger.debug(f"Write for chunk {chunk_params['chunk_index']} complete")
             if chunk_params['chunk_index'] == chunk_params['total_chunks'] - 1:
                 # Assume last chunk. Let mutation process
-                upload_file_path = cls.get_temp_filename(chunk_params['upload_id'], chunk_params['filename'])
                 filename = cls.get_filename(chunk_params['filename'])
                 return cls.mutate_and_process_upload(info,
                                                      upload_file_path=upload_file_path,

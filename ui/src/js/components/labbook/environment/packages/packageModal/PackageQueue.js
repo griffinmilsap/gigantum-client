@@ -81,8 +81,30 @@ export default class PackageModal extends Component {
     }
   }
 
+  /**
+  *  returns valid and invalid package count
+  *  @return {Boolean}
+  */
+  _countValiditiy = (packageName, packageManager) => {
+    const { props } = this;
+    let validCount = 0;
+    let invalidCount = 0;
+    props.packageQueue.forEach((pkg) => {
+      if (pkg.verified && !pkg.error) {
+        validCount += 1;
+      } else if (pkg.error) {
+        invalidCount += 1;
+      }
+    });
+    return {
+      validCount,
+      invalidCount,
+    };
+  }
+
   render() {
     const { props, state } = this;
+    const { validCount, invalidCount } = this._countValiditiy();
 
     return (
       <div className="PackageQueue flex flex--column justify--space-between">
@@ -123,6 +145,24 @@ export default class PackageModal extends Component {
                 removeEditedPackageRows={this._removeEditedPackageRows}
               />
             </div>
+            )
+          }
+          {
+            (validCount > 0)
+            && (
+              <div className="PackageQueue__validCount flex justify--right align-items--center">
+                <div className="Icon--add" />
+                {`${validCount} added`}
+              </div>
+            )
+          }
+          {
+            (invalidCount > 0)
+            && (
+              <div className="PackageQueue__invalidCount flex justify--right align-items--center">
+                <div className="Icon--error" />
+                {`${invalidCount} invalid`}
+              </div>
             )
           }
         </div>

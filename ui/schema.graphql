@@ -1,5 +1,5 @@
 # source: http://localhost:10000/api/labbook/
-# timestamp: Tue Jul 09 2019 14:48:04 GMT-0400 (Eastern Daylight Time)
+# timestamp: Sat Jul 20 2019 12:36:29 GMT-0400 (Eastern Daylight Time)
 
 schema {
   query: LabbookQuery
@@ -329,11 +329,28 @@ Input Object for params needed for a chunked upload
 To use, add a field `chunk_upload_params` to your mutation input
 """
 input ChunkUploadInput {
-  fileSizeKb: Int!
+  """
+  Total file size in bytes represented as a string due to limitations in JSON int encoding
+  """
+  fileSize: String!
+
+  """
+  Number of bytes in a single chunk (note, last chunk will be <= chunk_size)
+  """
   chunkSize: Int!
+
+  """Total number of chunks in the file"""
   totalChunks: Int!
+
+  """
+  An index value for which chunk is currently being uploaded, starting at 0
+  """
   chunkIndex: Int!
+
+  """The name of the file being uploaded"""
   filename: String!
+
+  """A UUID for an entire upload job"""
   uploadId: String!
 }
 

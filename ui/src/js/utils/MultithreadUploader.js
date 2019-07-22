@@ -47,6 +47,7 @@ const configureUploadData = (config, transactionId) => {
 
     let fileSize = 0;
     let chunkIndex = 0;
+    const uploadId = uuidv4();
 
     while (fileSize < file.file.size) {
       const addedChunksTotal = (chunkSize * (chunkIndex + 1));
@@ -61,6 +62,7 @@ const configureUploadData = (config, transactionId) => {
         chunkSize,
         totalChunks,
         chunkIndex,
+        uploadId,
         size: file.file.size,
         sizeUploaded: 0,
         proccessed: false,

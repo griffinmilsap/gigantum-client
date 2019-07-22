@@ -49,6 +49,7 @@ export default class DatasetCard extends Component {
     const datasetOwner = props.dataset.owner;
     const datasetName = props.dataset.name;
     const popupReference = action === 'unlink' ? action : 'commits';
+    const footerReference = action === 'unlink' ? action : 'updat';
     this.setState({ [`${popupReference}Pending`]: true });
     this._togglePopup(evt, false, popupReference);
     ModifyDatasetLinkMutation(
@@ -63,7 +64,7 @@ export default class DatasetCard extends Component {
           this.setState({ [`${popupReference}Pending`]: false });
           setErrorMessage(`Unable to ${action} dataset`, error);
         } else {
-          setInfoMessage(`Dataset ${datasetName} has been succesfully ${action}ed`);
+          setInfoMessage(`Dataset ${datasetName} has been succesfully ${footerReference}ed`);
         }
       },
     );

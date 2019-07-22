@@ -49,7 +49,7 @@ export default function AddLabbookFileMutation(
       labbookName,
       filePath,
       chunkUploadParams: {
-        fileSizeKb: chunk.fileSizeKb,
+        fileSize: chunk.fileSize,
         chunkSize: chunk.chunkSize,
         totalChunks: chunk.totalChunks,
         chunkIndex: chunk.chunkIndex,

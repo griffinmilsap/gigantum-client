@@ -2,13 +2,17 @@ import os
 from typing import Tuple, Optional
 
 # This table is a simplified version of https://github.com/NVIDIA/nvidia-docker/wiki/CUDA
-# it should cover most reasonable configurations.
 # To interpret this data, cuda version 10.0 requires driver > 410.58
-CUDA_DRIVER_VERSION_LOOKUP = {10: {0: (410, 58)},
+# We simplify the logic so that ANY supported card will work with the version we require
+# e.g., if two cards are supported with different minimum versions, we only support the highest minimum
+# At time of edit, we have explicitly tested through version 430
+# Note that we don't support CUDA 8, but we don't disable it (yet)
+CUDA_DRIVER_VERSION_LOOKUP = {8: {0: (375, 51)},
                               9: {0: (384, 81),
                                   1: (387, 26),
                                   2: (396, 26)},
-                              8: {0: (375, 51)}}
+                              10: {0: (410, 58),
+                                   1: (418, 39)}}
 
 
 def _parse_version_str(version: Optional[str]) -> Optional[Tuple[int, int]]:

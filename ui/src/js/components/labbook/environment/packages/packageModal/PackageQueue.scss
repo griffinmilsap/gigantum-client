@@ -20,6 +20,7 @@
       width: 285px;
       height: 230px;
       line-height: 1.67;
+      text-align: left;
     }
   }
   &__tableHeader {
@@ -54,9 +55,35 @@
     width: 50px;
 
   }
+  &__buttons {
+    margin-right: 10px;
+  }
+  &__validCount {
+    font-size: 12px;
+    text-align: right;
+    margin: 6px 26.5px 0px 0;
+    .Icon--add {
+      width: 12px;
+      height: 12px;
+      background-size: 8px;
+      margin-right: 6px;
+    }
+  }
+  &__invalidCount {
+    font-size: 12px;
+    text-align: right;
+    margin: 6px 26.5px 0px 0;
+    .Icon--error {
+      width: 12px;
+      height: 12px;
+      background-size: 16px;
+      margin-right: 6px;
+      border-radius: 12px;
+    }
+  }
 }
 
 .PackageQueue__row-container{
-  height: 180px;
+  max-height: 210px;
   overflow: auto;
 }

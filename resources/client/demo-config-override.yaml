@@ -22,3 +22,11 @@ container:
   # If null, no limit
   # To set enter a float for the CPU allocation desired. e.g. 4 CPUs available, 1.5 limits container to 1.5 CPUs
   cpu: 1
+
+
+# Dispatcher and permitted number of workers -
+# NOTE! Only the default queue is burstable
+dispatcher:
+  gigantum_default_queue: 10
+  gigantum_build_queue: 4
+  gigantum_publish_queue: 8

@@ -9,7 +9,6 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
 import { boundMethod } from 'autobind-decorator';
 // store
 import store from 'JS/redux/store';

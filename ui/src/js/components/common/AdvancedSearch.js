@@ -58,6 +58,22 @@ export default class AdvancedSearch extends Component {
   }
 
   /**
+    @param {}
+    add tag to list
+  *  @calls {this._handleAddition}
+  */
+  _addTag = () => {
+    const { value } = document.getElementById('AdvancedSearch');
+    if (value.length) {
+      const tag = {
+        id: value,
+        text: value,
+      };
+      this._handleAddition(tag);
+    }
+  }
+
+  /**
    *  @param {event} evt
    *  resets expanded index state
    *
@@ -84,13 +100,15 @@ export default class AdvancedSearch extends Component {
       withoutContext,
       customStyle,
       autoHide,
+      showButton,
+      filterCategories,
     } = this.props;
     const { state } = this;
     const suggestions = [];
     const rawKeys = [];
-    const Component = withoutContext ? WithOutContext : WithContext;
-    Object.keys(this.props.filterCategories).forEach((category) => {
-      this.props.filterCategories[category].forEach((key) => {
+    const TagComponent = withoutContext ? WithOutContext : WithContext;
+    Object.keys(filterCategories).forEach((category) => {
+      filterCategories[category].forEach((key) => {
         if (rawKeys.indexOf(key) === -1) {
           rawKeys.push(key);
           suggestions.push({ id: key, text: key, className: category });
@@ -113,18 +131,32 @@ export default class AdvancedSearch extends Component {
       <div
         className={advancedSearchCSS}
       >
-        <Component
-          id="AdvancedSearch"
-          tags={tags}
-          autocomplete
-          autofocus={false}
-          suggestions={suggestions}
-          placeholder="Search by keyword, tags or filters"
-          data-resetselectedfilter-id="AdvancedSearch"
-          handleDelete={(index) => { this._handleDelete(index); }}
-          handleAddition={(tag) => { this._handleAddition(tag); }}
-          handleInputFocus={() => this.setState({ focused: true })}
-        />
+        <div className="flex">
+          <div className="flex-1">
+            <TagComponent
+              id="AdvancedSearch"
+              tags={tags}
+              autocomplete
+              autofocus={false}
+              suggestions={suggestions}
+              placeholder="Search by keyword, tags or filters"
+              data-resetselectedfilter-id="AdvancedSearch"
+              handleDelete={(index) => { this._handleDelete(index); }}
+              handleAddition={(tag) => { this._handleAddition(tag); }}
+              handleInputFocus={() => this.setState({ focused: true })}
+            />
+          </div>
+          {
+            showButton
+            && (
+              <button
+                className="Btn Btn__AdvancedSearch"
+                onClick={() => this._addTag()}
+                type="button"
+              />
+            )
+          }
+        </div>
         <div className={filterCSS}>
           {
           Object.keys(this.props.filterCategories).map((category, index) => (

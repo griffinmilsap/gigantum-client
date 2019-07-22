@@ -1,5 +1,6 @@
 // vendor
 import React, { PureComponent } from 'react';
+import classNames from 'classnames';
 // assets
 import './Summary.scss';
 // config
@@ -13,6 +14,10 @@ export default class Summary extends PureComponent {
     const onDiskFormatted = config.humanFileSize(onDiskBytes);
     const toDownloadBytes = props.totalBytes - props.localBytes;
     const toDownloadFormatted = config.humanFileSize(toDownloadBytes);
+    const progressCSS = classNames({
+      'Summary__disk-size flex-1 flex flex--column': true,
+      'Summary__disk-size--downloaded': toDownloadBytes === 0,
+    });
 
     return (
       <div className="Summary">
@@ -30,7 +35,7 @@ export default class Summary extends PureComponent {
                 <div className="Summary__subheader">Total Size</div>
                 <div className="Summary__content">{config.humanFileSize(props.totalBytes)}</div>
               </div>
-              <div className="Summary__disk-size flex-1 flex flex--column">
+              <div className={progressCSS}>
                 <progress
                   value={onDiskBytes}
                   max={props.totalBytes}
@@ -40,10 +45,15 @@ export default class Summary extends PureComponent {
                     <div className="Summary__onDisk--primary">{onDiskFormatted}</div>
                     <div className="Summary__onDisk--secondary">on disk</div>
                   </div>
-                  <div className="Summary__toDownload flex flex--column">
-                    <div className="Summary__toDownload--primary">{toDownloadFormatted}</div>
-                    <div className="Summary__toDownload--secondary">to download</div>
-                  </div>
+                  {
+                    (toDownloadBytes !== 0)
+                    && (
+                    <div className="Summary__toDownload flex flex--column">
+                      <div className="Summary__toDownload--primary">{toDownloadFormatted}</div>
+                      <div className="Summary__toDownload--secondary">to download</div>
+                    </div>
+                    )
+                  }
                 </div>
               </div>
             </div>

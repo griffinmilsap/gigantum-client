@@ -3,23 +3,56 @@
   height: 100%;
 }
 
+.LinkModal__header {
+  text-align: center;
+  border-bottom: 1px solid $grey-border;
+  height: 60px;
+  background: url('~Images/icons/datasets-jet.svg') no-repeat left 355px center;
+  background-size: 30px;
+  .Icon--add--green {
+    width: 13px;
+    height: 13px;
+    background-size: 8px;
+    position: absolute;
+    left: 372px;
+    top: 41px;
+  }
+}
+
+.LinkModal__header-text {
+  line-height: 60px;
+}
+
+.LinkModal__subheader{
+  padding: 0 80px;
+  height: 65px;
+  border-bottom: 1px solid $grey-border;
+}
+.LinkModal__subheader-text {
+  line-height: 65px;
+  font-weight: 100;
+  margin: 0;
+}
+
+
 .LinkModal__flex{
-  height: calc(100% - 50px);
+  height: calc(100% - 233px);
+  background: $lightGrey;
+  border-bottom: 1px solid $grey-border;
 }
 
 .LinkModal__container {
   @include flex(flex-start, row);
   flex-wrap: wrap;
   overflow: hidden;
-  height: calc(100% - 50px);
-  border-bottom: 1px solid $slateBlue;
+  height: 100%;
+  padding: 20px 80px;
 }
 
 .Link__buttonContainer {
-  margin-top: 10px;
-  align-self: flex-end;
-  width: 300px;
-  @include flex(space-between, row);
+  padding: 0 80px;
+  height: 100px;
+  @include flex(flex-end, row);
 }
 
 .LinkModal__card{

@@ -81,12 +81,12 @@
 }
 
 .Btn__base{
-  padding-left: 25px;
+  padding-left: 28px;
   color: $azure;
   border-radius: 13px;
   &--change {
     background: $lightGrey url('~Images/icons/cogwheel.svg') no-repeat left 5px center;
-    background-size: 20px;
+    background-size: 15px;
     margin-bottom: 12px;
     &:disabled, &:disabled:hover {
       background: $lightGrey url('~Images/icons/cogwheel-disabled.svg') no-repeat left 5px center;

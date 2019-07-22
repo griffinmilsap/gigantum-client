@@ -7,3 +7,48 @@
 .Environment__headerContainer {
   @include flex(left, row)
 }
+
+.Btn {
+  &__advanced{
+    white-space: nowrap;
+    background: transparent;
+    color: $azure;
+    margin: 20px 0;
+    span {
+      display: inline-block;
+      border-radius: 28px;
+      width: 28px;
+      height: 28px;
+      margin-left: 10px;
+      position: relative;
+      top: 8px;
+    }
+    &--expanded {
+      span {
+        background: $grey-border url(~Images/icons/up-arrow-azure.svg) no-repeat center center;
+        background-size: 18px;
+      }
+    }
+    &--collapsed {
+      span {
+        background: $grey-border url(~Images/icons/down-arrow-azure.svg) no-repeat center center;
+        background-size: 18px;
+      }
+    }
+    &:before,
+    &:after {
+      position: absolute;
+      content: "";
+      border-top: 1px solid $grey-border;
+      margin: -13px 0;
+      width: calc(50% - 140px);
+      left: 0;
+      transform: translateY(-1rem);
+      bottom: 30px;
+    }
+    &:after {
+      left: auto;
+      right: 0,
+    }
+  }
+}

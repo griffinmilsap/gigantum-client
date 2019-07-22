@@ -4,8 +4,8 @@
   padding: 50px;
   margin-top: 50px;
   border: 2px dashed $romanSilver;
-  background: url('~Images/icons/cloud-upload.svg') no-repeat center 25px;
-  background-size: 40px;
+  background: $white url('~Images/icons/cloud-upload.svg') no-repeat center 30px;
+  background-size: 30px;
   min-height: 234px;
   &--hovered {
     background: $lightblue url('~Images/icons/cloud-upload-white.svg') no-repeat center 25px;
@@ -21,6 +21,8 @@
   }
   &--fileBrowser {
     margin-top: 20px;
+    background: $white url('~Images/icons/cloud-upload.svg') no-repeat center 25px;
+    background-size: 40px;
     span {
       font-size: 15px;
       color: $romanSilver;

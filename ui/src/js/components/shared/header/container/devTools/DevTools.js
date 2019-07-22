@@ -16,7 +16,29 @@ import './DevTools.scss';
 class DevTools extends Component {
   state = {
     isMouseOver: false,
-    selectedDevTool: this.props.labbook.environment.base ? this.props.labbook.environment.base.developmentTools[0] : 'jupyterlab',
+    selectedDevTool: (() => {
+      const { owner, name } = this.props.labbook;
+      const defaultFromApi = this.props.labbook.environment.base ? this.props.labbook.environment.base.developmentTools[0] : 'jupyterlab';
+      const devToolConfig = localStorage.getItem('devToolConfig') ? JSON.parse(localStorage.getItem('devToolConfig')) : {};
+      if (devToolConfig._timestamps && devToolConfig._timestamps[0]) {
+        const oldestConfig = devToolConfig._timestamps[0].time;
+        const timeStampedOwner = devToolConfig._timestamps[0].owner;
+        const timeStampedName = devToolConfig._timestamps[0].name;
+        const threeMonthsAgo = (new Date()).setMonth(new Date().getMonth() - 3);
+        if (threeMonthsAgo > oldestConfig) {
+          delete devToolConfig[timeStampedOwner][timeStampedName];
+          if (Object.keys(devToolConfig[timeStampedOwner]).length === 0) {
+            delete devToolConfig[timeStampedOwner];
+          }
+          devToolConfig._timestamps.shift();
+          localStorage.setItem('devToolConfig', JSON.stringify(devToolConfig));
+        }
+      }
+      if (devToolConfig[owner] && devToolConfig[owner][name]) {
+        return devToolConfig[owner][name];
+      }
+      return defaultFromApi;
+    })(),
     showDevList: false,
   }
 
@@ -139,6 +161,24 @@ class DevTools extends Component {
   */
   @boundMethod
   _selectDevTool(developmentTool) {
+    const { props } = this;
+    const { owner, name } = props.labbook;
+    const devToolConfig = localStorage.getItem('devToolConfig') ? JSON.parse(localStorage.getItem('devToolConfig')) : {};
+    const ownerObject = devToolConfig[owner] || {};
+    const newObject = {
+      [owner]: {
+        ...ownerObject,
+        [name]: developmentTool,
+      },
+    };
+    const newDevToolConfig = Object.assign({}, devToolConfig, newObject);
+    if (newDevToolConfig._timestamps) {
+      newDevToolConfig._timestamps.push({ time: (new Date()).getTime(), owner, name });
+    } else {
+      newDevToolConfig._timestamps = [{ time: (new Date()).getTime(), owner, name }];
+    }
+    localStorage.setItem('devToolConfig', JSON.stringify(newDevToolConfig));
+
     this.setState({ selectedDevTool: developmentTool, showDevList: false });
     this._openDevToolMuation(developmentTool);
   }

@@ -11,8 +11,8 @@ import config from 'JS/config';
  uses redux to dispatch file upload to the footer
 */
 const dispatchLoadingProgress = (wokerData) => {
-  let bytesUploaded = (wokerData.chunkSize * (wokerData.chunkIndex + 1)) / 1000;
-  const totalBytes = wokerData.fileSizeKb;
+  let bytesUploaded = (wokerData.chunkSize * (wokerData.chunkIndex + 1));
+  const totalBytes = wokerData.fileSize;
   bytesUploaded = bytesUploaded < totalBytes
     ? bytesUploaded
     : totalBytes;

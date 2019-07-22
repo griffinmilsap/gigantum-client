@@ -53,6 +53,17 @@
 .Modal__content {
   border-top: 7px solid $azure !important;
   border-bottom: 7px solid $azure !important;
+  &--noPadding {
+    padding: 0 !important;
+    .Modal__container {
+      height: 100%;
+      padding: 0;
+    }
+    .Modal__sub-container {
+      height: 100%;
+      padding: 0;
+    }
+  }
   &--large{
     padding: 0 60px 20px 60px;
     @include modal(500px, 960px);
@@ -154,81 +165,4 @@
   font-weight: 600;
 
   @include flex(center, row);
-}
-
-
-.Icon {
-  height: 50px;
-  width: 50px;
-
-  margin: 0 1rem 0 0;
-
-  &--create {
-    background: url('~Images/icons/create-azure.svg') no-repeat center center;
-    background-size: 50px;
-  }
-
-  &--user {
-    background: url('~Images/icons/user-azure.svg') no-repeat center center;
-    background-size: 50px;
-  }
-
-  &--add {
-    background: $azure url('~Images/icons/add-white.svg') no-repeat center center;
-    background-size: 34px;
-
-    border-radius: 50px;
-  }
-
-  &--change {
-    background: url('~Images/icons/cogwheel.svg') no-repeat center center;
-    background-size: 70px;
-
-    border-radius: 50px;
-  }
-
-  &--rollback {
-    background: url('~Images/icons/rollback.svg') no-repeat center center;
-    background-size: 50px;
-  }
-
-  &--project {
-    background: url('~Images/icons/labbooks-blue.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-  &--dataset {
-    background: url('~Images/icons/datasets-azure.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-
-  &--public {
-    background: url('~Images/icons/earth-azure.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-  &--private {
-    background: url('~Images/icons/lock-azure.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-  &--sync {
-    background: url('~Images/icons/branches/sync.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-  &--login {
-
-  }
-
-  &--merge {
-    background: url('~Images/icons/branches/merge.svg') no-repeat center center;
-    background-size: 42px;
-  }
-
-  &--delete {
-    background: url('~Images/icons/branches/delete.svg') no-repeat center center;
-    background-size: 60px;
-  }
 }

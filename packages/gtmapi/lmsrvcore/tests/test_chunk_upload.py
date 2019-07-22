@@ -49,7 +49,7 @@ class TestChunkUpload(object):
                   "chunk_size": 100,
                   "total_chunks": 2,
                   "chunk_index": 3,
-                  "file_size_kb": 200,
+                  "file_size": "200",
                   "filename": "test.txt"
                 }
 
@@ -61,7 +61,7 @@ class TestChunkUpload(object):
                   "chunk_size": 100,
                   "total_chunks": 2,
                   "chunk_index": 1,
-                  "file_size_kb": 1000,
+                  "file_size": "1000",
                   "filename": "test.txt"
                 }
 

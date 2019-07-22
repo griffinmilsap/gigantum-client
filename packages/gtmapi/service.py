@@ -5,7 +5,6 @@ import os
 import base64
 import flask
 import blueprint
-import yaml
 from flask_cors import CORS
 from confhttpproxy import ProxyRouter
 from flask import Flask, jsonify

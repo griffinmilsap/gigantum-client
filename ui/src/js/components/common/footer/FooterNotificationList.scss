@@ -87,6 +87,8 @@
 .Footer__flex-container {
     align-content: center;
     flex-wrap: nowrap;
+    min-height: 60px;
+    max-height: 60px;
     @include flex(flex-start, row);
 }
 

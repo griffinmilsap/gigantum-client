@@ -173,59 +173,64 @@ export default class LinkModal extends Component {
     return (
 
       <Modal
-        header="Link Dataset"
         handleClose={() => props.closeLinkModal()}
         size="large-long"
-        icon="dataset"
         noPadding
+        noPaddingModal
         renderContent={() => (
           <div className="LinkModal">
+            <div className="LinkModal__header">
+              <div className="Icon--add--green" />
+              <h4 className="LinkModal__header-text">Link Dataset</h4>
+            </div>
+            <div className="LinkModal__subheader">
+              <h3 className="LinkModal__subheader-text">Select Dataset to Link</h3>
+            </div>
             <div
               className="LinkModal__info Tooltip-data"
               data-tooltip="Linking a dataset will allow you to reference its files within the Project"
             />
-            <QueryRenderer
-              environment={environment}
-              query={LinkModalQuery}
-              variables={{
-                first: 100,
-                cursor: null,
-                orderBy: 'modified_on',
-                sort: 'desc',
-              }}
-              render={({ error, props }) => {
-                if (error) {
-                  console.log(error);
-                } else if (props) {
-                  const existingDatasets = this.props.linkedDatasets.map(dataset => dataset.name);
-                  const filteredDatasets = props.datasetList.localDatasets.edges.filter(dataset => existingDatasets.indexOf(dataset.node.name) === -1 && dataset.node.backendIsConfigured);
-                  const localDatasetEdges = this._filterDatasets(filteredDatasets);
-                  const filterCategories = this._createFilters(localDatasetEdges);
-                  const messageCSS = classNames({
-                    LinkModal__message: true,
-                    'LinkModal__message--padded': localDatasetEdges.length === 0,
-                  });
-                  return (
-                    <div className="LinkModal__flex flex flex--column justify--space-between">
+            <div className="LinkModal__flex flex flex--column justify--space-between">
+              <QueryRenderer
+                environment={environment}
+                query={LinkModalQuery}
+                variables={{
+                  first: 100,
+                  cursor: null,
+                  orderBy: 'modified_on',
+                  sort: 'desc',
+                }}
+                render={({ error, props }) => {
+                  if (error) {
+                    console.log(error);
+                  } else if (props) {
+                    const existingDatasets = this.props.linkedDatasets.map(dataset => dataset.name);
+                    const filteredDatasets = props.datasetList.localDatasets.edges.filter(dataset => existingDatasets.indexOf(dataset.node.name) === -1 && dataset.node.backendIsConfigured);
+                    const localDatasetEdges = this._filterDatasets(filteredDatasets);
+                    const colloboratorMessage = localDatasetEdges.length ? 'For collaborators to access a linked Dataset, the Dataset must be public or they must be added as a collaborator to the Dataset itself.' : 'You do not have any Local Datasets available to link to this project. To link a dataset you must first create or import a dataset.'
+                    const filterCategories = this._createFilters(localDatasetEdges);
+                    const messageCSS = classNames({
+                      LinkModal__message: true,
+                      'LinkModal__message--padded': localDatasetEdges.length === 0,
+                    });
+                    return (
                       <div className="LinkModal__container">
                         <AdvancedSearch
                           tags={this.state.tags}
                           setTags={this._setTags}
                           filterCategories={filterCategories}
                           withoutContext
+                          showButton
                         />
                         <div className="LinkModal__dataset-container">
                           <p className={messageCSS}>
                             <b>
-                              {
-                                localDatasetEdges.length ? 'For collaborators to access a linked Dataset, the Dataset must be public or they must be added as a collaborator to the Dataset itself.' : 'You do not have any Local Datasets available to link to this project. To link a dataset you must first create or import a dataset.'
-                              }
+                              { colloboratorMessage }
                             </b>
                           </p>
                           {
                             localDatasetEdges.map((edge) => {
                               const node = edge.node;
-
                               return (
                                 <div
                                   key={node.id}
@@ -242,29 +247,29 @@ export default class LinkModal extends Component {
                         }
                         </div>
                       </div>
-                      <div className="Link__buttonContainer">
-                        <button
-                          className="Btn--flat"
-                          onClick={() => this.props.closeLinkModal()}
-                        >
-                                    Cancel
-                        </button>
-                        <ButtonLoader
-                          buttonState={this.state.buttonState}
-                          buttonText="Link Dataset"
-                          className=""
-                          params={{}}
-                          buttonDisabled={!this.state.selectedDataset}
-                          clicked={this._linkDataset}
-                        />
-                      </div>
-                    </div>
-                  );
-                }
-                return <Loader />;
-              }}
-            />
-
+                    );
+                  }
+                  return <Loader />;
+                }}
+              />
+            </div>
+            <div className="Link__buttonContainer">
+              <button
+                className="Btn--flat"
+                onClick={() => this.props.closeLinkModal()}
+                type="button"
+              >
+                Cancel
+              </button>
+              <ButtonLoader
+                buttonState={this.state.buttonState}
+                buttonText="Link Dataset"
+                className="Btn Btn--last"
+                params={{}}
+                buttonDisabled={!this.state.selectedDataset}
+                clicked={this._linkDataset}
+              />
+            </div>
           </div>
         )
         }

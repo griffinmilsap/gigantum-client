@@ -4,7 +4,6 @@ export default {
     const metaDataArr = JSON.parse(response.data.jobStatus.jobMetadata).dataset.split('|');
     const owner = metaDataArr[1];
     const datasetName = metaDataArr[2];
-    successCall(owner, datasetName);
     mutations.FetchDatasetEdgeMutation(
       owner,
       datasetName,
@@ -12,6 +11,7 @@ export default {
         if (error) {
           console.error(error);
         }
+        successCall(owner, datasetName);
       },
     );
   },

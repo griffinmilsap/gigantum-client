@@ -28,26 +28,28 @@ export default (props) => {
               </div>
               <div className="PackageQueue__name flex--1">
                 {isEdited
-                  ? (<input
-                    type="text"
-                    className="Input--smallText"
-                    defaultValue={pkg.package}
-                    onChange={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageName')}
-                    onKeyDown={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageName')}
-                  />
+                  ? (
+                    <input
+                      type="text"
+                      className="Input--smallText"
+                      defaultValue={pkg.package}
+                      onChange={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageName')}
+                      onKeyDown={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageName')}
+                    />
                   ) : pkg.package
                 }
               </div>
               <div className="PackageQueue__version">
                 {isEdited
-                  ? (<input
-                    type="text"
-                    className="Input--smallText"
-                    disabled={pkg.manager === 'apt'}
-                    onChange={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageVersion')}
-                    onKeyDown={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageVersion')}
-                    defaultValue={pkg.version}
-                  />
+                  ? (
+                    <input
+                      type="text"
+                      className="Input--smallText"
+                      disabled={pkg.manager === 'apt'}
+                      onChange={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageVersion')}
+                      onKeyDown={evt => props.updatePackage(evt, pkg.manager, pkg.package, pkg.version, index, 'newPackageVersion')}
+                      defaultValue={pkg.version}
+                    />
                   ) : pkg.version
                 }
               </div>

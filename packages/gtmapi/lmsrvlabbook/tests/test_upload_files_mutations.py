@@ -1,10 +1,11 @@
-
 import os
 import io
 import math
 import pprint
 import tempfile
 import pytest
+import random
+
 from graphene.test import Client
 from werkzeug.datastructures import FileStorage
 
@@ -35,7 +36,6 @@ def mock_create_labbooks(fixture_working_dir):
 class TestUploadFilesMutations(object):
     def test_add_file(self, mock_create_labbooks):
         """Test adding a new file to a labbook"""
-
         class DummyContext(object):
             def __init__(self, file_handle):
                 self.labbook_loader = None
@@ -57,7 +57,7 @@ class TestUploadFilesMutations(object):
         # Get upload params
         chunk_size = 4194000
         file_info = os.stat(test_file)
-        file_size = int(file_info.st_size / 1000)
+        file_size = file_info.st_size
         total_chunks = int(math.ceil(file_info.st_size / chunk_size))
 
         target_file = os.path.join(mock_create_labbooks[1], 'default', 'default', 'labbooks',
@@ -89,7 +89,7 @@ class TestUploadFilesMutations(object):
                             chunkSize: {chunk_size},
                             totalChunks: {total_chunks},
                             chunkIndex: {chunk_index},
-                            fileSizeKb: {file_size},
+                            fileSize: "{file_size}",
                             filename: "{os.path.basename(test_file)}"
                         }}
                     }}) {{
@@ -186,7 +186,7 @@ class TestUploadFilesMutations(object):
                                   chunkSize: {chunk_size},
                                   totalChunks: {total_chunks},
                                   chunkIndex: {chunk_index},
-                                  fileSizeKb: {file_size},
+                                  fileSize: "{file_size}",
                                   filename: "{os.path.basename(test_file)}"
                                 }}
                               }}) {{
@@ -234,7 +234,7 @@ class TestUploadFilesMutations(object):
                           chunkSize: 100,
                           totalChunks: 2,
                           chunkIndex: 0,
-                          fileSizeKb: 200,
+                          fileSize: "200",
                           filename: "myfile.bin"
                         }}
                       }}) {{
@@ -262,3 +262,114 @@ class TestUploadFilesMutations(object):
         #     file = FileStorage(tf)
         #     # Fail because filenames don't match
         #     snapshot.assert_match(client.execute(query, context_value=DummyContext(file)))
+
+    def test_write_chunks_out_of_order(self, mock_create_labbooks):
+        """Test adding a new file to a labbook"""
+        class DummyContext(object):
+            def __init__(self, file_handle):
+                self.labbook_loader = None
+                self.files = {'uploadChunk': file_handle}
+
+        client = Client(mock_create_labbooks[3], middleware=[DataloaderMiddleware()])
+
+        # Create file to upload
+        test_file = os.path.join(tempfile.gettempdir(), "myValidFile.dat")
+        est_size = 9826421
+        try:
+            os.remove(test_file)
+        except:
+            pass
+        with open(test_file, 'wb') as tf:
+            tf.write(os.urandom(est_size))
+
+        new_file_size = os.path.getsize(tf.name)
+        # Get upload params
+        chunk_size = 419400
+        file_info = os.stat(test_file)
+        file_size = file_info.st_size
+        total_chunks = int(math.ceil(file_info.st_size / chunk_size))
+
+        target_file = os.path.join(mock_create_labbooks[1], 'default', 'default', 'labbooks',
+                                   'labbook1', 'code', "myValidFile.dat")
+
+        txid = "000-unitest-transaction"
+
+        chunks = list()
+        with open(test_file, 'rb') as tf:
+            for chunk_index in range(total_chunks):
+                chunk = io.BytesIO()
+                chunk.write(tf.read(chunk_size))
+                chunk.seek(0)
+                chunks.append((chunk_index, chunk))
+
+        last_chunk = chunks.pop()
+        random.shuffle(chunks)
+        chunks.append(last_chunk)
+
+        # Check for file to exist (shouldn't yet)
+        assert os.path.exists(target_file) is False
+        for chunk in chunks:
+            # Upload a chunk
+            file = FileStorage(chunk[1])
+
+            query = f"""
+            mutation addLabbookFile {{
+                addLabbookFile(input: {{
+                    owner:"default",
+                    labbookName: "labbook1",
+                    section: "code",
+                    filePath: "myValidFile.dat",
+                    transactionId: "{txid}",
+                    chunkUploadParams: {{
+                        uploadId: "fdsfdsfdsfdfs",
+                        chunkSize: {chunk_size},
+                        totalChunks: {total_chunks},
+                        chunkIndex: {chunk[0]},
+                        fileSize: "{file_size}",
+                        filename: "{os.path.basename(test_file)}"
+                    }}
+                }}) {{
+                    newLabbookFileEdge {{
+                        node {{
+                            id
+                            key
+                            isDir
+                            size
+                            modifiedAt
+                        }}
+                    }}
+                }}
+            }}
+            """
+            r = client.execute(query, context_value=DummyContext(file))
+            assert 'errors' not in r
+
+        assert 'errors' not in r
+        # So, these will only be populated once the last chunk is uploaded. Will be None otherwise.
+        assert r['data']['addLabbookFile']['newLabbookFileEdge']['node']['isDir'] is False
+        assert r['data']['addLabbookFile']['newLabbookFileEdge']['node']['key'] == 'myValidFile.dat'
+        assert r['data']['addLabbookFile']['newLabbookFileEdge']['node']['size'] == f"{new_file_size}"
+        assert isinstance(r['data']['addLabbookFile']['newLabbookFileEdge']['node']['modifiedAt'], float)
+        # When done uploading, file should exist in the labbook
+        assert os.path.exists(target_file)
+        assert os.path.isfile(target_file)
+
+        complete_query = f"""
+        mutation completeQuery {{
+            completeBatchUploadTransaction(input: {{
+                owner: "default",
+                labbookName: "labbook1",
+                transactionId: "{txid}"
+            }}) {{
+                success
+            }}
+        }}
+        """
+        r = client.execute(complete_query, context_value=DummyContext(file))
+        assert 'errors' not in r
+
+        lb = InventoryManager(mock_create_labbooks[0]).load_labbook('default', 'default', 'labbook1')
+
+        with open(test_file, 'rb') as tf:
+            with open(os.path.join(lb.root_dir, 'code', 'myValidFile.dat'), 'rb') as nf:
+                assert tf.read() == nf.read()

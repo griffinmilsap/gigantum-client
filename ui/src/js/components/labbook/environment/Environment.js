@@ -1,9 +1,12 @@
 // vendor
 import React, { Component } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';
 import { setBuildingState } from 'JS/redux/actions/labbook/labbook';
+import { toggleAdvancedVisible } from 'JS/redux/actions/labbook/environment/environment';
 import store from 'JS/redux/store';
 // mutations
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
@@ -111,6 +114,12 @@ class Environment extends Component {
 
   render() {
     const { props } = this;
+    const advancedCSS = classNames({
+      'Btn Btn__advanced Btn--action Btn--noShadow': true,
+      'Btn__advanced--expanded': props.advancedVisible,
+      'Btn__advanced--collapsed': !props.advancedVisible,
+    });
+
     if (props.labbook && props.labbook.environment && props.labbook.environment.id) {
       const { environment } = props.labbook;
       const { base } = environment;
@@ -159,18 +168,35 @@ class Environment extends Component {
               packageLatestRefetch={props.packageLatestRefetch}
             />
           </ErrorBoundary>
-          <CustomDockerfile
-            dockerfile={props.labbook.environment.dockerSnippet}
-            buildCallback={this._buildCallback}
-            isLocked={props.isLocked}
-          />
-          <Secrets
-            environment={props.labbook.environment}
-            environmentId={props.labbook.environment.id}
-            owner={props.owner}
-            name={props.name}
-            isLocked={props.isLocked}
-          />
+          <div className="flex justify--center align-items--center relative column-1-span-12">
+            <button
+              className={advancedCSS}
+              onClick={() => toggleAdvancedVisible(!props.advancedVisible)}
+              type="button"
+            >
+              Advanced Configuration Settings
+              <span />
+            </button>
+          </div>
+          {
+            props.advancedVisible
+            && (
+              <div>
+                <CustomDockerfile
+                  dockerfile={props.labbook.environment.dockerSnippet}
+                  buildCallback={this._buildCallback}
+                  isLocked={props.isLocked}
+                />
+                <Secrets
+                  environment={props.labbook.environment}
+                  environmentId={props.labbook.environment.id}
+                  owner={props.owner}
+                  name={props.name}
+                  isLocked={props.isLocked}
+                />
+              </div>
+            )
+          }
         </div>
       );
     }
@@ -180,8 +206,14 @@ class Environment extends Component {
   }
 }
 
+const mapStateToProps = state => state.environment;
+
+const mapDispatchToProps = () => ({});
+
+const EnvironmentContainer = connect(mapStateToProps, mapDispatchToProps)(Environment);
+
 export default createFragmentContainer(
-  Environment,
+  EnvironmentContainer,
   graphql`fragment Environment_labbook on Labbook {
     environment @skip (if: $environmentSkip){
       id

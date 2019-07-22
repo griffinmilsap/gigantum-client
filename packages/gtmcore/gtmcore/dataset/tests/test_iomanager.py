@@ -487,3 +487,31 @@ class TestIOManager(object):
         assert len(key_batches[0]) == 4
         assert len(key_batches[1]) == 1
         assert key_batches[1][0] == 'test1.txt'
+
+    def test_compute_push_batches(self, mock_dataset_with_manifest_bg_tests):
+        """Test compute push batches, verifying it works OK when you've deleted some files"""
+        ds, manifest, working_dir = mock_dataset_with_manifest_bg_tests
+        iom = IOManager(ds, manifest)
+
+        revision = manifest.dataset_revision
+        os.makedirs(os.path.join(manifest.cache_mgr.cache_root, revision, "other_dir"))
+        helper_append_file(manifest.cache_mgr.cache_root, revision, "other_dir/test3.txt", "test content 3")
+        helper_append_file(manifest.cache_mgr.cache_root, revision, "test1.txt", "test" * 4300000)
+        helper_append_file(manifest.cache_mgr.cache_root, revision, "test2.txt", "test content 2")
+        helper_append_file(manifest.cache_mgr.cache_root, revision, "test4.txt", "test content 4")
+        helper_append_file(manifest.cache_mgr.cache_root, revision, "test5.txt", "test content 5")
+        manifest.sweep_all_changes()
+
+        assert len(manifest.manifest) == 6
+
+        # remove a file from the manifest
+        manifest.delete(['test5.txt'])
+        assert len(manifest.manifest) == 5
+
+        key_batches, total_bytes, num_files = iom.compute_push_batches()
+        assert num_files == 5
+        assert total_bytes == (4*4300000) + (14*4)
+        assert len(key_batches) == 2
+        assert len(key_batches[0]) == 4
+        assert len(key_batches[1]) == 1
+        assert key_batches[1][0].dataset_path == 'test1.txt'

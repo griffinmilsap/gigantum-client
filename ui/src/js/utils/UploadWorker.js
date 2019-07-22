@@ -27,23 +27,24 @@ const addFileUpload = (data) => {
   const path = file.path === '/' ? fullPath : `${file.path}${fullPath}`;
   const chunkStart = file.chunkSize * file.chunkIndex;
   const chunkEnd = (file.chunkSize * (file.chunkIndex + 1) < file.size)
-    ? file.chunkSize * (file.chunkIndex + 1)
+    ? (file.chunkSize * (file.chunkIndex + 1))
     : file.size;
   const blob = file.file.file.slice(chunkStart, chunkEnd);
 
   const chunk = {
     blob,
-    fileSizeKb: file.size / 1000,
+    fileSize: `${file.size}`,
     chunkSize: file.chunkSize,
     totalChunks: file.totalChunks,
     chunkIndex: file.chunkIndex,
     filename: file.file.file.name,
-    uploadId: transactionId,
+    uploadId: file.uploadId,
   };
 
   const callback = (response, error) => {
     if(response) {
       const data = { response, chunkId };
+
       postMessage(data);
     } else {
       postMessage(error);
@@ -114,7 +115,7 @@ const importFileUpload = (data, connection) => {
 
   const chunk = {
     blob,
-    fileSizeKb: file.size / 1000,
+    fileSize: `${file.size}`,
     chunkSize: file.chunkSize,
     totalChunks: file.totalChunks,
     chunkIndex: file.chunkIndex,

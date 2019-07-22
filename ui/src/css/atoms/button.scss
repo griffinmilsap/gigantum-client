@@ -225,10 +225,13 @@ button {
     color: $white;
     display: inline-block;
     width: 85.7px;
-    line-height: 22.4px;
     height: 22.4px;
     pointer-events: none;
     font-size: 15px;
+    margin: 0 5px;
+    position: relative;
+    bottom: 4px;
+    padding-left: 8px;
   }
 
   &--fake-content {
@@ -237,7 +240,8 @@ button {
     .Icon--add {
       width: 20px;
       height: 20px;
-      background-size: 12px;
+      background-size: 11px;
+      background-position-y: 6px;
     }
   }
 
@@ -395,11 +399,11 @@ button {
 
   &__delete-secondary {
     background: $background-color url(~Images/icons/trash-azure.svg) no-repeat center center;
-    background-size: 22px;
+    background-size: 20px;
 
     &:disabled {
       background: $background-color url(~Images/icons/trash.svg) no-repeat center center !important;
-      background-size: 22px !important;
+      background-size: 20px !important;
     }
     &--medium {
       background-size: 20px !important;
@@ -737,7 +741,7 @@ button {
   }
 
   &__subtract {
-    background: url(~Images/icons/form/checkbox/checkbox-minus.svg) no-repeat center center;
+    background: url(~Images/icons/form/checkbox/checkbox-minus.svg) no-repeat left -1px center;
     background-size: 22px !important;
     &:focus {
       background: url(~Images/icons/form/checkbox/checkbox-minus.svg) no-repeat center center;

@@ -8,6 +8,7 @@ export default (
     containerMenuWarning: '',
     viewContainerVisible: false,
     detailMode: false,
+    advancedVisible: false,
   },
   action,
 ) => {
@@ -22,6 +23,12 @@ export default (
     return {
       ...state,
       detailMode: false,
+    };
+  }
+  if (action.type === types.TOGGLE_ADVANCED_VISIBLE) {
+    return {
+      ...state,
+      advancedVisible: action.payload.advancedVisible,
     };
   }
   if (action.type === types.CONTAINER_MENU_WARNING) {

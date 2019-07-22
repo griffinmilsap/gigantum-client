@@ -58,7 +58,6 @@ class SectionBrowser extends Component {
 
     if (!state.moreLoading
       && props[props.section].allFiles
-      && (props[props.section].allFiles.edges.length < 3)
       && props[props.section].allFiles.pageInfo.hasNextPage) {
       this._loadMore();
     }

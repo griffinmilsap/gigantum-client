@@ -20,7 +20,7 @@ export default class PackageStatus extends Component {
   _setStatusModalVisible(evt, statusModalVisible) {
     const { target } = evt;
     const rect = target.getBoundingClientRect();
-    const modalXPosition = (rect.top - 199) > 347 ? 347 : (rect.top - 199);
+    const modalXPosition = (rect.top - 150) > 347 ? 347 : (rect.top - 150);
     this.setState({ statusModalVisible, modalXPosition });
   }
 

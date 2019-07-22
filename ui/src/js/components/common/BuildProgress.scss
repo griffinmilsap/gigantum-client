@@ -17,13 +17,14 @@
 
 .BuildProgress__header-text{
   display:inline-block;
-  &--complete {
+  &--completed {
     padding-left: 30px;
     background: url('~Images/icons/status-verified.svg') no-repeat left center;
   }
   &--failed {
     padding-left: 30px;
     background: url(~Images/icons/notifications/info-exclamation-red.svg) no-repeat left center;
+    background-size: 21px;
   }
 }
 
@@ -33,7 +34,7 @@
 
 .BuildProgress__text{
   font-size: 18px;
-  &--complete {
+  &--completed {
     padding-left: 30px;
     background: url('~Images/icons/status-verified.svg') no-repeat left center;
     color: $green;
@@ -47,6 +48,7 @@
 
 .BuildProgress__buttons {
   height: 75px;
+  margin: 0 20px;
 }
 
 .BuildProgress__progress {

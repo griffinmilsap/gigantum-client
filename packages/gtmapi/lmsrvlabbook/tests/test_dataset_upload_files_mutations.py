@@ -105,7 +105,7 @@ class TestDatasetUploadFilesMutations(object):
                                   chunkSize: {chunk_size},
                                   totalChunks: {total_chunks},
                                   chunkIndex: {chunk_index},
-                                  fileSizeKb: {file_size},
+                                  fileSize: "{file_size}",
                                   filename: "{os.path.basename(test_file)}"
                                 }}
                               }}) {{
@@ -208,7 +208,7 @@ class TestDatasetUploadFilesMutations(object):
                           chunkSize: 200,
                           totalChunks: 2,
                           chunkIndex: 0,
-                          fileSizeKb: 6777,
+                          fileSize: "6777",
                           filename: "asdfh"
                         }}
                       }}) {{

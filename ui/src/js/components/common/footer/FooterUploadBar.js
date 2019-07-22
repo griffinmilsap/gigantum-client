@@ -7,13 +7,13 @@ import './FooterUploadBar.scss';
 export default class FooterUploadBar extends PureComponent {
   render() {
     const { props } = this;
+    const isNotZero = props.parentState.progessBarPercentage !== 0;
+    // declare css here
     const footerUploadClass = classNames({
       hidden: !props.parentState.uploadOpen,
       'FooterUploadBar--status': props.parentState.uploadOpen,
       'FooterUploadBar--error': props.parentState.uploadError,
     });
-
-    const isNotZero = props.parentState.progessBarPercentage !== 0;
     const footerUploadBarClass = classNames({
       FooterUploadBar__progressBar: true,
       'FooterUploadBar__progressBar--animation': isNotZero,
@@ -34,16 +34,19 @@ export default class FooterUploadBar extends PureComponent {
         {
           props.parentState.uploadError
           && (
-          <div
-            onClick={() => { props.closeFooter(); }}
-            className="Footer__close"
-          />
+            <div
+              onClick={() => { props.closeFooter(); }}
+              className="Footer__close"
+            />
           )
         }
         {
           props.parentState.labbookSuccess
           && (
-          <button onClick={() => props.openLabbook()}>
+          <button
+            type="button"
+            onClick={() => props.openLabbook()}
+          >
               Open Project
           </button>
           )

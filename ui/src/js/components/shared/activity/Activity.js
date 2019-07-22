@@ -322,7 +322,10 @@ class Activity extends Component {
    */
   @boundMethod
   _setHoveredRollback(position) {
-    this.setState({ hoveredRollback: position });
+    const { props } = this;
+    if (!props.isLocked) {
+      this.setState({ hoveredRollback: position });
+    }
   }
 
   /**

@@ -12,7 +12,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.0.0",
-    "@gigantum/babel-plugin-selenium-id": "^1.0.4",
+    "@gigantum/babel-plugin-selenium-id": "^1.0.5",
     "@gigantum/relay-testing-utils": "^0.1.0",
     "auth0-js": "^9.3.0",
     "autoprefixer": "^9.4.7",

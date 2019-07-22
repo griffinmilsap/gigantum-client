@@ -17,3 +17,8 @@ export const setCloseEnvironmentMenus = () => dispatcher(
   types.CLOSE_ENVIRONMENT_MENUS,
   {},
 );
+
+export const toggleAdvancedVisible = advancedVisible => dispatcher(
+  types.TOGGLE_ADVANCED_VISIBLE,
+  { advancedVisible },
+);

@@ -26,7 +26,7 @@ export default function ImportDatasetMutation(
   const variables = {
     input: {
       chunkUploadParams: {
-        fileSizeKb: chunk.fileSizeKb,
+        fileSize: chunk.fileSize,
         chunkSize: chunk.chunkSize,
         totalChunks: chunk.totalChunks,
         chunkIndex: chunk.chunkIndex,

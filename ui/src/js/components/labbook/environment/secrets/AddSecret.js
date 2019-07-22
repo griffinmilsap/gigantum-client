@@ -156,8 +156,6 @@ export default class AddSecret extends Component {
             />
           </div>
         </div>
-        { (state.file || state.showError)
-          && (
           <div className="AddSecret__actions flex justify--right">
             { state.error
               && <p className="AddSecrets__paragraph AddSecrets__paragraph--error error">{state.error}</p>
@@ -165,6 +163,7 @@ export default class AddSecret extends Component {
             <button
               type="button"
               className="Btn Btn--flat AddSecrets__btn"
+              disabled={!state.file}
               onClick={() => this._cancel()}
             >
               Cancel
@@ -172,14 +171,12 @@ export default class AddSecret extends Component {
             <button
               disabled={(state.file === null) || state.showError}
               type="button"
-              className="Btn"
+              className="Btn Btn--last"
               onClick={() => this._uploadFile()}
             >
               Save
             </button>
           </div>
-          )
-        }
       </div>
     );
   }

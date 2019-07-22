@@ -253,10 +253,9 @@ class IOManager(object):
 
         # Build batches by dividing keys across batches by file size
         for obj in objs:
-            data = self.manifest.get(obj.dataset_path)
             index = size_sums.index(min(size_sums))
             obj_batches[index].append(obj)
-            file_size = int(data['size'])
+            file_size = os.path.getsize(obj.object_path)
             size_sums[index] += file_size
 
         # Prune Jobs back if there are lots of cores but not lots of work
