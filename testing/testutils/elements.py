@@ -259,19 +259,23 @@ class EnvironmentElements(UiComponent):
 
     @property
     def package_manager_dropdown(self):
-        return CssElement(self.driver,".Dropdown")
+        return CssElement(self.driver, ".Dropdown")
 
     @property
     def conda_package_manager_dropdown(self):
-        return CssElement(self.driver,".Dropdown__item:nth-child(2)")
+        return CssElement(self.driver, ".Dropdown__item:nth-child(2)")
 
     @property
     def apt_package_manager_dropdown(self):
-        return CssElement(self.driver,".Dropdown__item:nth-child(3)")
+        return CssElement(self.driver, ".Dropdown__item:nth-child(3)")
 
     @property
     def close_install_window(self):
-        return CssElement(self.driver,".align-self--end:nth-child(3)")
+        return CssElement(self.driver, ".align-self--end:nth-child(3)")
+
+    @property
+    def advanced_configuration_button(self):
+        return CssElement(self.driver, ".Btn__advanced")
 
     def get_all_versions(self):
         versions=[]
@@ -280,7 +284,6 @@ class EnvironmentElements(UiComponent):
         versions.append(self.package_info_table_version_three.wait().text)
         versions.reverse()
         return versions
-
 
     def add_pip_packages(self, *pip_packages):
         logging.info("Adding pip packages")
@@ -347,6 +350,7 @@ class EnvironmentElements(UiComponent):
         self.environment_tab_button.wait().click()
         time.sleep(2)
         self.driver.execute_script("window.scrollBy(0, 600);")
+        self.advanced_configuration_button.wait().click()
         self.custom_docker_edit_button.find().click()
         time.sleep(2)
         self.custom_docker_text_input.find().send_keys(docker_instruction)
@@ -371,8 +375,6 @@ class JupyterLabElements(UiComponent):
     @property
     def code_output(self):
         return CssElement(self.driver, ".jp-OutputArea-output>pre")
-
-
 
 
 class RStudioElements(UiComponent):
