@@ -261,7 +261,7 @@ class MITMProxyOperations(object):
     @classmethod
     def clean_logfiles(cls):
         active_logfiles = {cls.get_mitmlogfile_path(proxied_name) for proxied_name in cls.get_running_proxies()}
-        existing_logfiles = set(glob(f'/mnt/share/{cls.logfile_path}/*.rserver.dump'))
+        existing_logfiles = set(glob(f'/mnt/share/{cls.logfile_dir}/*.rserver.dump'))
 
         for logfile in (existing_logfiles - active_logfiles):
             # yes logfile, no mitm proxy -> exited kernel delete file

@@ -28,22 +28,27 @@ class RStudioServerCodeProcessor(ActivityProcessor):
         for cell_cnt, cell in enumerate(data):
 
             # in rstudio, multiple lines are spread across result entry.  Accumulate them.
-            code_lines = ""
+            code_lines = []
             result_cnt = 0
             for result_entry in cell.code:
-                if result_entry.get('code') and result_entry.get('code') != "":
+                entry_code = result_entry.get('code')
+                if entry_code:
                     result_cnt += 1
                     total_lines += 1
-                    code_lines += f"{result_entry.get('code')}\n"
+                    code_lines.append(entry_code.strip())
 
-            if code_lines != "":
+            if code_lines:
+                code_block = '\n'.join(code_lines)
+                if "```" not in code_block:
+                    # We only add code quotes if they aren't in there already
+                    code_block = f"```\n{code_block}\n```"
 
                 # Create detail record to capture executed code
                 adr_code = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, show=False,
                                                 action=ActivityAction.EXECUTE,
                                                 importance=max(255-result_cnt, 0))
 
-                adr_code.add_value('text/markdown', f"```\n{code_lines}\n```")
+                adr_code.add_value('text/markdown', code_block)
                 adr_code.tags = cell.tags
 
                 result_obj.add_detail_object(adr_code)
@@ -130,8 +135,8 @@ class RStudioServerImageExtractorProcessor(ActivityProcessor):
                                                            action=ActivityAction.CREATE,
                                                            importance=max(255-result_cnt, 0))
 
-                            # Image data must be represented as a string.
-                            strdata = result_entry['data'][mime_type].decode()
+                            # All RStudio responses should contain decoded strings, even b64encoded data
+                            strdata = result_entry['data'][mime_type]
                             adr_img.add_value(mime_type, strdata)
 
                             adr_img.tags = cell.tags

@@ -110,11 +110,6 @@ class JupyterLabMonitor(DevEnvMonitor):
                     # Kernel isn't running anymore. Clean up by setting run flag to `False` so worker exits
                     redis_conn.hset(am, 'run', 'False')
 
-                    # TODO DC This runs again and again, persisting across dev API restarts
-                    # At a minimum, propose checking for 'run' before issuing a message (Trying this above, but that
-                    # logic doesn't work - still get messages).
-                    # But probably we should de-register the activity monitor?
-
         # Check for new kernels
         for s in sessions:
             if sessions[s]['kernel_type'] == 'notebook':

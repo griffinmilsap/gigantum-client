@@ -1,19 +1,18 @@
+import traceback
 import time
-import zlib
 
-import base64
 import json
 import pandas
-import re
 import redis
 from docker.errors import NotFound
-from mitmproxy import io as mitmio
+import mitmproxy.io as mitmio
 from mitmproxy.exceptions import FlowReadException
-from typing import (Dict, List, Optional)
+from typing import (Dict, List, Optional, BinaryIO)
 
 from gtmcore.activity import ActivityType
 from gtmcore.activity.monitors.activity import ActivityMonitor
 from gtmcore.activity.monitors.devenv import DevEnvMonitor
+from gtmcore.activity.monitors.rserver_exchange import RserverExchange
 from gtmcore.activity.processors.core import GenericFileChangeProcessor, ActivityShowBasicProcessor, \
     ActivityDetailLimitProcessor
 from gtmcore.activity.processors.processor import ExecutionData
@@ -60,11 +59,10 @@ def format_output(output: Dict):
                 return {'data': {'text/plain': json.dumps(output['output_val'])},
                         'tags': 'data.frame'}
         else:
-            logger.error(f"monitor_rserver: RStudio output with unknown metadata: {om}")
-            # TODO DC Probably we can return a better JSON object
+            logger.error(f"RStudio output with unknown metadata: {om}")
             return None
     else:
-        logger.error(f"monitor_rserver: No metadata for chunk_output: {output}")
+        logger.error(f"No metadata for chunk_output: {output}")
         return None
 
 
@@ -87,13 +85,13 @@ class RServerMonitor(DevEnvMonitor):
         # Get list of active Activity Monitor Instances from redis
         # dev_env_monitor_key should specify rstudio at this point, and there should only be one key
         activity_monitor_keys = redis_conn.keys('{}:activity_monitor:*'.format(dev_env_monitor_key))
-        activity_monitor_keys = [x.decode('utf-8') for x in activity_monitor_keys]
+        activity_monitor_keys = [x.decode() for x in activity_monitor_keys]
         retlist = []
         try:
             for am in activity_monitor_keys:
-                logfid = redis_conn.hget(am, "logfile_id").decode()
+                logfid = redis_conn.hget(am, "logfile_id")
                 if logfid:
-                    retlist.append(logfid)
+                    retlist.append(logfid.decode())
         # decode throws error on unset values.  not sure how to check RB
         except Exception as e:
             logger.error(f'Unhandled exception in get_activity_monitor_lb_names: {e}')
@@ -180,7 +178,12 @@ class RServerMonitor(DevEnvMonitor):
 
 
 class RStudioServerMonitor(ActivityMonitor):
-    """Class to monitor an rstudio server for activity to be processed."""
+    """Class to monitor an rstudio server for activity to be processed.
+
+    currently, this class conflates two separable concerns:
+      1. Setting up activity processing for ExecutionData entries into ActivityRecords
+      2. Actually parsing activity and creating the ExecutionData entries
+    """
 
     def __init__(self, user: str, owner: str, labbook_name: str, monitor_key: str, config_file: str = None,
                  author_name: Optional[str] = None, author_email: Optional[str] = None) -> None:
@@ -201,18 +204,29 @@ class RStudioServerMonitor(ActivityMonitor):
         # For now, register processors by default
         self.register_processors()
 
-        # Let's call them cells as if they were Jupyter
-        self.current_cell = ExecutionData()
-        self.cell_data: List[ExecutionData] = list()
+        # R's chunks are about equivalent to cells in Jupyter, these will be indexed by chunk_id
+        # Console / script output will be indexed with chunk_id 'console'
+        self.active_execution = ExecutionData()
+        # ExecutionData that's ready to be stored
+        # For now, we save an ActivityRecord whenever we change active_doc_id, so doc_id doesn't need to be
+        # stored per record here
+        self.completed_executions: List[ExecutionData] = []
 
-        # variables that track the context of messages in the log
-        #   am I in the console, or the notebook?
-        #   what chunk is being executed?
-        #   in what notebook?
-        self.is_console = False
-        self.is_notebook = False
-        self.chunk_id = None
-        self.nbname = None
+        # There are at least four ways that code is communicated back and forth between the front and back end
+        # For now, we use the rpc execution paths to switch to a new context
+        # This means we need to keep context if we saw multiple chunks in one request
+        self.remaining_chunks: List[Dict] = []
+
+        # This will attempt to mirror what the RStudio backend knows for each doc_id
+        self.doc_properties: Dict[str, Dict] = {'console': {'name': 'console'}}
+        # Keep track of where we're executing - if we switch documents, we will store what we've got in
+        # completed_executions to an ActivityRecord
+        self.active_doc_id = 'console'
+        # Extracted from write_console_input (which is used for commands from any source).
+        # Known values include the empty string for direct console execution, or chunk_id when available.
+        self.active_console: str = ''
+        # The names of yet-unseen images that we saw in a get_events call
+        self.expected_images: List[str] = []
 
     def register_processors(self) -> None:
         """Method to register processors
@@ -243,9 +257,6 @@ class RStudioServerMonitor(ActivityMonitor):
 
         logfile_path = redis_conn.hget(self.monitor_key, "logfile_path")
 
-        # TODO RB will need to open in write mode later to sparsify parts of the file that have already been read
-        # https://github.com/gigantum/gigantum-client/issues/434, also part of #453
-        # open the log file
         mitmlog = open(logfile_path, "rb")
         if not mitmlog:
             logger.info(f"Failed to open RStudio log {logfile_path}")
@@ -261,21 +272,16 @@ class RStudioServerMonitor(ActivityMonitor):
                     redis_conn.delete(self.monitor_key)
                     break
 
-                previous_cells = len(self.cell_data)
-
                 # Read activity and update aggregated "cell" data
                 self.process_activity(mitmlog)
-
-                # We are processing every second, then aggregating activity records when idle
-                if previous_cells == len(self.cell_data) and self.current_cell.is_empty():
-                    # there are no new cells in the last second, and no cells are in-process
-                    self.store_record()
 
                 # Check for new records every second
                 time.sleep(1)
 
         except Exception as e:
-            logger.error(f"Fatal error in RStudio Server Activity Monitor: {e}")
+            # This is rather verbose, but without the stack trace, it's almost completely useless as
+            # the Exception could have come from anywhere!
+            logger.error(f"Fatal error in RStudio Server Activity Monitor: {e}\n{traceback.format_exc()}")
             raise
         finally:
             # Delete the kernel monitor key so the dev env monitor will spin up a new process
@@ -288,39 +294,36 @@ class RStudioServerMonitor(ActivityMonitor):
     def store_record(self) -> None:
         """Store R input/output/code to ActivityRecord / git commit
 
-        store_record() should be called after moving any data in self.current_cell to
-        self.cell_data. Any data remaining in self.current_cell will be removed.
-
-        Args:
-            None
+        store_record() should be called after moving any data in self.active_execution to
+        self.completed_executions. You should also check self.expected_images before calling this.
         """
-        if len(self.cell_data) > 0:
+        if self.expected_images:
+            logger.error(f'Expected images: {", ".join(self.expected_images)}')
+            self.expected_images = []
+
+        if self.completed_executions:
             t_start = time.time()
 
             # Process collected data and create an activity record
-            if self.is_console:
-                codepath = "console"
-            else:
-                codepath = self.nbname if self.nbname else "Unknown notebook"
+            codepath = self.safe_doc_name()
 
-            activity_record = self.process(ActivityType.CODE, list(reversed(self.cell_data)),
+            activity_record = self.process(ActivityType.CODE, list(reversed(self.completed_executions)),
                                            {'path': codepath})
 
             # Commit changes to the related Notebook file
             commit = self.commit_labbook()
 
-            # Create note record
-            activity_commit = self.store_activity_record(commit, activity_record)
+            try:
+                # Create note record
+                activity_commit = self.store_activity_record(commit, activity_record)
+                logger.info(f"Created auto-generated activity record {activity_commit} in {time.time() - t_start} seconds")
+            except Exception as e:
+                logger.error(f'Encountered fatal error generating activity record: {e}')
+            finally:
+                # This is critical - otherwise if we have an error, we'll keep spawning new activity monitors that die!
+                self.completed_executions = []
 
-            logger.info(f"Created auto-generated activity record {activity_commit} in {time.time() - t_start} seconds")
-
-        # Reset for next execution
-        self.current_cell = ExecutionData()
-        self.cell_data = list()
-        self.is_notebook = False
-        self.is_console = False
-
-    def _parse_json_record(self, json_record: Dict) -> None:
+    def _parse_backend_events(self, json_record: Dict) -> None:
         """Extract code and data from the record.
 
         When context switches between console <-> notebook, we store a record for
@@ -334,79 +337,50 @@ class RStudioServerMonitor(ActivityMonitor):
         if not result:
             return
 
-        # execution of new notebook cell
-        if result[0]['type'] == 'chunk_exec_state_changed':
-            if self.is_console:
-                # switch from console to notebook. store record
-                if self.current_cell.code:
-                    self.cell_data.append(self.current_cell)
-                    self.store_record()
-            elif self.is_notebook and self.current_cell.code:
-                self.cell_data.append(self.current_cell)
-                self.current_cell = ExecutionData()
-                self.chunk_id = None
-
-            self.is_notebook = True
-            self.is_console = False
-            # Reset current_cell attribute for next execution
-            self.current_cell.tags.append('notebook')
-
-        # execution of console code.  you get a message for every line.
-        if result[0]['type'] == 'console_write_prompt':
-            if self.is_notebook:
-                # switch to console. store record
-                if self.current_cell.code:
-                    self.cell_data.append(self.current_cell)
-                    self.store_record()
-                self.current_cell.tags.append('console')
-
-            # add a tag is this is first line of console code
-            elif not self.is_console:
-                self.current_cell.tags.append('console')
-
-            self.is_console = True
-            self.is_notebook = False
-
         # parse the entries in this message
         for edata, etype in [(entry.get('data'), entry.get('type')) for entry in result]:
-            if etype == 'chunk_output':
+            # All observed executions include this command to indicate it was entered to the R prompt
+            if etype == 'console_write_input':
+                # This is the empty string for direct entry, or otherwise indicates the source of the code
+                console_id = edata['console']
+                if console_id != self.active_console:
+                    # Maybe we're onto a new, expected chunk...
+                    self._new_execution(new_console=console_id)
+
+            elif etype == 'chunk_output':
                 outputs = edata.get('chunk_outputs')
                 if outputs:
                     for oput in outputs:
                         result = format_output(oput)
                         if result:
-                            self.current_cell.result.append(result)
+                            self.active_execution.result.append(result)
 
                 oput = edata.get('chunk_output')
                 if oput:
-                    result = format_output(oput)
-                    if result:
-                        self.current_cell.result.append(result)
+                    output_val = oput['output_val']
+                    if type(output_val) is str and output_val.endswith('.png'):
+                        # This should look like: chunk_output/46E01830e058b169/C065EDF7/cln6e9n2q4150/000003.png
+                        # The actual http fetch will add an initial `/`
+                        self.expected_images.append('/' + oput['output_val'])
+                    else:
+                        result = format_output(oput)
+                        if result:
+                            self.active_execution.result.append(result)
 
-            # get notebook code
-            if self.is_notebook and etype == 'notebook_range_executed':
 
-                # new cell advance cell
-                if self.chunk_id is None or self.chunk_id != edata['chunk_id']:
-                    if self.current_cell.code:
-                        self.cell_data.append(self.current_cell)
-                    self.current_cell = ExecutionData()
-                    self.chunk_id = edata['chunk_id']
-                    self.current_cell.tags.append('notebook')
 
-                # take code in current cell
-                self.current_cell.code.append({'code': edata['code']})
-
-            # console code
-            if self.is_console and etype == 'console_write_input':
-                # remove trailing whitespace -- specificially \n
-                if edata['text'] != "\n" or self.current_cell.code != []:
-                    self.current_cell.code.append({'code': edata['text'].rstrip()})
 
             # this happens in both notebooks and console
-            #   ignore if no context (that's the R origination message
-            if etype == 'console_output' and (self.is_console or self.is_notebook):
-                self.current_cell.result.append({'data': {'text/plain': edata['text']}})
+            elif etype == 'console_output':
+                self.active_execution.result.append({'data': {'text/plain': edata['text']}})
+
+            # handle report of figure -> expected
+            elif etype == 'plots_state_changed' and edata['filename'] != 'empty.png':
+                # This filename is now available at '/graphics/{filename}'
+                self.expected_images.append('/graphics/' + edata['filename'])
+
+            # For future reference: we can detect when chunk is completed (etype of chunk_output_finished),
+            #  or when console execution is finished (etype console_write prompt, edata of '> ') if needed
 
     def _is_error(self, result: Dict) -> bool:
         """Check if there's an error in the message"""
@@ -416,68 +390,160 @@ class RStudioServerMonitor(ActivityMonitor):
         else:
             return False
 
-    def _parse_image(self, st: Dict):
-        # These are from notebooks
-        m = re.match(r"/chunk_output/(([\w]+)/)+([\w]+.png)", st['request']['path'].decode())
-        if m:
-            img_data = zlib.decompress(st['response']['content'], 16 + zlib.MAX_WBITS)
-            # if we actually wanted to work with the image, could do so like this:
-            # img = Image.open(io.BytesIO(img_data))
-            eimg_data = base64.b64encode(img_data)
-            self.current_cell.result.append({'data': {'image/png': eimg_data}})
+    def safe_doc_name(self, doc_id: Optional[str] = None) -> str:
+        """"Try to get a name from doc_properties safely
 
-        # These are from scripts.
-        m = re.match(r"/graphics/(?:[^[\\/:\"*?<>|]+])*([\w-]+).png",
-                     st['request']['path'].decode())
-        if m:
-            img_data = zlib.decompress(st['response']['content'], 16 + zlib.MAX_WBITS)
-            eimg_data = base64.b64encode(img_data)
-            self.current_cell.result.append({'data': {'image/png': eimg_data}})
+        If it's missing, we create a default name for the doc_id. Hopefully one that gets fixed later!
+        """
+        if doc_id is None:
+            doc_id = self.active_doc_id
+        properties = self.doc_properties.get(doc_id, {'name': f'ID: {doc_id}'})
+        return properties['name']
 
-    def _parse_json(self, st: Dict, is_gzip: bool):
-        # get the filename
-        m = re.match(r"/rpc/refresh_chunk_output.*", st['request']['path'].decode())
-        if m:
-            # A new chunk, so potentially a new notebook.
-            if self.current_cell.code:
-                self.cell_data.append(self.current_cell)
-                # RB was always storing a record here
-                # with new logic, running cells in two notebooks within a second seems unlikely
-                # self.store_record()
+    def _new_execution(self, exchange: Optional[RserverExchange] = None, new_console: Optional[str] = None) -> None:
+        """Set up a new execution and cycle / store active_exectution and store an ActivityRecord as needed
 
-            # strict=False allows control codes, as used in tidyverse output
-            jdata = json.loads(st['request']['content'], strict=False)
-            fullname = jdata['params'][0]
+        exchange:
+            New entry from MITM - leave None to pop off the next chunk from remaining_chunks
+        new_console:
+            console specified from write_console_input
 
-            # pull out the name relative to the "code" directory
-            m1 = re.match(r".*/code/(.*)$", fullname)
-            if m1:
-                self.nbname = m1.group(1)
+        Updates / resets the following attributes:
+         - expected_images
+         - active_console (which is either the chunk_id or '')
+         - active_doc_id
+         - remaining_chunks
+        """
+        # Whatever was going on, we're gonna drop it and complete the active execution
+        for image_name in self.expected_images:
+            logger.error(f"Expected {image_name} for execution from {self.safe_doc_name()}")
+        self.expected_images = []
+
+        if exchange:
+            if self.remaining_chunks:
+                logger.error('Saw chunks via /rpc/execute_notebook_chunks that were not apparently executed')
+                # This will get overwritten below
+
+            # Extract info about the new context
+            if exchange.path == '/rpc/console_input':
+                new_doc = 'console'
+                # console_input is simple - we just get the code
+                new_code = exchange.request['params'][0].rstrip()
+                # RStudio uses an empty string for commands that actually originate from the console
+                self.active_console = ''
+                self.remaining_chunks = []
+            elif exchange.path == '/rpc/execute_notebook_chunks':
+                # This is complicated - we get a big dict
+                params = exchange.request['params'][0]
+                new_doc = params['doc_id']
+                chunks = params['units']
+                new_code = chunks[0]['code'].rstrip()
+                # We'll check that our `write_console_input` events match this
+                self.active_console = chunks[0]['chunk_id']
+                self.remaining_chunks = chunks[1:]
             else:
-                m2 = re.match(r"/mnt/labbook/(.*)$", fullname)
-                if m2:
-                    self.nbname = m2.group(1)
-                else:
-                    self.nbname = fullname
+                logger.error(f'Unknown path for new execution {exchange.path}')
+                return
 
-        # code or output event
-        m = re.match(r"/events/get_events", st['request']['path'].decode())
-        if m:
-            if is_gzip:
-                jdata = zlib.decompress(st['response']['content'], 16 + zlib.MAX_WBITS)
+        elif self.remaining_chunks:
+            if new_console is None:
+                raise TypeError('Must provide either exchange or new_console argument to _new_execution()')
+            next_chunk = self.remaining_chunks[0]
+            if next_chunk['chunk_id'] == new_console:
+                # It's a match
+                self.active_console = new_console
+                self.remaining_chunks = self.remaining_chunks[1:]
+                new_code = next_chunk['code'].rstrip()
+                # This has always been observed to be the same, but doesn't hurt - the information is there
+                new_doc = next_chunk['doc_id']
             else:
-                jdata = st['response']['content']
-            # get text/code fields out of dictionary
+                # We ignore this issue for now because it should never happen
+                # The next full-on RPC call (execute_notebook_chunks or console_input) will clear this out
+                logger.error(f'Found unexpected console input from {new_console}')
+                return
+
+        else:
+            logger.error('Trying to shift to new chunk execution, but no expected chunks remain')
+            return
+
+        if not self.active_execution.is_empty():
+            self.completed_executions.append(self.active_execution)
+            self.active_execution = ExecutionData()
+        self.active_execution.code.append({'code': new_code})
+
+        # if we've switched documents, store a record
+        if new_doc != self.active_doc_id:
+            self.store_record()
+            self.active_doc_id = new_doc
+
+    def _handle_image(self, exchange: RserverExchange) -> None:
+        """Append the image to the current chunk
+
+        Also report an error if chunk_id doesn't match. We assume that there is ALWAYS an available `ExecutionData`
+        instance in self.active_execution
+        """
+        if exchange.path.startswith('/chunk_output/'):
+            # This is from a document chunk execution, and looks like:
+            # /chunk_output/46E01830e058b169/C065EDF7/cln6e9n2q4150/000003.png
             try:
-                # strict=False allows control codes, as used in tidyverse output
-                self._parse_json_record(json.loads(jdata, strict=False))
-            except json.JSONDecodeError as je:
-                logger.info(f"Ignoring JSON Decoder Error in process_activity {je}.")
-                return False
+                self.expected_images.remove(exchange.path)
+            except ValueError:
+                logger.error(f'found unexpected graphic during chunk execution')
 
-        return True
+            segments = exchange.path.split('/')
+            chunk_id = segments[4]
+            if chunk_id != self.active_console:
+                # Note that we don't let graphics override the document context... ultimately, this shouldn't happen anyway
+                # But we'll store what we can
+                doc_id = segments[3]
+                doc_name = self.safe_doc_name(doc_id)
+                logger.error(f'RStudioServerMonitor found graphic from rogue execution context for {doc_name}.')
 
-    def process_activity(self, mitmlog):
+            self.active_execution.result.append({'data': {'image/png': exchange.response}})
+        elif exchange.path.startswith("/graphics/"):
+            # This is from a script/console execution and looks like this (pretty sure a UUID):
+            # /graphics/ce4c938e-15f3-4da8-b193-0e3bdae0cf7d.png
+            try:
+                self.expected_images.remove(exchange.path)
+            except ValueError:
+                logger.error(f'found unexpected graphic during console execution')
+
+            if self.active_doc_id != 'console':  # active_console would equivalently be ''
+                # Again, we don't let graphics override the document context...
+                logger.error(f'found graphic from console during chunk execution')
+            self.active_execution.result.append({'data': {'image/png': exchange.response}})
+        else:
+            logger.error(f'Got image from unknown path {exchange.path}')
+
+    def _update_doc_names(self, exchange: RserverExchange) -> None:
+        """Parse the JSON response information from RStudio - keeping track of code, output, and metadata
+
+        Note that there are two different document types! "Notebooks" and an older "Document" type"""
+        fname = None
+        doc_id = None
+
+        # For a new file, the first time we get a user-facing id is when the front end gives a tempName
+        if exchange.path == '/rpc/modify_document_properties':
+            doc_id, properties = exchange.request['params']
+            if 'tempName' in properties:
+                fname = properties['tempName']
+        # Later, a filename may be assigned by the front end via a save
+        # Haven't yet traced through what happens on save-as or loading a file instead of new -> save
+        elif exchange.path == '/rpc/save_document_diff':
+            params = exchange.request['params']
+            fname = params[1]
+            if fname:
+                doc_id = params[0]
+        # Or, we can open an existing file
+        elif exchange.path == '/rpc/open_document':
+            result = exchange.response['result']
+            doc_id = result['id']
+            fname = result['path']
+
+        if doc_id and fname:
+            self.doc_properties.setdefault(doc_id, {})['name'] = fname.lstrip('/mnt/labbook/')
+
+    def process_activity(self, mitmlog: BinaryIO):
         """Collect tail of the activity log and turn into an activity record.
 
         Args:
@@ -487,61 +553,50 @@ class RStudioServerMonitor(ActivityMonitor):
             ar(): activity record
         """
         # get an fstream generator object
-        fstream = mitmio.FlowReader(mitmlog).stream()
-
-        # no context yet.  not a notebook or console
-        self.is_console = False
-        self.is_notebook = False
+        fstream = iter(mitmio.FlowReader(mitmlog).stream())
 
         while True:
             try:
-                f = next(fstream)
+                mitm_message = next(fstream)
             except StopIteration:
                 break
             except FlowReadException as e:
+                # TODO issue #938
                 logger.info("MITM Flow file corrupted: {}. Exiting.".format(e))
                 break
 
-            st: Dict = f.get_state()
-
-            is_png = False
-            is_gzip = False
-            is_json = False
-
-            # Check response types for images and json
-            for header in st['response']['headers']:
-
-                # png images
-                if header[0] == b'Content-Type':
-                    if header[1] == b'image/png':
-                        is_png = True
-
-                # json
-                if header[0] == b'Content-Type':
-                    if header[1] == b'application/json':
-                        is_json = True
-
-                if header[0] == b'Content-Encoding':
-                    if header[1] == b'gzip':
-                        is_gzip = True
-                    else:
-                        # Not currently used, but useful for debugging and potentially in future
-                        encoding = header[1]
+            try:
+                rserver_exchange = RserverExchange(mitm_message.get_state())
+            except json.JSONDecodeError as je:
+                logger.info(f"Ignoring JSON Decoder Error for Rstudio message {je}.")
+                continue
 
             # process images
-            if is_png:
-                if is_gzip:
-                    self._parse_image(st)
+            if rserver_exchange.response_type == 'image/png':
+                # I guess non-zipped images should not occur?
+                if rserver_exchange.response_headers.get('Content-Encoding') == 'gzip':
+                    self._handle_image(rserver_exchange)
                 else:
                     logger.error(f"RSERVER Found image/png that was not gzip encoded.")
 
-            if is_json:
-                self._parse_json(st, is_gzip)
+            elif rserver_exchange.response_type == 'application/json':
+                # code or output event
+                if rserver_exchange.path == "/events/get_events":
+                    # There are some special case get_events calls at the beginning of a session.
+                    # We ignore those.
+                    if rserver_exchange.request['params'][0] != -1:
+                        # get text/code fields out of dictionary
+                        self._parse_backend_events(rserver_exchange.response)
+                elif rserver_exchange.path in ['/rpc/console_input', '/rpc/execute_notebook_chunks']:
+                    self._new_execution(rserver_exchange)
+                else:
+                    self._update_doc_names(rserver_exchange)
 
-        # Flush cell data IFF anything happened
-        if self.current_cell.code:
-            self.cell_data.append(self.current_cell)
-        self.store_record()
-        self.current_cell = ExecutionData()
-        self.cell_data = list()
-        self.chunk_id = None
+        # This logic isn't air-tight, but should at worst simply split what should've been in one execution
+        #  across two ActivityRecords.
+        # We do know that we've exhausted the MITM log file, so we got out in front of the `get_event` calls, etc.
+        if not (self.expected_images or self.remaining_chunks):
+            if not self.active_execution.is_empty():
+                self.completed_executions.append(self.active_execution)
+                self.active_execution = ExecutionData()
+            self.store_record()

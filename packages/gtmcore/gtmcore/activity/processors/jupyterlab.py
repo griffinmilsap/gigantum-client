@@ -40,9 +40,8 @@ class JupyterLabCellVisibilityProcessor(ActivityProcessor):
                                 if tag.startswith('ex'):
                                     result_obj.modify_tag_visibility(tag, directive)
                         else:
-                            # TODO DC Currently we don't have a mechanism to highlight any problem to users.
-                            # But this is where we could signal an unknown comment directive. Another place
-                            # would be in the jupyterlab extension. We need to think through this UX!
+                            # We have encountered an unknown comment directive.
+                            logger.warning(f'Encountered unknown comment directive gtm:{directive}')
                             pass
 
         return result_obj
