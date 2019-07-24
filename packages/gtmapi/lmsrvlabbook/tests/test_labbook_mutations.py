@@ -29,7 +29,7 @@ from gtmcore.dispatcher import Dispatcher
 
 import pytest
 from gtmcore.files import FileOperations
-from gtmcore.fixtures import remote_labbook_repo, mock_config_file
+from gtmcore.fixtures import remote_labbook_repo, mock_config_file, flush_redis_repo_cache
 
 from gtmcore.inventory.inventory import InventoryManager
 
@@ -547,6 +547,7 @@ class TestLabBookServiceMutations(object):
         snapshot.assert_match(mock_create_labbooks[2].execute(query))
 
     def test_write_readme(self, mock_create_labbooks, snapshot):
+        flush_redis_repo_cache()
         content = json.dumps('##Overview\n\nThis is my readme\n :df,a//3p49kasdf')
 
         query = f"""

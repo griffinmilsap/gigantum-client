@@ -7,7 +7,7 @@ from snapshottest import snapshot
 from lmsrvlabbook.tests.fixtures import fixture_working_dir, fixture_working_dir_populated_scoped, fixture_test_file
 from lmsrvlabbook.tests.fixtures import fixture_working_dir_env_repo_scoped, property_mocks_fixture
 from gtmcore.files import FileOperations
-from gtmcore.fixtures import ENV_UNIT_TEST_REPO, ENV_UNIT_TEST_BASE, ENV_UNIT_TEST_REV
+from gtmcore.fixtures import ENV_UNIT_TEST_REPO, ENV_UNIT_TEST_BASE, ENV_UNIT_TEST_REV, flush_redis_repo_cache
 import datetime
 import pprint
 import aniso8601
@@ -143,6 +143,7 @@ class TestLabBookServiceQueries(object):
         lb.git.commit("Changing the repo")
 
         # Run query again
+        flush_redis_repo_cache()
         snapshot.assert_match(fixture_working_dir_populated_scoped[2].execute(query))
 
     def test_pagination_first_only(self, fixture_working_dir_populated_scoped, snapshot):
@@ -446,6 +447,7 @@ class TestLabBookServiceQueries(object):
         im.create_labbook('default', 'default', 'labbook2', description="my first labbook2")
         im.create_labbook('test3', 'test3', 'labbook2', description="my first labbook3")
 
+        flush_redis_repo_cache()
         # Get LabBooks for the "logged in user" - Currently just "default"
         query = """
         {

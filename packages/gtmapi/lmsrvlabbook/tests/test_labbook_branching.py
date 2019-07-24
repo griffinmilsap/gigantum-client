@@ -19,7 +19,7 @@ from gtmcore.files import FileOperations
 from lmsrvcore.middleware import DataloaderMiddleware, error_middleware
 from lmsrvlabbook.tests.fixtures import ContextMock, fixture_working_dir, _create_temp_work_dir, \
     fixture_working_dir_lfs_disabled
-from gtmcore.fixtures import _MOCK_create_remote_repo2
+from gtmcore.fixtures import _MOCK_create_remote_repo2, flush_redis_repo_cache
 from lmsrvlabbook.api.query import LabbookQuery
 from lmsrvlabbook.api.mutation import LabbookMutations
 from gtmcore.workflows import LabbookWorkflow
@@ -586,6 +586,7 @@ class TestWorkflowsBranching(object):
 
     def test_create_rollback_branch_remove_linked_dataset(self, mock_create_labbooks):
         """ test creating a rollback branch that removes a linked dataset"""
+        flush_redis_repo_cache()
         lb, client = mock_create_labbooks[0], mock_create_labbooks[1]
 
         im = InventoryManager(config_file=lb.client_config.config_file)
