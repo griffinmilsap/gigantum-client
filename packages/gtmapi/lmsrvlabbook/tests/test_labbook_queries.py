@@ -387,6 +387,7 @@ class TestLabBookServiceQueries(object):
 
     def test_get_labbook(self, fixture_working_dir):
         """Test listing labbooks"""
+        flush_redis_repo_cache()
         im = InventoryManager(fixture_working_dir[0])
         lb = im.create_labbook('default', 'default', 'labbook1', description="my test description",
                                author=GitAuthor(name="tester", email="tester@test.com"))
@@ -415,9 +416,9 @@ class TestLabBookServiceQueries(object):
         assert r['data']['labbook']['name'] == 'labbook1'
         d = r['data']['labbook']['creationDateUtc']
         n = aniso8601.parse_datetime(d)
-        assert (datetime.datetime.now(datetime.timezone.utc) - n).total_seconds() < 5
+        assert (datetime.datetime.utcnow() - n).total_seconds() < 5
         assert n.microsecond == 0
-        assert n.tzname() == "+00:00"
+        assert n.tzname() in ["+00:00", None]
 
     def test_get_labbook_size_rediculously_huge(self, monkeypatch, fixture_working_dir):
         """Test listing labbooks"""
@@ -1403,7 +1404,7 @@ class TestLabBookServiceQueries(object):
         # using aniso8601 to parse because built-in datetime doesn't parse the UTC offset properly (configured for js)
         create_on = aniso8601.parse_datetime(d)
         assert create_on.microsecond == 0
-        assert create_on.tzname() == "+00:00"
+        assert create_on.tzname() in ["+00:00", None]
 
         # wait, add another commit, and remove the buildinfo file to test the fallback method for getting create date
         time.sleep(4)
@@ -1414,7 +1415,7 @@ class TestLabBookServiceQueries(object):
         d = r['data']['labbook']['creationDateUtc']
         create_on_fallback = aniso8601.parse_datetime(d)
         assert create_on_fallback.microsecond == 0
-        assert create_on_fallback.tzname() == "+00:00"
+        assert create_on_fallback.tzname() in ["+00:00", None]
 
         # Because there can be 1 second of drift between normal and fallback methods, be safe and check they are not 2
         # seconds apart.
@@ -1439,18 +1440,19 @@ class TestLabBookServiceQueries(object):
         # using aniso8601 to parse because built-in datetime doesn't parse the UTC offset properly (configured for js)
         modified_on_1 = aniso8601.parse_datetime(d)
         assert modified_on_1.microsecond == 0
-        assert modified_on_1.tzname() == "+00:00"
+        assert modified_on_1.tzname() in ["+00:00", None]
 
         time.sleep(2)
         lb.write_readme("##Summary\nThis is my readme!!")
 
+        flush_redis_repo_cache()
         r = fixture_working_dir[2].execute(modified_query)
         assert 'errors' not in r
         d = r['data']['labbook']['modifiedOnUtc']
         modified_on_2 = aniso8601.parse_datetime(d)
 
-        assert (datetime.datetime.now(datetime.timezone.utc) - modified_on_1).total_seconds() < 30
-        assert (datetime.datetime.now(datetime.timezone.utc) - modified_on_2).total_seconds() < 30
+        assert (datetime.datetime.utcnow() - modified_on_1).total_seconds() < 30
+        assert (datetime.datetime.utcnow() - modified_on_2).total_seconds() < 30
         assert modified_on_2 > modified_on_1
 
     @responses.activate
