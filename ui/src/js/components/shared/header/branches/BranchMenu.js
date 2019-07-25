@@ -50,7 +50,7 @@ const getSyncTooltip = (props, data) => {
     sectionCollabs,
     activeBranch,
   } = data;
-  let syncTooltip = !hasWriteAccess ? 'Pull' : 'Sync';
+  let syncTooltip = !hasWriteAccess ? 'Pull changes from Gignatum Hub' : 'Sync changes to Gigantum Hub';
   syncTooltip = props.isLocked ? `Cannot ${syncOrPublish} while Project is in use` : syncTooltip;
   syncTooltip = !props.defaultRemote ? 'Click Publish to push branch to remote server' : syncTooltip;
   syncTooltip = (activeBranch.branchName !== 'master' && !props.defaultRemote) ? 'Must publish Master branch first' : syncTooltip;

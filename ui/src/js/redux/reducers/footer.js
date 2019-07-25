@@ -48,7 +48,7 @@ export default (state = {
       error: true,
       date,
       messageBodyOpen: false,
-      className: 'Footer__message--error',
+      className: 'FooterMessage--error',
       messageBody: action.payload.messageBody
         ? action.payload.messageBody
         : [],
@@ -82,7 +82,7 @@ export default (state = {
       message: action.payload.message,
       id,
       error: false,
-      className: 'Footer__message',
+      className: 'FooterMessage',
       messageBody: action.payload.messageBody
         ? action.payload.messageBody
         : [],
@@ -119,7 +119,7 @@ export default (state = {
       message: action.payload.message,
       id,
       error: false,
-      className: 'Footer__message--warning',
+      className: 'FooterMessage--warning',
       messageBody: action.payload.messageBody
         ? action.payload.messageBody
         : [],
@@ -347,8 +347,8 @@ export default (state = {
       message: action.payload.message,
       id: action.payload.id,
       className: action.payload.error
-        ? 'Footer__message--error'
-        : 'Footer__message',
+        ? 'FooterMessage--error'
+        : 'FooterMessage',
       isLast: action.payload.isLast,
       isMultiPart: true,
       messageBody: action.payload.messageBody
