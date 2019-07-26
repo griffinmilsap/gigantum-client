@@ -130,9 +130,12 @@ class Dispatcher(object):
     """
 
     def __init__(self) -> None:
-        self._redis_conn = redis.Redis()
+        self._redis_conn = self._default_conn()
         self._scheduler = rq_scheduler.Scheduler(queue_name=GigantumQueues.default_queue.value,
                                                  connection=self._redis_conn)
+
+    def _default_conn(self):
+        return redis.Redis(db=13)
 
     def _get_queue(self, method_name: str) -> rq.Queue:
         # Return the appropriate Queue instance for the given method.
@@ -190,7 +193,7 @@ class Dispatcher(object):
 
         # Fetch the RQ job. There needs to be a little processing done on it first.
         rq_job = rq.job.Job.fetch(job_key.key_str.split(':')[-1],
-                                  connection=redis.Redis())
+                                  connection=self._default_conn())
 
         # Build the properly decoded dict, which will be returned.
         decoded_dict = {}

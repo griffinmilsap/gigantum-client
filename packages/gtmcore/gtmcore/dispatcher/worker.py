@@ -22,12 +22,16 @@ class WorkerService:
     allotment of queues and workers, as well as optional bursting of
     workers and jobs. """
 
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config_path: Optional[str] = None, db: Optional[int] = None):
         self._config = Configuration(config_file=config_path).config
+        self._redis_db = db
         self._worker_process_lock = Lock()
         self._worker_process_list: List[Process] = []
         self._is_monitoring = True
         self._queue_names = (QUEUE_BUILD, QUEUE_PUBLISH, QUEUE_DEFAULT)
+
+    def _default_conn(self):
+        return redis.Redis(db=13)
 
     def start(self):
         """Start all of the workers for all of the queues. """
@@ -75,7 +79,7 @@ class WorkerService:
 
     def get_all_workers(self, queue_name: str) -> List[Worker]:
         """ Returns a list of all the given workers for the given queue. """
-        return Worker.all(queue=Queue(queue_name, connection=redis.Redis()))
+        return Worker.all(queue=Queue(queue_name, connection=self._default_conn()))
 
     def monitor_burstable_queue(self) -> None:
         """Blocking routine to monitor the default queue and burst new workers if needed.
@@ -123,7 +127,7 @@ class WorkerService:
 def start_rq_worker(queue_name: str, burst: bool = False) -> None:
     """Start an RQ worker for the given queue. """
     try:
-        with Connection():
+        with Connection(connection=redis.Redis(db=13)):
             q = Queue(name=queue_name)
             logger.info(f"Starting {'BURSTED ' if burst else ''}"
                         f"RQ worker for in {queue_name}")
@@ -151,6 +155,7 @@ class QueueLoader:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Launch RQ workers per config file')
     parser.add_argument('--config', type=str, default=None, help='Path to config file')
+    parser.add_argument('--db', type=int, default=None, help='Redis DB to use')
 
     try:
         args = parser.parse_args()
