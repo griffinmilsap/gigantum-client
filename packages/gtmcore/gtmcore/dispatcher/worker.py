@@ -131,7 +131,13 @@ def start_rq_worker(queue_name: str, burst: bool = False) -> None:
             q = Queue(name=queue_name)
             logger.info(f"Starting {'BURSTED ' if burst else ''}"
                         f"RQ worker for in {queue_name}")
-            Worker(q).work(burst=burst)
+            if burst:
+                Worker(q).work(burst=True)
+            else:
+                # This is to bypass a problem when the user closes their laptop
+                # (All the workers time out and die). This should prevent that up until a week.
+                wk_in_secs = 60 * 60 * 24 * 7
+                Worker(q, default_result_ttl=wk_in_secs, default_worker_ttl=wk_in_secs).work()
     except Exception as e:
         logger.exception("Worker in pid {} failed with exception {}".format(os.getpid(), e))
         raise

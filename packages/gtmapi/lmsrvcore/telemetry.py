@@ -2,7 +2,8 @@ import time
 import glob
 import os
 import rq
-from typing import Any, Optional, Tuple, Dict
+import redis
+from typing import Any, Optional, Tuple, Dict, List
 
 from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
@@ -113,27 +114,8 @@ def _calc_rq_free() -> Tuple[int, int]:
     """Parses the output of `rq info` to return total number
     of workers and the count of workers currently idle."""
 
-    ## TODO - Change this to actually query from RQ rather than parse `rq info`.
-
-    import redis
-
     conn = redis.Redis(db=13)
     with rq.Connection(connection=conn):
-        workers = [w for w in rq.Worker.all()]
-
+        workers: List[rq.Worker] = [w for w in rq.Worker.all()]
     idle_workers = [w for w in workers if w.get_state() == 'idle']
     return len(workers), len(idle_workers)
-
-    #
-    # rq_out = call_subprocess("rq info".split(), cwd='/')
-    # total_cnt, idle_cnt = 0, 0
-    # for rq_line in rq_out.split('\n'):
-    #     toks = rq_line.strip().split()
-    #     if not toks:
-    #         continue
-    #     sp = toks[0].split('.')
-    #     if len(sp) == 2 and sp[0].isalnum() and sp[1].isdigit():
-    #         if 'idle' in toks[1]:
-    #             idle_cnt += 1
-    #         total_cnt += 1
-    # return total_cnt, idle_cnt
