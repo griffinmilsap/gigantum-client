@@ -9,7 +9,6 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { boundMethod } from 'autobind-decorator';
 // store
 import store from 'JS/redux/store';
 import { setContainerMenuWarningMessage } from 'JS/redux/actions/labbook/environment/environment';
@@ -26,8 +25,8 @@ import LabbookContainerStatusMutation from 'Mutations/LabbookContainerStatusMuta
 import LabbookLookupMutation from 'Mutations/LabbookLookupMutation';
 import MigrateProjectMutation from 'Mutations/MigrateProjectMutation';
 // components
-import Login from 'Components/login/Login';
 import Loader from 'Components/common/Loader';
+import Login from 'Components/login/Login';
 import ErrorBoundary from 'Components/common/ErrorBoundary';
 import Header from 'Components/shared/header/Header';
 import ButtonLoader from 'Components/common/ButtonLoader';
@@ -44,8 +43,14 @@ import fetchMigrationInfoQuery from './queries/fetchMigrationInfoQuery';
 import './Labbook.scss';
 
 let count = 0;
+const containerStatusList = [];
 
-const Loading = () => <Loader />;
+/**
+  scrolls to top of window
+*/
+const scrollToTop = () => {
+  window.scrollTo(0, 0);
+}
 
 class Labbook extends Component {
   constructor(props) {
@@ -94,7 +99,10 @@ class Labbook extends Component {
 
   static getDerivedStateFromProps(nextProps, state) {
     setCallbackRoute(nextProps.location.pathname);
-    const propBranches = nextProps.labbook && nextProps.labbook.branches ? nextProps.labbook.branches : [];
+
+    const propBranches = nextProps.labbook && nextProps.labbook.branches
+      ? nextProps.labbook.branches
+      : [];
     const stateBranches = state.branches;
     const branchMap = new Map();
     const mergedBranches = [];
@@ -105,6 +113,7 @@ class Labbook extends Component {
         branchMap.set(branch.id, branch);
       }
     });
+
     stateBranches.forEach((branch) => {
       if (branchMap.has(branch.id)) {
         const itemReference = branchMap.get(branch.id);
@@ -117,7 +126,13 @@ class Labbook extends Component {
     branchMap.forEach((branch) => {
       mergedBranches.push(branch);
     });
-    const isLocked = (nextProps.labbook && nextProps.labbook.environment.containerStatus !== 'NOT_RUNNING') || (nextProps.labbook.environment.imageStatus === 'BUILD_IN_PROGRESS') || (nextProps.labbook.environment.imageStatus === 'BUILD_QUEUED') || nextProps.isBuilding || nextProps.isSynching || nextProps.isPublishing;
+    const isLocked = (nextProps.labbook
+      && nextProps.labbook.environment.containerStatus !== 'NOT_RUNNING')
+      || (nextProps.labbook.environment.imageStatus === 'BUILD_IN_PROGRESS')
+      || (nextProps.labbook.environment.imageStatus === 'BUILD_QUEUED')
+      || nextProps.isBuilding
+      || nextProps.isSynching
+      || nextProps.isPublishing;
 
     return {
       ...state,
@@ -182,15 +197,14 @@ class Labbook extends Component {
    @param {}
    refetch packages
    */
-  @boundMethod
-  _packageLatestRefetch() {
+  _packageLatestRefetch = () => {
     const { props } = this;
     const queryVariables = {
       labbookID: props.labbook.id,
       skipPackages: false,
       environmentSkip: false,
       first: 1000,
-    }
+    };
     const renderVariables = {
       labbookID: props.labbook.id,
       overviewSkip: false,
@@ -204,7 +218,7 @@ class Labbook extends Component {
     };
     const options = {
       force: true,
-    }
+    };
     props.relay.refetch(queryVariables, renderVariables, () => {}, options);
   }
 
@@ -212,8 +226,7 @@ class Labbook extends Component {
    @param {String} section
    refetch labbook
    */
-  @boundMethod
-  _refetchSection(section) {
+  _refetchSection = (section) => {
     const { props, state } = this;
     const currentSection = `${section}Skip`;
     const currentState = {
@@ -282,7 +295,7 @@ class Labbook extends Component {
    * @param {}
    * checks if project is deprecated and should migrate and sets state
   */
-  _fetchMigrationInfo() {
+  _fetchMigrationInfo = () => {
     const { props } = this;
     const { owner, name } = props.labbook;
     const self = this;
@@ -306,8 +319,7 @@ class Labbook extends Component {
   *  update state from switch mutation
   *  @return {}
   */
-  @boundMethod
-  _updateMigationState(response) {
+  _updateMigationState = (response) => {
     if (response && response.workonExperimentalBranch) {
       const { isDeprecated, shouldMigrate } = response.workonExperimentalBranch.labbook;
       this.setState({
@@ -323,7 +335,7 @@ class Labbook extends Component {
   *  sets state of labbook using redux and containerStatus using setState
   *  @return {}
   */
-  _fetchStatus(isLabbookUpdate) {
+  _fetchStatus = (isLabbookUpdate) => {
     const { props } = this;
     const { owner, name } = props.labbook;
     const self = this;
@@ -334,7 +346,12 @@ class Labbook extends Component {
         LabbookContainerStatusMutation(owner, name, (error, response) => {
           if (response && response.fetchLabbookEdge && response.fetchLabbookEdge.newLabbookEdge) {
             const { environment } = response.fetchLabbookEdge.newLabbookEdge.node;
-            if ((environment.imageStatus !== 'BUILD_IN_PROGRESS') && isBuilding) {
+            containerStatusList.push(environment.imageStatus);
+            const containerStatusLength = containerStatusList.length;
+            const previousImageStatus = containerStatusList[containerStatusLength - 2];
+            if ((previousImageStatus !== 'BUILD_IN_PROGRESS')
+              && (environment.imageStatus === 'EXISTS')
+              && isBuilding) {
               setBuildingState(false);
             }
           }
@@ -373,7 +390,7 @@ class Labbook extends Component {
     updates state of labbook when prompted ot by the store
     updates history prop
   */
-  _branchViewClickedOff(evt) {
+  _branchViewClickedOff = (evt) => {
     if (evt.target.className.indexOf('Labbook__veil') > -1) {
       this._toggleBranchesView(false, false);
     }
@@ -382,8 +399,7 @@ class Labbook extends Component {
   /**
     sets branch uptodate in state
   */
-  @boundMethod
-  _setBranchUptodate() {
+  _setBranchUptodate = () => {
     const { branches } = this.state;
     const activePosition = branches.map(branch => branch.isActive).indexOf(true);
     const branchesClone = branches.slice();
@@ -395,8 +411,7 @@ class Labbook extends Component {
   /**
     migrates project
   */
-  @boundMethod
-  _migrateProject() {
+  _migrateProject = () => {
     const { props, state } = this;
     const { owner, name } = props.labbook;
 
@@ -450,7 +465,7 @@ class Labbook extends Component {
     @param {}
     dispatches sticky state to redux to update state
   */
-  _setStickHeader() {
+  _setStickHeader = () => {
     this.offsetDistance = window.pageYOffset;
     const sticky = 50;
     const isSticky = window.pageYOffset >= sticky;
@@ -468,8 +483,7 @@ class Labbook extends Component {
     @param {boolean} mergeFilter
     updates branchOpen state
   */
-  @boundMethod
-  _toggleBranchesView(branchesOpen, mergeFilter) {
+  _toggleBranchesView = (branchesOpen, mergeFilter) => {
     if (store.getState().containerStatus.status !== 'Running') {
       setMergeMode(branchesOpen, mergeFilter);
     } else {
@@ -481,15 +495,11 @@ class Labbook extends Component {
     @param {}
     updates branchOpen state
   */
-  _toggleMigrationModal() {
-    this.setState({ migrationModalVisible: !this.state.migrationModalVisible });
-  }
-
-  /**
-    scrolls to top of window
-  */
-  _scrollToTop() {
-    window.scrollTo(0, 0);
+  _toggleMigrationModal = () => {
+    this.setState((state) => {
+      const migrationModalVisible = !state.migrationModalVisible;
+      return { migrationModalVisible };
+    });
   }
 
   /**
@@ -546,6 +556,7 @@ class Labbook extends Component {
         'Labbook--deprecated': state.isDeprecated,
         'Labbook--demo-deprecated': state.isDeprecated && isDemo,
         'Labbook--sidePanelVisible': sidePanelVisible,
+        'Labbook--locked': state.isLocked,
       });
       const deprecatedCSS = classNames({
         Labbook__deprecated: true,
@@ -715,7 +726,7 @@ class Labbook extends Component {
             }
             <Header
               {...props}
-              ref={header => header }
+              ref={header => header}
               description={labbook.description}
               toggleBranchesView={this._toggleBranchesView}
               sectionType="labbook"
@@ -747,9 +758,9 @@ class Labbook extends Component {
                         refetch={this._refetchSection}
                         isSyncing={props.isSyncing}
                         isPublishing={props.isPublishing}
-                        scrollToTop={this._scrollToTop}
+                        scrollToTop={scrollToTop}
                         sectionType="labbook"
-                        history={this.props.history}
+                        history={props.history}
                       />
                     </ErrorBoundary>
                   )}
@@ -775,7 +786,7 @@ class Labbook extends Component {
                             refetch={this._refetchSection}
                             isSyncing={props.isSyncing}
                             isPublishing={props.isPublishing}
-                            scrollToTop={this._scrollToTop}
+                            scrollToTop={scrollToTop}
                             sectionType="labbook"
 
                             history={this.props.history}
@@ -906,8 +917,8 @@ class Labbook extends Component {
 
           </div>
           <div className="Labbook__veil" />
-
-        </div>);
+        </div>
+      );
     }
 
     if (state.authenticated) {

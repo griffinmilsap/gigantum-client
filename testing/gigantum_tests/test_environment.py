@@ -33,8 +33,6 @@ def test_pip_packages(driver: selenium.webdriver, *args, **kwargs):
     project_control.container_status_stopped.wait(120)
     project_control.launch_devtool('JupyterLab')
     jupyterlab_elts = testutils.JupyterLabElements(driver)
-    # TODO DC This seems unnecessary given the wait below
-    time.sleep(5)
     jupyterlab_elts.jupyter_notebook_button.wait().click()
     time.sleep(5)
     logging.info("Running script to import packages and print package versions")
@@ -74,7 +72,6 @@ def test_valid_custom_docker(driver: selenium.webdriver, *args, **kwargs):
     env_elts.add_custom_docker_instructions("RUN cd /tmp && "
                                             "git clone https://github.com/gigantum/confhttpproxy && "
                                             "cd /tmp/confhttpproxy && pip install -e.")
-    time.sleep(3)
     proj_elements = testutils.ProjectControlElements(driver)
     proj_elements.container_status_stopped.wait(60)
 
@@ -94,7 +91,6 @@ def test_invalid_custom_docker(driver: selenium.webdriver, *args, **kwargs):
     username, project_name = r.username, r.project_name
     env_elts = testutils.EnvironmentElements(driver)
     env_elts.add_custom_docker_instructions("RUN /bin/false")
-    time.sleep(3)
     wait = WebDriverWait(driver, 90)
     wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".flex>.Rebuild")))
 

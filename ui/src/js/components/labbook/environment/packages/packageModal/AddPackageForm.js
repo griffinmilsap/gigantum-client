@@ -1,16 +1,19 @@
 // vendor
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+// componenets
 import Dropdown from 'Components/common/Dropdown';
 // assets
 import './AddPackageForm.scss';
 
 export default class AddPackageForm extends Component {
+
   state = {
     selectedManager: this.props.defaultManager,
     packageName: '',
-    version: null,
+    checkedValue: 'latest',
+    version: '',
     aptTooltipVisible: false,
     managerDropdownVisible: false,
   }
@@ -30,14 +33,30 @@ export default class AddPackageForm extends Component {
   }
 
   /**
+    @param {string} checkedValue
+    sets version radio button
+  */
+  _setChecked = (checkedValue) => {
+    this.setState((state) => {
+      const version = (checkedValue === 'latest') ? '' : state.value;
+
+      return { checkedValue, version };
+    });
+
+    if (checkedValue === 'latest') {
+      this.packageVersionInput.value = '';
+    }
+  }
+
+  /**
     @param {event} evt
     closes menu
   */
-  @boundMethod
-  _closeMenus(evt) {
+  _closeMenus = (evt) => {
     const { state } = this;
     const isDropdown = (evt.target.className.indexOf('Dropdown') > -1);
     const disabledRadio = (evt.target.hasAttribute('data-apt-popup'));
+
     if (!isDropdown && state.managerDropdownVisible) {
       this.setState({ managerDropdownVisible: false });
     }
@@ -50,12 +69,12 @@ export default class AddPackageForm extends Component {
   *  @param {String} selectedManager
   *  sets selected package manager
   */
-  @boundMethod
-  _setselectedPackageManager(selectedManager) {
-    document.getElementById('packageNameInput').focus();
+  _setselectedPackageManager = (selectedManager) => {
+    this.packageNameInput.focus();
     this.setState({ selectedManager, managerDropdownVisible: false });
+
     if (selectedManager === 'apt') {
-      this.setState({ version: null });
+      this.setState({ version: '' });
     }
   }
 
@@ -63,10 +82,11 @@ export default class AddPackageForm extends Component {
   *  @param {}
   *  sets manager dropdown visibility
   */
-  @boundMethod
-  _setManagerDropdownVisibility() {
-    const { state } = this;
-    this.setState({ managerDropdownVisible: !state.managerDropdownVisible });
+  _setManagerDropdownVisibility = () => {
+    this.setState((state) => {
+      const managerDropdownVisible = !state.managerDropdownVisible;
+      return { managerDropdownVisible };
+    });
   }
 
   /**
@@ -74,9 +94,8 @@ export default class AddPackageForm extends Component {
   *  updated packageName in state
   *  @return {}
   */
-  @boundMethod
-  _updatePackageName(evt) {
-    if (evt.key === 'Enter' && evt.target.value.length) {
+  _updatePackageName = (evt) => {
+    if ((evt.key === 'Enter') && evt.target.value.length) {
       this._sendQueuePackage();
     } else {
       const packageName = evt.target.value;
@@ -89,11 +108,11 @@ export default class AddPackageForm extends Component {
   *  clears packageName in state
   *  @return {}
   */
-  @boundMethod
-  _clearPackageName() {
+  _clearPackageName = () => {
     this.setState({ packageName: '' });
-    if (document.getElementById('packageNameInput')) {
-      document.getElementById('packageNameInput').value = '';
+
+    if (this.packageNameInput) {
+      this.packageNameInput.value = '';
     }
   }
 
@@ -102,19 +121,18 @@ export default class AddPackageForm extends Component {
   *  updated version in state
   *  @return {}
   */
-  @boundMethod
-  _updatePackageVersion(evt) {
-    evt.stopPropagation();
+  _updatePackageVersion = (evt) => {
     const { state } = this;
+
     if (evt.target.id === 'latest_version') {
-      this.setState({ version: null });
+      this.setState({ version: '' });
     } else if (evt.target.id === 'specific_version') {
-      if (state.selectedManager === 'apt' && !state.aptTooltipVisible) {
+      if ((state.selectedManager === 'apt') && !state.aptTooltipVisible) {
         this.setState({ aptTooltipVisible: true });
       } else if (state.selectedManager !== 'apt') {
-        this.setState({ version: document.getElementById('packageVersionInput').value });
+        this.setState({ version: this.packageVersionInput.value });
       }
-    } else if (evt.key === 'Enter' && evt.target.value.length) {
+    } else if ((evt.key === 'Enter') && evt.target.value.length) {
       this._sendQueuePackage();
     } else {
       const version = evt.target.value;
@@ -127,11 +145,10 @@ export default class AddPackageForm extends Component {
   *  clears version in state
   *  @return {}
   */
-  @boundMethod
-  _clearPackageVersion() {
-    this.setState({ version: null });
-    if (document.getElementById('packageVersionInput')) {
-      document.getElementById('packageVersionInput').value = '';
+  _clearPackageVersion = () => {
+    this.setState({ version: '' });
+    if (this.packageVersionInput) {
+      this.packageVersionInput.value = '';
     }
   }
 
@@ -140,8 +157,7 @@ export default class AddPackageForm extends Component {
   *  clears version in state
   *  @return {}
   */
-  @boundMethod
-  _sendQueuePackage() {
+  _sendQueuePackage = () => {
     const { props, state } = this;
     const versionObject = state.version ? { version: state.version } : {};
     props.queuePackage({
@@ -156,22 +172,18 @@ export default class AddPackageForm extends Component {
   render() {
     const { props, state } = this;
     const { packageManagers } = props.base;
-    const managerDropdownCSS = classNames({
-      'Dropdown--addPackages Dropdown relative': true,
-      'Dropdown--open': state.managerDropdownVisible,
-      'Dropdown--collapsed': !state.managerDropdownVisible,
-    });
+    const buttonsDisabled = (state.packageName.length === 0);
+    // declare css here
     const specificVersionCSS = classNames({
       'Radio flex relative': true,
-      'AddPackageForm__version--active': state.version !== null,
-      'Radio--disabled': state.selectedManager === 'apt',
+      'AddPackageForm__version--active': (state.version !== ''),
+      'Radio--disabled': (state.selectedManager === 'apt'),
     });
+
     return (
       <div className="AddPackageForm flex justify--center flex--column align-items--center">
         <div className="AddPackageForm__container flex flex--column justify--space-between">
-          <div
-            className="AddPackageForm__manager flex align-items--center"
-          >
+          <div className="AddPackageForm__manager flex align-items--center">
             <div className="AddPackageForm__label">Package Manager</div>
             <Dropdown
               customStyle="addPackages margin--0"
@@ -182,13 +194,11 @@ export default class AddPackageForm extends Component {
               label={state.selectedManager}
             />
           </div>
-          <div
-            className="AddPackageForm__name flex align-items--center"
-          >
+          <div className="AddPackageForm__name flex align-items--center">
             <div className="AddPackageForm__label">Package Name</div>
             <input
               type="text"
-              id="packageNameInput"
+              ref={(packageNameInput) => { this.packageNameInput = packageNameInput; }}
               onChange={evt => this._updatePackageName(evt)}
               onKeyDown={evt => this._updatePackageName(evt)}
             />
@@ -205,7 +215,8 @@ export default class AddPackageForm extends Component {
                 name="selectVersion"
                 type="radio"
                 id="latest_version"
-                checked={state.version === null}
+                checked={state.checkedValue === 'latest'}
+                onClick={() => this._setChecked('latest')}
                 onChange={evt => this._updatePackageVersion(evt)}
               />
               <span>Latest</span>
@@ -218,14 +229,15 @@ export default class AddPackageForm extends Component {
                 name="selectVersion"
                 type="radio"
                 id="specific_version"
-                checked={state.version !== null}
+                checked={state.checkedValue === 'specify'}
+                onClick={() => { this._setChecked('specify'); }}
                 onChange={evt => this._updatePackageVersion(evt)}
               />
               <span
                 className="align-self--center"
                 data-apt-popup
               >
-              Specify
+                Specify
               </span>
               {
                 state.aptTooltipVisible && (
@@ -244,8 +256,9 @@ export default class AddPackageForm extends Component {
               }
               <input
                 type="text"
-                disabled={state.version === null}
-                id="packageVersionInput"
+                value={state.version}
+                ref={(packageVersionInput) => { this.packageVersionInput = packageVersionInput; }}
+                onClick={() => { this._setChecked('specify'); }}
                 onChange={evt => this._updatePackageVersion(evt)}
                 onKeyDown={evt => this._updatePackageVersion(evt)}
               />
@@ -255,8 +268,8 @@ export default class AddPackageForm extends Component {
             className="AddPackageForm__entry-buttons align-self--end"
           >
             <button
-              className="Btn Btn--flat"
-              disabled={state.packageName.length === 0}
+              className="Btn Btn--flat Btn--width-80"
+              disabled={buttonsDisabled}
               type="button"
               onClick={() => this._clearPackageName()}
             >
@@ -264,7 +277,7 @@ export default class AddPackageForm extends Component {
             </button>
             <button
               className="Btn Btn__add"
-              disabled={state.packageName.length === 0}
+              disabled={buttonsDisabled}
               type="button"
               onClick={() => this._sendQueuePackage()}
             >

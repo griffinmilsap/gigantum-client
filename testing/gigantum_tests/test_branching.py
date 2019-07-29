@@ -59,5 +59,5 @@ def test_delete_file_local_branch(driver: selenium.webdriver, *args, **kwargs):
     branch_elts.merge_alternate_branch()
     logging.info(f"Checking that file deleted in test-branch does not appear in master branch")
 
-    assert file_browser_elts.file_browser_empty.find(), \
+    assert file_browser_elts.is_file_browser_empty(), \
         "Expected sample-upload.txt to not appear in master branch"

@@ -1,6 +1,8 @@
 @import '~Styles/_imports.scss';
 
-
+.PackageRow {
+  overflow: visible;
+}
 
 .PackageHeader__name,
 .PackageRow__name {
@@ -78,14 +80,15 @@
 .PackageRow.Table__Row:last-child {
   .Tooltip-data {
     &:before {
-      top: calc(50% - 7px);
-      left: -8px;
+      top: calc(50% - 23px);
+      left: 0x;
 
-      @include triangle('right', 7px, $slateBlue);
+      @include triangle('down', 7px, $slateBlue);
+      border-bottom: 7px solid transparent;
     }
     &:after {
-      top: calc(50% - 17px);
-      left: -168px;
+      top: calc(50% - 61px);
+      left: -60px;
     }
   }
 }
