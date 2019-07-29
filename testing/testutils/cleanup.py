@@ -33,7 +33,7 @@ def delete_projects_on_disk():
         shutil.rmtree(user_project_path, ignore_errors=True)
 
 
-def delete_datasets():
+def delete_local_datasets():
     root_dir = os.path.expanduser(os.environ['GIGANTUM_HOME'])
     user_datasets = glob.glob(f'{root_dir}/*/*/datasets/selenium-dataset-*')
     for user_dataset_path in user_datasets:

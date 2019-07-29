@@ -12,9 +12,9 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-from .cleanup import delete_datasets, delete_projects_on_disk, delete_project_images, stop_project_containers
+from .cleanup import delete_local_datasets, delete_projects_on_disk, delete_project_images, stop_project_containers
 from .actions import list_remote_projects
-from .graphql_helpers import delete_remote_project, list_remote_datasets
+from .graphql_helpers import delete_remote_project, list_remote_datasets, delete_dataset
 
 
 class TestResult(object):
@@ -130,7 +130,6 @@ class TestRunner:
         stop_project_containers()
         delete_project_images()
         delete_projects_on_disk()
-        delete_datasets()
 
         # Delete remote projects
         remote_projects = list_remote_projects()
@@ -139,9 +138,10 @@ class TestRunner:
                 delete_remote_project(owner, project_name)
 
         remote_datasets = list_remote_datasets()
-        for owner, dataset_name in remote_projects:
-            if 'selenium-project-' in dataset_name:
-                delete_remote_project(owner, dataset_name)
+        for owner, dataset_name in remote_datasets:
+            if 'selenium-dataset-' in dataset_name:
+                delete_dataset(owner, dataset_name)
+        delete_local_datasets()
 
     def _upload_to_s3(self):
         s3client = boto3.resource('s3')

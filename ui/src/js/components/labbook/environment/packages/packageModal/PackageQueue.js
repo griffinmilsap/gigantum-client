@@ -1,8 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { boundMethod } from 'autobind-decorator';
 // components
-import PackageStatus from './PackageStatus';
 import PackageQueueItem from './PackageQueueItem';
 // assets
 import './PackageQueue.scss';
@@ -18,8 +16,7 @@ export default class PackageModal extends Component {
   *  sets which packages are being edited
   *  @return {}
   */
-  @boundMethod
-  _setEditedPackageRows(packageName, packageManager) {
+  _setEditedPackageRows = (packageName, packageManager) => {
     const { state } = this;
     const newEditedPackageRows = Object.assign({}, state.editedPackageRows);
     if (newEditedPackageRows[packageManager]) {
@@ -36,8 +33,7 @@ export default class PackageModal extends Component {
   *  removes which packages are being edited
   *  @return {}
   */
-  @boundMethod
-  _removeEditedPackageRows(packageName, packageManager) {
+  _removeEditedPackageRows = (packageName, packageManager) => {
     const { state } = this;
     const newEditedPackageRows = Object.assign({}, state.editedPackageRows);
     if (newEditedPackageRows[packageManager]) {
@@ -56,13 +52,18 @@ export default class PackageModal extends Component {
   *  updated packageName in state
   *  @return {}
   */
-  @boundMethod
-  _updatePackage(evt, pkgManager, pkgName, pkgVersion, index, packageValue) {
+  _updatePackage = (evt, pkgManager, pkgName, pkgVersion, index, packageValue) => {
     const { props, state } = this;
     if (evt.key === 'Enter') {
       const { newPackageName } = state.editedPackageRows[pkgManager].get(pkgName);
       const { newPackageVersion } = state.editedPackageRows[pkgManager].get(pkgName);
-      const versionObject = (newPackageVersion || pkgVersion) ? { version: newPackageVersion !== undefined ? newPackageVersion : pkgVersion } : {};
+      const versionObject = (newPackageVersion || pkgVersion) ?
+        {
+          version: (newPackageVersion !== undefined)
+            ? newPackageVersion
+            : pkgVersion,
+        }
+        : {};
       const packageData = {
         package: newPackageName || pkgName,
         manager: pkgManager,
@@ -83,12 +84,13 @@ export default class PackageModal extends Component {
 
   /**
   *  returns valid and invalid package count
-  *  @return {Boolean}
+  *  @return {}
   */
-  _countValiditiy = (packageName, packageManager) => {
+  _countValiditiy = () => {
     const { props } = this;
     let validCount = 0;
     let invalidCount = 0;
+
     props.packageQueue.forEach((pkg) => {
       if (pkg.verified && !pkg.error) {
         validCount += 1;
@@ -113,38 +115,38 @@ export default class PackageModal extends Component {
             <h5>Packages to Install</h5>
           </div>
           {
-          (props.packageQueue.length === 0) && (
-            <div className="PackageQueue__container--empty">
-              Enter packages, then press the
-              {' '}
-              <div className="Btn Btn--fake">
-                <div className="Btn--fake-content">
-                  Add
-                  <div className="Icon--add"></div>
+            (props.packageQueue.length === 0) && (
+              <div className="PackageQueue__container--empty">
+                Enter packages, then press the
+                {' '}
+                <div className="Btn Btn--fake">
+                  <div className="Btn--fake-content">
+                    Add
+                    <div className="Icon--add" />
+                  </div>
                 </div>
+                {' '}
+                button to add a package to the install list, or upload a requirements.txt file.
               </div>
-              {' '}
-              button to add a package to the install list, or upload a requirements.txt file.
-            </div>
-          )
+            )
           }
           {
             (props.packageQueue.length > 0) && (
-            <div className="PackageQueue__container">
-              <div className="PackageQueue__tableHeader flex align-items--end justify--right">
-                <div className="PackageQueue__manager">Package Manager</div>
-                <div className="PackageQueue__name flex--1">Package Name</div>
-                <div className="PackageQueue__version">Version</div>
-                <div className="PackageQueue__status">Status</div>
+              <div className="PackageQueue__container">
+                <div className="PackageQueue__tableHeader flex align-items--end justify--right">
+                  <div className="PackageQueue__manager">Package Manager</div>
+                  <div className="PackageQueue__name flex--1">Package Name</div>
+                  <div className="PackageQueue__version">Version</div>
+                  <div className="PackageQueue__status">Status</div>
+                </div>
+                <PackageQueueItem
+                  {...props}
+                  editedPackageRows={state.editedPackageRows}
+                  updatePackage={this._updatePackage}
+                  setEditedPackageRows={this._setEditedPackageRows}
+                  removeEditedPackageRows={this._removeEditedPackageRows}
+                />
               </div>
-              <PackageQueueItem
-                {...props}
-                editedPackageRows={state.editedPackageRows}
-                updatePackage={this._updatePackage}
-                setEditedPackageRows={this._setEditedPackageRows}
-                removeEditedPackageRows={this._removeEditedPackageRows}
-              />
-            </div>
             )
           }
           {

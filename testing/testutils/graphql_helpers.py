@@ -198,27 +198,32 @@ def delete_remote_project(owner_name, project_name):
 
 
 def delete_dataset(owner_name, project_name, delete_local=True, delete_remote=True):
+    mutation = 'mutation'
+
     if os.environ['GIGANTUM_USERNAME'] != owner_name:
-        logging.info(f"Cannot delete a remote project {os.environ['GIGANTUM_USERNAME']} "
+        logging.info(f"Cannot delete a remote dataset {os.environ['GIGANTUM_USERNAME']} "
                      f"does not own.")
         delete_remote = False
     logging.info(f'Delete dataset {owner_name}/{project_name} '
                  f'local={delete_local}, remote={delete_remote}')
     delete_remote_query = """
-    mutation deleteRemoteDataset($owner: String!, $name: String!,
-                                 $local: Boolean!, $remote: Boolean!) {
-        deleteRemoteDataset(input: {
+    mutation deleteDataset($owner: String!, $name: String!,
+                                 $local: Boolean!, $remote: Boolean!, $clientMutationId: String! ) {
+        deleteDataset(input: {
             owner: $owner,
             datasetName: $name,
             local: $local,
             remote: $remote
+            clientMutationId: $clientMutationId
         }) {
-            success
+            localDeleted
+            remoteDeleted
+            clientMutationId
         }
     }
     """
     var = {'owner': owner_name, 'name': project_name, 'local': delete_local,
-           'remote': delete_remote}
+           'remote': delete_remote,'clientMutationId':mutation}
     result = query(delete_remote_query, var)
 
     if 'errors' in result:

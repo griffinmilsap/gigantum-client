@@ -77,6 +77,7 @@ class Auth0LoginElements(UiComponent):
     @property
     def auth0_lock_widget(self):
         return CssElement(self.driver, "form.auth0-lock-widget")
+
     @property
     def auth0_lock_button(self):
         return CssElement(self.driver, ".auth0-lock-social-button")
@@ -323,7 +324,6 @@ class EnvironmentElements(UiComponent):
         project_control = ProjectControlElements(self.driver)
         project_control.container_status_stopped.wait(240)
 
-
     '''Timing should be adjusted before use
      should be reintroduced when apt functions properly
     def add_apt_packages(self, *apt_packages):
@@ -432,6 +432,14 @@ class ImportProjectElements(UiComponent):
     def overview_tab(self):
         return CssElement(self.driver, "#overview")
 
+    @property
+    def import_project_drop_box(self):
+        return CssElement(self.driver,'.DropZone')
+
+    @property
+    def first_project_card_title(self):
+        return self.driver.find_element_by_css_selector('.LocalLabbooks__panel-title')
+
     def import_project_via_url(self, project_url):
         self.import_existing_button.wait().click()
         self.project_url_input.find().send_keys(project_url)
@@ -439,6 +447,15 @@ class ImportProjectElements(UiComponent):
         self.overview_tab.wait(90)
         # Wait to ensure that the container changes from stopped to building
         time.sleep(5)
+
+    def import_project_drag_and_drop(self,filepath):
+        logging.info("Dragging and dropping a file into the drop zone")
+        with open("testutils/file_browser_drag_drop_script.js", "r") as js_file:
+            js_script = js_file.read()
+        file_input = self.driver.execute_script(js_script, self.import_project_drop_box.find(), 0, 0)
+        file_input.send_keys(filepath)
+        self.import_button.wait().click()
+        self.overview_tab.wait(90)
 
 
 class DatasetElements(UiComponent):
@@ -460,7 +477,7 @@ class DatasetElements(UiComponent):
 
     @property
     def dataset_continue_button(self):
-        return CssElement(self.driver, ".WizardModal__buttons .Btn--last")
+        return CssElement(self.driver, ".ButtonLoader")
 
     @property
     def gigantum_cloud_button(self):
@@ -657,7 +674,7 @@ class CloudProjectElements(UiComponent):
 
     @property
     def delete_cloud_project_button(self):
-        return CssElement(self.driver, ".Button__icon--delete")
+        return CssElement(self.driver,".Card:nth-child(1) .Btn__dashboard--delete")
 
     @property
     def delete_cloud_project_input(self):
@@ -677,7 +694,7 @@ class CloudProjectElements(UiComponent):
 
     @property
     def import_first_cloud_project_button(self):
-        return CssElement(self.driver, ".Button__icon--cloud-download")
+        return CssElement(self.driver,".Card:nth-child(1) .Btn__dashboard--cloud-download")
 
     @property
     def project_overview_project_title(self):
@@ -803,10 +820,6 @@ class FileBrowserElements(UiComponent):
         return CssElement(self.driver, "#data")
 
     @property
-    def file_browser_empty(self):
-        return CssElement(self.driver, ".FileBrowser__empty")
-
-    @property
     def file_browser_area(self):
         return CssElement(self.driver, ".FileBrowser")
 
@@ -820,7 +833,7 @@ class FileBrowserElements(UiComponent):
 
     @property
     def delete_file_button(self):
-        return CssElement(self.driver, ".FileBrowser__multiselect>.Btn__delete")
+        return CssElement(self.driver, ".Btn__delete-white")
 
     @property
     def confirm_delete_file_button(self):
@@ -836,7 +849,14 @@ class FileBrowserElements(UiComponent):
 
     @property
     def link_dataset_button(self):
-        return CssElement(self.driver, 'button[data-tooltip="Link Dataset"]')
+        return CssElement(self.driver, ".Btn__FileBrowserAction--link")
+
+    def is_file_browser_empty(self):
+        return CssElement(self.driver, ".Dropbox--menu").contains_text('Drag and drop files here')
+
+    @property
+    def close_notification_menu_button(self):
+        return CssElement(self.driver, ".Footer__disc-button")
 
     def drag_drop_file_in_drop_zone(self, file_content="Sample Text"):
         logging.info("Dragging and dropping a file into the drop zone")
@@ -853,12 +873,14 @@ class FileBrowserElements(UiComponent):
         logging.info("Linking the dataset to project")
         self.input_data_tab.wait().click()
         project_control = ProjectControlElements(self.driver)
+        time.sleep(5)
         project_control.container_status_stopped.wait(120)
         self.link_dataset_button.wait().click()
         time.sleep(4)
         self.driver.find_element_by_css_selector(".LinkCard__details").click()
         time.sleep(4)
         wait = WebDriverWait(self.driver, 200)
+        self.close_notification_menu_button.wait().click()
         wait.until(expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, ".Footer__message-title")))
         self.driver.find_element_by_css_selector(".ButtonLoader ").click()
         # wait the linking window to disappear
