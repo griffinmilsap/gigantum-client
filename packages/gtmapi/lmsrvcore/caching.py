@@ -99,8 +99,8 @@ class RepoCacheEntry:
         if last_update is None:
             self.fetch_cachable_fields()
             last_update = self._date(self.db.hget(self.key, 'last_cache_update'))
-        else:
-            logger.debug(f"Using cached timestamp for {self.key}")
+        if last_update is None:
+            raise ValueError("Cannot retrieve last_cache_update_field")
         delay_secs = (datetime.datetime.utcnow() - last_update).total_seconds()
         if delay_secs > self.REFRESH_PERIOD_SEC:
             self.fetch_cachable_fields()
@@ -108,11 +108,19 @@ class RepoCacheEntry:
 
     @property
     def modified_on(self) -> datetime.datetime:
-        return self._date(self._fetch_property('modified_on'))
+        d = self._date(self._fetch_property('modified_on'))
+        if d is None:
+            raise ValueError("Cannot retrieve modified_on")
+        else:
+            return d
 
     @property
     def created_time(self) -> datetime.datetime:
-        return self._date(self._fetch_property('creation_date'))
+        d = self._date(self._fetch_property('creation_date'))
+        if d is None:
+            raise ValueError("Cannot retrieve creation_date")
+        else:
+            return d
 
     @property
     def description(self) -> str:

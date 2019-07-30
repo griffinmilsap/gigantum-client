@@ -30,7 +30,7 @@ from gtmcore.files import FileOperations
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType
 from gtmcore.environment import ComponentManager
 
-from lmsrvcore.api.mutations import ChunkUploadMutation, ChunkUploadInput, LabbookMutationInput
+from lmsrvcore.api.mutations import ChunkUploadMutation, ChunkUploadInput
 from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 
 from lmsrvlabbook.api.connections.labbookfileconnection import LabbookFileConnection
