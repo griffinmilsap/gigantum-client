@@ -84,7 +84,7 @@ class JobStatus(object):
         # carry the timestamp of this snapshot.
         self.timestamp = datetime.now()
         self.job_key: JobKey = job_key#JobKey(cast(str, redis_dict['_key']))
-        self.status: Optional[str] = rq_job.status #cast(str, redis_dict.get('status'))
+        self.status: Optional[str] = rq_job.get_status() #cast(str, redis_dict.get('status'))
         self.result: Optional[object] = rq_job.result #cast(str, redis_dict.get('result'))
         self.description: Optional[str] = rq_job.description #cast(str, redis_dict.get('description'))
         self.meta: Dict[str, str] = rq_job.meta #cast(Dict[str, str], redis_dict.get('meta') or {})
@@ -138,12 +138,9 @@ class Dispatcher(object):
     """
 
     def __init__(self) -> None:
-        self._redis_conn = self._default_conn()
+        self._redis_conn = default_redis_conn()
         self._scheduler = rq_scheduler.Scheduler(queue_name=GigantumQueues.default_queue.value,
                                                  connection=self._redis_conn)
-
-    def _default_conn(self):
-        return redis.Redis(db=13)
 
     def _get_queue(self, method_name: str) -> rq.Queue:
         # Return the appropriate Queue instance for the given method.
