@@ -151,7 +151,7 @@ def stop_dev_env_monitors(dev_env_key: str, redis_conn: redis.Redis, labbook_nam
     # Signal all activity monitors to exit
     for am in activity_monitor_keys:
         # Set run flag in redis
-        redis_conn.hset(am.decode(), "run", False)
+        redis_conn.hset(am.decode(), "run", "False")
         logger.info("Signaled activity monitor for lab book `{}` to stop".format(labbook_name))
 
 

@@ -136,12 +136,13 @@ class JupyterLabMonitor(DevEnvMonitor):
 
                     # Update redis
                     redis_conn.hset(activity_monitor_key, "dev_env_monitor", dev_env_monitor_key)
-                    redis_conn.hset(activity_monitor_key, "process_id", process_id)
+                    redis_conn.hset(activity_monitor_key, "process_id", process_id.key_str)
                     redis_conn.hset(activity_monitor_key, "path", sessions[s]["path"])
                     redis_conn.hset(activity_monitor_key, "kernel_type", sessions[s]["kernel_type"])
+
                     redis_conn.hset(activity_monitor_key, "kernel_name", sessions[s]["kernel_name"])
                     redis_conn.hset(activity_monitor_key, "kernel_id", sessions[s]["kernel_id"])
-                    redis_conn.hset(activity_monitor_key, "run", True)
+                    redis_conn.hset(activity_monitor_key, "run", str(True))
 
 
 class JupyterLabNotebookMonitor(ActivityMonitor):

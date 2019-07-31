@@ -63,7 +63,7 @@ class JobKey(object):
         assert len(key.split(':')) == 3, "Key must be in format of `rq:job:<uuid>`"
 
     @property
-    def key_str(self):
+    def key_str(self) -> str:
         return self._key_str
 
 

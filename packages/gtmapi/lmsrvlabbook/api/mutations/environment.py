@@ -193,8 +193,11 @@ class StopContainer(graphene.relay.ClientIDMutation):
             if os.path.isdir(bind_location):
                 os.rmdir(bind_location)
 
-        # stop labbook monitor
-        stop_labbook_monitor(lb, username)
+        # stop labbook monitor - but do not prevent stopping the Docker container if it fails.
+        try:
+            stop_labbook_monitor(lb, username)
+        except Exception as e:
+            logger.error(f"Cannot stop monitor for {str(lb)}: {e}")
 
         lb, stopped = ContainerOperations.stop_container(labbook=lb, username=username)
 

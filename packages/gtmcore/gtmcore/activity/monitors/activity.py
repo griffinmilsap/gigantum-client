@@ -176,7 +176,7 @@ class ActivityMonitor(metaclass=abc.ABCMeta):
             client = redis.StrictRedis(db=1)
             key = f"{self.labbook.key}&is-busy&{self.monitor_key}"
             if is_busy:
-                client.set(key, True)
+                client.set(key, "True")
             else:
                 client.delete(key)
         except Exception as err:
