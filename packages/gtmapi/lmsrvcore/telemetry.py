@@ -7,6 +7,7 @@ from typing import Any, Optional, Tuple, Dict, List
 
 from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
+from gtmcore.dispatcher import default_redis_conn
 from gtmcore.configuration import Configuration
 from gtmcore.configuration.utils import call_subprocess
 
@@ -114,7 +115,7 @@ def _calc_rq_free() -> Tuple[int, int]:
     """Parses the output of `rq info` to return total number
     of workers and the count of workers currently idle."""
 
-    conn = redis.Redis(db=13)
+    conn = default_redis_conn()
     with rq.Connection(connection=conn):
         workers: List[rq.Worker] = [w for w in rq.Worker.all()]
     idle_workers = [w for w in workers if w.get_state() == 'idle']

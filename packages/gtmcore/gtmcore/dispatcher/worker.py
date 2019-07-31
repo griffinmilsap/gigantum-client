@@ -9,6 +9,7 @@ from rq import Connection, Queue, Worker
 
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
+from gtmcore.dispatcher import default_redis_conn
 
 logger = LMLogger.get_logger()
 
@@ -29,9 +30,6 @@ class WorkerService:
         self._worker_process_list: List[Process] = []
         self._is_monitoring = True
         self._queue_names = (QUEUE_BUILD, QUEUE_PUBLISH, QUEUE_DEFAULT)
-
-    def _default_conn(self):
-        return redis.Redis(db=13)
 
     def start(self):
         """Start all of the workers for all of the queues. """
@@ -79,7 +77,7 @@ class WorkerService:
 
     def get_all_workers(self, queue_name: str) -> List[Worker]:
         """ Returns a list of all the given workers for the given queue. """
-        return Worker.all(queue=Queue(queue_name, connection=self._default_conn()))
+        return Worker.all(queue=Queue(queue_name, connection=default_redis_conn()))
 
     def monitor_burstable_queue(self) -> None:
         """Blocking routine to monitor the default queue and burst new workers if needed.
