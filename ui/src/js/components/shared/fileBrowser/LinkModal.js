@@ -12,7 +12,7 @@ import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
 import Modal from 'Components/common/Modal';
 import Loader from 'Components/common/Loader';
 import ButtonLoader from 'Components/common/ButtonLoader';
-import AdvancedSearch from 'Components/common/AdvancedSearch';
+import AdvancedSearch from 'Components/common/advancedSearch/AdvancedSearch';
 import LinkCard from './LinkCard';
 // assets
 import './LinkModal.scss';

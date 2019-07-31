@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { boundMethod } from 'autobind-decorator';
 // assets
 import './User.scss';
 
@@ -23,18 +22,17 @@ export default class User extends Component {
     @param {}
     logout through Auth0
   */
-  logout() {
+  logout = () => {
     const { props } = this;
     props.auth.logout();
     this._toggleDropdown();
   }
 
   /**
-      @param {}
-      handles click to update state
-    */
-  @boundMethod
-  _handleClickOutside(event) {
+    @param {}
+    handles click to update state
+  */
+  _handleClickOutside = (event) => {
     const { state } = this;
     const userElementIds = ['user', 'username', 'logout', 'profile'];
     if (state.dropdownVisible && (userElementIds.indexOf(event.target.id) < 0)) {
@@ -47,8 +45,7 @@ export default class User extends Component {
     @param {}
     toggles dropdown state
   */
-  @boundMethod
-  _toggleDropdown() {
+  _toggleDropdown = () => {
     this.setState((state) => {
       const dropdownVisible = !state.dropdownVisible;
       return {
@@ -57,7 +54,6 @@ export default class User extends Component {
       };
     });
   }
-
 
   render() {
     const { state } = this;

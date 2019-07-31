@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { boundMethod } from 'autobind-decorator';
 // components
-import AdvancedSearch from 'Components/common/AdvancedSearch';
+import AdvancedSearch from 'Components/common/advancedSearch/AdvancedSearch';
 import PackageHeader from './PackageHeader';
 import PackageBody from './PackageBody';
 // assets

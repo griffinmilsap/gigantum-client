@@ -9,6 +9,16 @@ import { setUpdateAll } from 'JS/redux/actions/routes';
 import Loader from 'Components/common/Loader';
 import Dataset from './Dataset';
 
+// dataset query with notes fragment
+export const datasetQuery = graphql`
+  query DatasetQueryContainerQuery($name: String!, $owner: String!, $first: Int!, $cursor: String, $overviewSkip: Boolean!, $activitySkip: Boolean!, $dataSkip: Boolean!, $datasetSkip: Boolean!){
+    dataset(name: $name, owner: $owner){
+      id
+      description
+      ...Dataset_dataset
+    }
+}`;
+
 class DatasetQueryContainer extends Component {
   componentDidMount() {
     setUpdateAll(this.props.owner, this.props.datasetName);
@@ -19,7 +29,7 @@ class DatasetQueryContainer extends Component {
     return (
       <QueryRenderer
         environment={environment}
-        query={DatasetQuery}
+        query={datasetQuery}
         variables={
           {
             name: parentProps.datasetName,
@@ -41,7 +51,6 @@ class DatasetQueryContainer extends Component {
               return (<div>{props.errors[0].message}</div>);
             }
 
-
             return (
               <Dataset
                 key={parentProps.datasetName}
@@ -53,7 +62,8 @@ class DatasetQueryContainer extends Component {
                 history={parentProps.history}
                 diskLow={props.diskLow}
                 {...parentProps}
-              />);
+              />
+            );
           }
 
           return (<Loader />);
@@ -63,15 +73,5 @@ class DatasetQueryContainer extends Component {
     );
   }
 }
-
-// dataset query with notes fragment
-export const DatasetQuery = graphql`
-  query DatasetQueryContainerQuery($name: String!, $owner: String!, $first: Int!, $cursor: String, $overviewSkip: Boolean!, $activitySkip: Boolean!, $dataSkip: Boolean!, $datasetSkip: Boolean!){
-    dataset(name: $name, owner: $owner){
-      id
-      description
-      ...Dataset_dataset
-    }
-}`;
 
 export default DatasetQueryContainer;

@@ -12,17 +12,10 @@ import './Helper.scss';
 
 
 class Helper extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      helperMenuOpen: false,
-      showPopup: false,
-    };
-
-    this._toggleIsVisible = this._toggleIsVisible.bind(this);
-    this._resize = this._resize.bind(this);
-  }
+  state = {
+    helperMenuOpen: false,
+    showPopup: false,
+  };
 
   /**
     * @param {}
@@ -47,7 +40,7 @@ class Helper extends Component {
     * @param {}
     * update store
   */
-  _toggleIsVisible() {
+  _toggleIsVisible = () => {
     const { props } = this;
     props.setHelperVisibility(!props.isVisible);
   }
@@ -56,7 +49,7 @@ class Helper extends Component {
     * @param {}
     * toggles menu view
   */
-  _toggleMenuView() {
+  _toggleMenuView = () => {
     const { state } = this;
     setHelperVisible(!state.helperMenuOpen);
     this.setState({ helperMenuOpen: !state.helperMenuOpen });
@@ -66,20 +59,19 @@ class Helper extends Component {
     * @param {}
     * update store to risize component
   */
-  _resize() {
+  _resize = () => {
     const { props } = this;
     props.setResizeHelper();
   }
 
   render() {
     const { props, state } = this;
-
+    // declare css here
     const menuCSS = classNames({
       Helper__menu: state.helperMenuOpen,
       hidden: !state.helperMenuOpen,
       'Helper__men--footer-open': props.footerVisible,
     });
-
     const helperButtonCSS = classNames({
       Helper__button: true,
       'Helper__button--open': state.helperMenuOpen,
@@ -90,38 +82,39 @@ class Helper extends Component {
       <div className="Helper">
         { state.showPopup
         && (
-        <Fragment>
-          <div className="Helper__prompt">
-            <div>
-              <p>Use the guide to view tips on how to use Gigantum. The guide can be toggled in the Help menu below.</p>
-            </div>
+          <Fragment>
+            <div className="Helper__prompt">
+              <div>
+                <p>Use the guide to view tips on how to use Gigantum. The guide can be toggled in the Help menu below.</p>
+              </div>
 
-            <div>
-              <button
-                type="button"
-                className="button--green"
-                onClick={() => this.setState({ showPopup: false })}
-              >
-                Got it!
-              </button>
+              <div>
+                <button
+                  type="button"
+                  className="button--green"
+                  onClick={() => this.setState({ showPopup: false })}
+                >
+                  Got it!
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="Helper__prompt-pointer" />
-        </Fragment>
+            <div className="Helper__prompt-pointer" />
+          </Fragment>
         )
-      }
+        }
 
         <div
           className={helperButtonCSS}
           onClick={() => this._toggleMenuView()}
         />
+
         <div className={menuCSS}>
           <div
             className="Helper__menu-feedback"
             onClick={() => window.open('https://feedback.gigantum.com')}
           >
             <h5>Feedback</h5>
-            <div className="Helper__feedback-button"/>
+            <div className="Helper__feedback-button" />
           </div>
           <div
             className="Helper__menu-discussion"
@@ -139,6 +132,7 @@ class Helper extends Component {
             <h5>Docs</h5>
             <div className="Helper__docs-button" />
           </div>
+
           <div className="Helper__menu-guide">
             <h5>Guide</h5>
             <label
