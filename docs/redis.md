@@ -12,8 +12,12 @@ This is for caching high-latency fields from repositories (e.g., creation date).
 
  - Database 7
  
+## RStudio MITM Proxy
+
+ - Database 1
+ 
 ## All Others
 
-MITM-proxies, HTTP-proxies, etc.
+HTTP-proxies, etc.
 
  - Database 0
