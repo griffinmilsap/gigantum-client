@@ -16,7 +16,7 @@ class RepoCacheController:
     if needed to be re-fetched.
     """
     def __init__(self):
-        self.db = redis.Redis(db=7)
+        self.db = redis.StrictRedis(db=7)
 
     @staticmethod
     def _make_key(id_tuple: Tuple[str, str, str]) -> str:
@@ -60,7 +60,7 @@ class RepoCacheEntry:
     # Entries become stale after 24 hours
     REFRESH_PERIOD_SEC = 60 * 60 * 24
 
-    def __init__(self, redis_conn: redis.Redis, key: str):
+    def __init__(self, redis_conn: redis.StrictRedis, key: str):
         self.db = redis_conn
         self.key = key
 

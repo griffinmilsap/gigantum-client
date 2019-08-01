@@ -25,8 +25,8 @@ import shutil
 import graphene
 from flask import Flask
 import flask
-import json
 import time
+import redis
 from mock import patch
 import responses
 from graphene.test import Client
@@ -232,8 +232,9 @@ def fixture_working_dir_populated_scoped():
     Class scope modifier attached
     """
 
-    import redis
+    # Flush here to clean out the Repository cache (used to store create/modify dates).
     redis.Redis(db=7).flushdb()
+
     # Create temp dir
     config_file, temp_dir = _create_temp_work_dir()
 

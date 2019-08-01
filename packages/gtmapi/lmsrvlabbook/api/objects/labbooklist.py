@@ -96,7 +96,7 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
         Returns:
             list(Labbook)
         """
-        tSTART = time.time()
+        t0 = time.time()
         username = get_logged_in_username()
 
         if sort == "desc":
@@ -108,10 +108,6 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
 
         # Collect all labbooks for all owners
         inv_manager = InventoryManager()
-        #local_lbs = inv_manager.list_labbooks(username=username) #, sort_mode=order_by)
-
-        logger.warning(f"Listed LBs after {time.time()-tSTART:.2f}")
-
         r = RepoCacheController()
         ids = inv_manager.list_repository_ids(username, 'labbook')
 
@@ -124,8 +120,6 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
             except Exception as e:
                 logger.warning(f"Error loading LabBook {uname, owner, project_name}: {e}")
 
-        logger.warning(f"Ran safe LBs after {time.time()-tSTART:.2f}sec")
-
         if order_by == 'modified_on':
             sort_key = lambda tup: r.cached_modified_on(tup)
         elif order_by == 'created_on':
@@ -136,16 +130,12 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
         sorted_ids = sorted(safe_ids, key=sort_key)
         if reverse:
             sorted_ids.reverse()
-        logger.warning(f"Sorted all safe LBs after {time.time()-tSTART:.2f}sec")
 
         edges = [(tup[1], tup[2]) for tup in sorted_ids]
         cursors = [base64.b64encode("{}".format(cnt).encode("UTF-8")).decode("UTF-8") for cnt, x in enumerate(edges)]
-
-        # Process slicing and cursor args
         lbc = ListBasedConnection(edges, cursors, kwargs)
         lbc.apply()
 
-        # Get Labbook instances
         edge_objs = []
         for edge, cursor in zip(lbc.edges, lbc.cursors):
             create_data = {"id": "{}&{}".format(edge[0], edge[1]),
@@ -155,7 +145,7 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
             edge_objs.append(LabbookConnection.Edge(node=Labbook(**create_data),
                                                     cursor=cursor))
 
-        logger.warning(f"Returning from mutation after {time.time()-tSTART:.2f}sec")
+        logger.info(f"Listed all projects in {time.time()-t0:.2f}sec")
         return LabbookConnection(edges=edge_objs, page_info=lbc.page_info)
 
     def resolve_remote_labbooks(self, info, order_by: str, sort: str, **kwargs):
