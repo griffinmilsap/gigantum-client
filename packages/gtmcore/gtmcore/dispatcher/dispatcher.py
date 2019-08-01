@@ -83,14 +83,14 @@ class JobStatus(object):
         # Because this captures the state of the Job at a given point in time, it should
         # carry the timestamp of this snapshot.
         self.timestamp = datetime.now()
-        self.job_key: JobKey = job_key#JobKey(cast(str, redis_dict['_key']))
-        self.status: Optional[str] = rq_job.get_status() #cast(str, redis_dict.get('status'))
-        self.result: Optional[object] = rq_job.result #cast(str, redis_dict.get('result'))
-        self.description: Optional[str] = rq_job.description #cast(str, redis_dict.get('description'))
-        self.meta: Dict[str, str] = rq_job.meta #cast(Dict[str, str], redis_dict.get('meta') or {})
-        self.exc_info: Optional[str] = rq_job.exc_info #cast(str, redis_dict.get('exc_info'))
-        self.started_at: Optional[datetime] = rq_job.started_at #cast(datetime, redis_dict.get('started_at'))
-        self.finished_at: Optional[datetime] = rq_job.ended_at #cast(datetime, redis_dict.get('ended_at'))
+        self.job_key: JobKey = job_key
+        self.status: Optional[str] = rq_job.get_status()
+        self.result: Optional[object] = rq_job.result
+        self.description: Optional[str] = rq_job.description
+        self.meta: Dict[str, str] = rq_job.meta
+        self.exc_info: Optional[str] = rq_job.exc_info
+        self.started_at: Optional[datetime] = rq_job.started_at
+        self.finished_at: Optional[datetime] = rq_job.ended_at
 
     def __str__(self) -> str:
         return f'<BackgroundJob {str(self.job_key)}>'
