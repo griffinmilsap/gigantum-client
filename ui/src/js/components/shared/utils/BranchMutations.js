@@ -35,7 +35,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  creates a new branch and checks it out
    */
-  createBranch(data, callback) {
+  createBranch = (data, callback) => {
     const {
       branchName,
       revision,
@@ -61,7 +61,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  merges an elected branch into current active branch
    */
-  merge(data, callback) {
+  merge = (data, callback) => {
     const {
       otherBranchName,
       overrideMethod,
@@ -86,7 +86,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  publishes dataset to a repository
    */
-  publishDataset(data, callback) {
+  publishDataset = (data, callback) => {
     const {
       setPublic,
       successCall,
@@ -114,7 +114,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  publishes labbook (project) to a repository
    */
-  publishLabbook(data, callback) {
+  publishLabbook = (data, callback) => {
     const {
       labbookId,
       setPublic,
@@ -140,7 +140,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  resets branch to remote HEAD
    */
-  resetBranch(callback) {
+  resetBranch = (callback) => {
     const { owner, name } = this.state;
 
     ResetBranchToRemoteMutation(
@@ -158,7 +158,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  pulls and pushes branch
    */
-  syncDataset(data, callback) {
+  syncDataset = (data, callback) => {
     const {
       overrideMethod,
       pullOnly,
@@ -187,7 +187,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  pulls and pushes branch
    */
-  syncLabbook(data, callback) {
+  syncLabbook = (data, callback) => {
     const {
       overrideMethod,
       pullOnly,
@@ -215,7 +215,7 @@ class BranchesMutations {
      *  @param {function} callback
      *  pulls and pushes branch
      */
-  buildImage(callback) {
+  buildImage = (callback) => {
     const { owner, name } = this.state;
 
     BuildImageMutation(
@@ -234,7 +234,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  checkout branch
    */
-  switchBranch(data, callback) {
+  switchBranch = (data, callback) => {
     const {
       branchName,
     } = data;
@@ -278,7 +278,7 @@ class BranchesMutations {
    *  @param {function} callback
    *  delete branch
    */
-  deleteBranch(data, callback) {
+  deleteBranch = (data, callback) => {
     const {
       branchName,
       deleteLocal,

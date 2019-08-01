@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { boundMethod } from 'autobind-decorator';
 // store
 import store from 'JS/redux/store';
 // config
@@ -44,8 +43,7 @@ class Tooltip extends Component {
    *  closes tooltip box when tooltip is open and the tooltip has not been clicked on
    *
   */
-  @boundMethod
-  _hideTooltip(evt) {
+  _hideTooltip = (evt) => {
     const { props, state } = this;
     if (state.toolTipExpanded
        && (evt.target.className.indexOf(props.section) === -1)) {

@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { WithContext, WithOutContext } from 'react-tag-input';
+// component
+import Category from './Category';
 // assets
 import './AdvancedSearch.scss';
 
@@ -32,29 +34,30 @@ export default class AdvancedSearch extends Component {
   }
 
   /**
-    @param {number} i
+    @param {number} index
     removes tag from list
   */
-  _handleDelete = (i) => {
-    const { tags } = this.props;
+  _handleDelete = (index) => {
+    const { tags, setTags } = this.props;
 
-    tags.splice(i, 1);
+    tags.splice(index, 1);
 
-    this.props.setTags(tags);
+    setTags(tags);
   }
 
   /**
-    @param {number} i
+    @param {String} tag
+    @param {String} category
     add tag to list
   */
   _handleAddition = (tag, category) => {
-    const { tags } = this.props;
+    const { tags, setTags } = this.props;
     if (category) {
       tag.className = category;
     }
     tags.push(tag);
 
-    this.props.setTags(tags);
+    setTags(tags);
   }
 
   /**
@@ -63,6 +66,7 @@ export default class AdvancedSearch extends Component {
   *  @calls {this._handleAddition}
   */
   _addTag = () => {
+    // TODO remove use of document.getElementById, use refs and state
     const { value } = document.getElementById('AdvancedSearch');
     if (value.length) {
       const tag = {
@@ -78,7 +82,7 @@ export default class AdvancedSearch extends Component {
    *  resets expanded index state
    *
   */
-  _resetSelectedFilter(evt) {
+  _resetSelectedFilter = (evt) => {
     if (evt.target.getAttribute('data-resetselectedfilter-id') !== 'AdvancedSearch__filter-section') {
       this.setState({ expandedIndex: null });
     }
@@ -87,11 +91,29 @@ export default class AdvancedSearch extends Component {
     }
 
     // ReactTags class comes from react-tag-input library
-    if (evt.target.getAttribute('data-resetselectedfilter-id') !== 'AdvancedSearch'
-    && evt.target.getAttribute('data-resetselectedfilter-id') !== 'AdvancedSearch__filter-section'
-    && evt.target.className.indexOf('ReactTags') === -1) {
+    if ((evt.target.getAttribute('data-resetselectedfilter-id') !== 'AdvancedSearch')
+      && (evt.target.getAttribute('data-resetselectedfilter-id') !== 'AdvancedSearch__filter-section')
+      && (evt.target.className.indexOf('ReactTags') === -1)) {
       this.setState({ focused: false });
     }
+  }
+
+  /**
+   *  @param {Boolean} tooltipShown
+   *  toggles state of tooltipShown
+   *  hides/shows tooltip
+  */
+  _toggleTooltip = (tooltipShown) => {
+    this.setState({ tooltipShown });
+  }
+
+  /**
+   *  @param {Number} expandedIndex
+   *  sets expanded index
+   *
+  */
+  _setExpandedIndex = (expandedIndex) => {
+    this.setState({ expandedIndex });
   }
 
   render() {
@@ -103,7 +125,7 @@ export default class AdvancedSearch extends Component {
       showButton,
       filterCategories,
     } = this.props;
-    const { state } = this;
+    const { state, props } = this;
     const suggestions = [];
     const rawKeys = [];
     const TagComponent = withoutContext ? WithOutContext : WithContext;
@@ -115,7 +137,7 @@ export default class AdvancedSearch extends Component {
         }
       });
     });
-
+    // declare css here
     const advancedSearchCSS = classNames({
       AdvancedSearch: true,
       'AdvancedSearch--packages': customStyle === 'packages',
@@ -146,8 +168,7 @@ export default class AdvancedSearch extends Component {
               handleInputFocus={() => this.setState({ focused: true })}
             />
           </div>
-          {
-            showButton
+          { showButton
             && (
               <button
                 className="Btn Btn__AdvancedSearch"
@@ -158,68 +179,19 @@ export default class AdvancedSearch extends Component {
           }
         </div>
         <div className={filterCSS}>
-          {
-          Object.keys(this.props.filterCategories).map((category, index) => (
-            <div
+          { Object.keys(props.filterCategories).map((category, index) => (
+            <Category
+              category={category}
+              expandedIndex={state.expandedIndex}
+              filterCategories={props.filterCategories}
+              handleAddition={this._handleAddition}
+              index={index}
               key={category}
-              className="AdvancedSearch__filter-container"
-            >
-              <div
-                className={`AdvancedSearch__filter-section ${this.state.expandedIndex === index ? 'selected' : ''}`}
-                onClick={() => this.setState({ expandedIndex: this.state.expandedIndex === index ? null : index })}
-                key={category}
-                data-resetselectedfilter-id="AdvancedSearch__filter-section"
-
-              >
-                {category}
-              </div>
-              {
-              (category === 'CUDA Version')
-              && (
-              <div
-                className="AdvancedSearch__info"
-                data-resetselectedfilter-id="AdvancedSearch__info"
-                onClick={() => this.setState({ tooltipShown: !this.state.tooltipShown })}
-              >
-                {
-                  this.state.tooltipShown
-                  && (
-                  <div className="InfoTooltip">
-                    CUDA enabled bases will automatically use the NVIDIA Container Runtime when NVIDIA drivers on the host are compatible with the CUDA version installed in the Base.&nbsp;&nbsp;
-                    <a
-                      target="_blank"
-                      href="https://docs.gigantum.com/docs/using-cuda-with-nvidia-gpus"
-                      rel="noopener noreferrer"
-                    >
-                      Learn more.
-                    </a>
-                  </div>
-                  )
-                }
-              </div>
-              )
-            }
-
-              {
-                (this.state.expandedIndex === index)
-                && (
-                <ul className="AdvancedSearch__filter-list">
-                  {
-                        this.props.filterCategories[category].map(filter => (
-                          <li
-                            key={filter}
-                            onClick={() => this._handleAddition({ id: filter, text: filter }, category)}
-                          >
-                            {filter}
-                          </li>
-                        ))
-                    }
-                </ul>
-                )
-            }
-            </div>
-          ))
-        }
+              setExpandedIndex={this._setExpandedIndex}
+              toggleTooltip={this.toggleTooltip}
+              tooltipShown={state.tooltipShown}
+            />
+          ))}
         </div>
       </div>
     );

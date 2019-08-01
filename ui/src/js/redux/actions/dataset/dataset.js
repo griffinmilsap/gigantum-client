@@ -12,3 +12,8 @@ export const setIsProcessing = isProcessing => dispatcher(
   types.SET_IS_PROCESSING,
   { isProcessing },
 );
+
+export const setIsSynching = (owner, name, isSynching) => dispatcher(
+  types.SET_IS_SYNCHING,
+  { owner, name, isSynching },
+);

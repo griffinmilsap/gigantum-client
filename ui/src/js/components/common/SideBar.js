@@ -39,7 +39,7 @@ export default class SideBar extends Component {
     @param {}
     logout through Auth0
   */
-  logout() {
+  logout = () => {
     const { props } = this;
     props.auth.logout();
   }

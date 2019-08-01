@@ -9,6 +9,15 @@ import { setUpdateAll } from 'JS/redux/actions/routes';
 import Loader from 'Components/common/Loader';
 import Labbook from './Labbook';
 
+// labbook query with notes fragment
+export const labbookQuery = graphql`
+  query LabbookQueryContainerQuery($name: String!, $owner: String!, $first: Int!, $cursor: String, $skipPackages: Boolean!, $environmentSkip: Boolean!, $overviewSkip: Boolean!, $activitySkip: Boolean!, $codeSkip: Boolean!, $inputSkip: Boolean!, $outputSkip: Boolean!, $labbookSkip: Boolean!){
+    labbook(name: $name, owner: $owner){
+      id
+      description
+      ...Labbook_labbook
+    }
+  }`;
 
 class LabbookQueryContainer extends Component {
   componentDidMount() {
@@ -20,7 +29,7 @@ class LabbookQueryContainer extends Component {
     return (
       <QueryRenderer
         environment={environment}
-        query={LabbookQuery}
+        query={labbookQuery}
         variables={
           {
             name: parentProps.labbookName,
@@ -59,7 +68,8 @@ class LabbookQueryContainer extends Component {
                 history={parentProps.history}
                 diskLow={props.diskLow}
                 {...parentProps}
-              />);
+              />
+            );
           }
 
           return (<Loader />);
@@ -69,16 +79,5 @@ class LabbookQueryContainer extends Component {
     );
   }
 }
-
-
-// labbook query with notes fragment
-export const LabbookQuery = graphql`
-  query LabbookQueryContainerQuery($name: String!, $owner: String!, $first: Int!, $cursor: String, $skipPackages: Boolean!, $environmentSkip: Boolean!, $overviewSkip: Boolean!, $activitySkip: Boolean!, $codeSkip: Boolean!, $inputSkip: Boolean!, $outputSkip: Boolean!, $labbookSkip: Boolean!){
-    labbook(name: $name, owner: $owner){
-      id
-      description
-      ...Labbook_labbook
-    }
-  }`;
 
 export default LabbookQueryContainer;

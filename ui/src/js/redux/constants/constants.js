@@ -10,6 +10,7 @@ export const UPDATE_ALL = 'UPDATE_ALL';
  * datasets
  */
 export const SET_IS_PROCESSING = 'SET_IS_PROCESSING';
+export const SET_IS_SYNCHING = 'SET_IS_SYNCHING';
 
 /**
  * environment

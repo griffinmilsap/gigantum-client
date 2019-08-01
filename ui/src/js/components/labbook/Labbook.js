@@ -50,7 +50,7 @@ const containerStatusList = [];
 */
 const scrollToTop = () => {
   window.scrollTo(0, 0);
-}
+};
 
 class Labbook extends Component {
   constructor(props) {
@@ -95,6 +95,7 @@ class Labbook extends Component {
     codeSkip: true,
     inputSkip: true,
     outputSkip: true,
+    lockFileBrowser: false,
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -123,9 +124,11 @@ class Labbook extends Component {
         newDeletedBranches.push(branch.id);
       }
     });
+
     branchMap.forEach((branch) => {
       mergedBranches.push(branch);
     });
+
     const isLocked = (nextProps.labbook
       && nextProps.labbook.environment.containerStatus !== 'NOT_RUNNING')
       || (nextProps.labbook.environment.imageStatus === 'BUILD_IN_PROGRESS')
@@ -134,13 +137,22 @@ class Labbook extends Component {
       || nextProps.isSynching
       || nextProps.isPublishing;
 
+    const canManageCollaborators = nextProps.labbook
+      ? nextProps.labbook.canManageCollaborators
+      : false;
+    const collaborators = nextProps.labbook
+      ? nextProps.labbook.collaborators
+      : [];
+
+    const lockFileBrowser = nextProps.isSyncing || nextProps.isUploading || nextProps.isPublishing;
     return {
       ...state,
       deletedBranches: newDeletedBranches,
       branches: mergedBranches,
-      canManageCollaborators: nextProps.labbook ? nextProps.labbook.canManageCollaborators : false,
-      collaborators: nextProps.labbook ? nextProps.labbook.collaborators : [],
+      canManageCollaborators,
+      collaborators,
       isLocked,
+      lockFileBrowser,
     };
   }
 
@@ -152,8 +164,10 @@ class Labbook extends Component {
   componentDidMount() {
     const { props, state } = this;
     const { name, owner } = props.labbook;
+
     this.mounted = true;
     document.title = `${owner}/${name}`;
+
     props.auth.isAuthenticated().then((response) => {
       let isAuthenticated = response;
       if (isAuthenticated === null) {
@@ -173,10 +187,10 @@ class Labbook extends Component {
     window.addEventListener('click', this._branchViewClickedOff);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     const { props, state } = this;
     const { activeBranchName } = props.labbook;
-
+    // TODO do not set state in componenetDidUpdate
     if (activeBranchName !== state.activeBranchName) {
       this.setState({ activeBranchName });
     }
@@ -188,8 +202,8 @@ class Labbook extends Component {
   */
   componentWillUnmount() {
     this.mounted = false;
-    window.removeEventListener('scroll', this._setStickHeader);
 
+    window.removeEventListener('scroll', this._setStickHeader);
     window.removeEventListener('click', this._branchViewClickedOff);
   }
 
@@ -532,6 +546,7 @@ class Labbook extends Component {
     return { showMigrationButton, migrationText };
   }
 
+  // TODO move migration code into it's own component
   render() {
     const { props, state } = this;
     const isLocked = props.isBuilding
@@ -702,22 +717,23 @@ class Labbook extends Component {
                                 href="https://docs.gigantum.com/docs/project-migration"
                                 rel="noopener noreferrer"
                               >
-                            Learn More.
-                              </a>
-                              <p>Remember to notify collaborators that this project has been migrated. They may need to re-import the project.</p>
+                              Learn More.
+                            </a>
+                          <p>Remember to notify collaborators that this project has been migrated. They may need to re-import the project.</p>
                             </div>
                             <div className="Labbook__migration-buttons">
                               <button
+                                type="button"
                                 className="Labbook__migration--dismiss"
                                 onClick={() => this._toggleMigrationModal()}
                               >
-                            Dismiss
+                              Dismiss
                               </button>
                             </div>
                           </div>
                         </div>
                       )
-                }
+                    }
                   </div>
                 )
                 }
@@ -788,8 +804,7 @@ class Labbook extends Component {
                             isPublishing={props.isPublishing}
                             scrollToTop={scrollToTop}
                             sectionType="labbook"
-
-                            history={this.props.history}
+                            history={props.history}
                           />
                         </ErrorBoundary>
                       )}
@@ -843,7 +858,8 @@ class Labbook extends Component {
                             packageLatestRefetch={this._packageLatestRefetch}
                             {...props}
                           />
-                        </ErrorBoundary>)}
+                        </ErrorBoundary>
+                      )}
                     />
 
                     <Route
@@ -861,10 +877,11 @@ class Labbook extends Component {
                             isLocked={isLocked}
                             containerStatus={containerStatus}
                             section="code"
-                            lockFileBrowser={props.isUploading}
+                            lockFileBrowser={state.lockFileBrowser}
                           />
 
-                        </ErrorBoundary>)}
+                        </ErrorBoundary>
+                      )}
                     />
 
                     <Route
@@ -880,12 +897,13 @@ class Labbook extends Component {
                             isLocked={isLocked}
                             refetch={this._refetchSection}
                             containerStatus={containerStatus}
-                            lockFileBrowser={props.isUploading}
+                            lockFileBrowser={state.lockFileBrowser}
                             owner={labbook.owner}
                             name={labbook.name}
                             section="input"
                           />
-                        </ErrorBoundary>)}
+                        </ErrorBoundary>
+                      )}
                     />
 
                     <Route
@@ -901,10 +919,11 @@ class Labbook extends Component {
                             isLocked={isLocked}
                             refetch={this._refetchSection}
                             containerStatus={containerStatus}
-                            lockFileBrowser={props.isUploading}
+                            lockFileBrowser={state.lockFileBrowser}
                             section="output"
                           />
-                        </ErrorBoundary>)}
+                        </ErrorBoundary>
+                      )}
                     />
 
                   </Switch>

@@ -1,3 +1,6 @@
+// vendor
+import uuidv4 from 'uuid/v4';
+// constants
 import * as types from 'JS/redux/constants/constants';
 
 
@@ -6,6 +9,7 @@ export default (
     isSticky: false,
     isProcessing: false,
     isUploading: false,
+    isSynchingObject: {},
   },
   action,
 ) => {
@@ -24,6 +28,17 @@ export default (
     return {
       ...state,
       isProcessing: action.payload.isProcessing,
+    };
+  }
+  if (action.type === types.SET_IS_SYNCHING) {
+    const { name, owner } = action.payload;
+    const { isSynchingObject } = state;
+
+    isSynchingObject[`${owner}_${name}`] = action.payload.isSynching;
+    return {
+      ...state,
+      isSynchingObject,
+      forceUpdate: uuidv4(),
     };
   }
 

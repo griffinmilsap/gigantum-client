@@ -7,7 +7,7 @@ import { boundMethod } from 'autobind-decorator';
 import environment from 'JS/createRelayEnvironment';
 // components
 import Loader from 'Components/common/Loader';
-import AdvancedSearch from 'Components/common/AdvancedSearch';
+import AdvancedSearch from 'Components/common/advancedSearch/AdvancedSearch';
 import BaseCard from './BaseCard';
 import BaseDatasetCard from './BaseDatasetCard';
 // utilities

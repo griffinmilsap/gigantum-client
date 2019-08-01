@@ -20,6 +20,8 @@ export default class Modal extends Component {
 
   render() {
     const { props } = this;
+    const overflow = (props.overlfow === 'visible') ? 'visible' : 'hidden';
+    // declare css here
     const modalContentCSS = classNames({
       Modal__content: true,
       'Modal__content--noPadding': props.noPaddingModal,
@@ -30,7 +32,6 @@ export default class Modal extends Component {
       'Modal__sub-container': true,
       'Modal__sub-container--nopadding': props.noPadding,
     });
-    const overflow = (props.overlfow === 'visible') ? 'visible' : 'hidden';
 
     return (
       ReactDom.createPortal(

@@ -1,5 +1,5 @@
 // vendor
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import queryString from 'querystring';
 import classNames from 'classnames';
 import { connect } from 'react-redux';

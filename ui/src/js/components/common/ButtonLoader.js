@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { boundMethod } from 'autobind-decorator';
 // assets
 import './ButtonLoader.scss';
 
@@ -12,8 +11,7 @@ export default class ButtonLoader extends Component {
    * passes back to callback
    * return {}
    ***** */
-  @boundMethod
-  _clickCallback(evt, params) {
+  _clickCallback = (evt, params) => {
     const { props } = this;
     props.clicked(evt, params);
   }
@@ -25,19 +23,17 @@ export default class ButtonLoader extends Component {
       buttonText,
       buttonDisabled,
     } = props;
-
+    const buttonTestToDisplay = buttonState !== 'finished' ? buttonText : '✓';
+    // declare css here
     const buttonLoaderCSS = classNames({
       'Btn ButtonLoader': true,
       [`ButtonLoader--${buttonState}`]: buttonState !== '',
       [props.className]: (props.className !== null),
     });
-
     const buttonLoaderIconCSS = classNames({
       ButtonLoader__icon: true,
       hidden: buttonState !== 'loading',
     });
-
-    const buttonTestToDisplay = buttonState !== 'finished' ? buttonText : '✓';
 
     return (
       <button
