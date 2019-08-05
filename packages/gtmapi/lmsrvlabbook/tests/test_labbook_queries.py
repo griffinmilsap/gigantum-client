@@ -418,7 +418,7 @@ class TestLabBookServiceQueries(object):
         n = aniso8601.parse_datetime(d)
         assert (datetime.datetime.utcnow() - n).total_seconds() < 5
         assert n.microsecond == 0
-        assert n.tzname() in ["+00:00", None]
+        assert n.tzname() in ["+00:00"]
 
     def test_get_labbook_size_rediculously_huge(self, monkeypatch, fixture_working_dir):
         """Test listing labbooks"""
@@ -1404,7 +1404,7 @@ class TestLabBookServiceQueries(object):
         # using aniso8601 to parse because built-in datetime doesn't parse the UTC offset properly (configured for js)
         create_on = aniso8601.parse_datetime(d)
         assert create_on.microsecond == 0
-        assert create_on.tzname() in ["+00:00", None]
+        assert create_on.tzname() in ["+00:00"]
 
         # wait, add another commit, and remove the buildinfo file to test the fallback method for getting create date
         time.sleep(4)
@@ -1415,7 +1415,7 @@ class TestLabBookServiceQueries(object):
         d = r['data']['labbook']['creationDateUtc']
         create_on_fallback = aniso8601.parse_datetime(d)
         assert create_on_fallback.microsecond == 0
-        assert create_on_fallback.tzname() in ["+00:00", None]
+        assert create_on_fallback.tzname() in ["+00:00"]
 
         # Because there can be 1 second of drift between normal and fallback methods, be safe and check they are not 2
         # seconds apart.

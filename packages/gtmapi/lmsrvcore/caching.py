@@ -91,7 +91,8 @@ class RepoCacheEntry:
         """Return a datetime instance from byte-string, but return None if input is None"""
         if bin_str is None:
             return None
-        return datetime.datetime.strptime(bin_str.decode(), "%Y-%m-%dT%H:%M:%S.%f")
+        date = datetime.datetime.strptime(bin_str.decode(), "%Y-%m-%dT%H:%M:%S.%f")
+        return date.replace(tzinfo=datetime.timezone.utc)
 
     def _fetch_property(self, hash_field: str) -> bytes:
         """Retrieve all cache-able fields from the given repo"""
