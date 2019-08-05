@@ -34,6 +34,10 @@ from gtmcore.exceptions import GigantumException
 logger = LMLogger.get_logger()
 
 
+def default_redis_conn():
+    return redis.Redis(db=13)
+
+
 class JobKey(object):
     """ Represents a key for a background job in Redis. """
     def __init__(self, key: str) -> None:
@@ -59,7 +63,7 @@ class JobKey(object):
         assert len(key.split(':')) == 3, "Key must be in format of `rq:job:<uuid>`"
 
     @property
-    def key_str(self):
+    def key_str(self) -> str:
         return self._key_str
 
 
@@ -71,18 +75,22 @@ class JobStatus(object):
     """ Represents a background job known to the backend processing system. Represents the state of the background
         job at a particular point in time. Does not re-query to fetch fresher information (Because Jobs may be cleaned
         up in the backend and information may be lost) """
-    def __init__(self, redis_dict: Dict[str, object]) -> None:
+    def __init__(self, job_key: JobKey) -> None:
+        # Fetch the RQ job. There needs to be a little processing done on it first.
+        rq_job = rq.job.Job.fetch(job_key.key_str.split(':')[-1],
+                                  connection=default_redis_conn())
+
         # Because this captures the state of the Job at a given point in time, it should
         # carry the timestamp of this snapshot.
         self.timestamp = datetime.now()
-        self.job_key: JobKey = JobKey(cast(str, redis_dict['_key']))
-        self.status: Optional[str] = cast(str, redis_dict.get('status'))
-        self.result: Optional[object] = cast(str, redis_dict.get('result'))
-        self.description: Optional[str] = cast(str, redis_dict.get('description'))
-        self.meta: Dict[str, str] = cast(Dict[str, str], redis_dict.get('meta') or {})
-        self.exc_info: Optional[str] = cast(str, redis_dict.get('exc_info'))
-        self.started_at: Optional[datetime] = cast(datetime, redis_dict.get('started_at'))
-        self.finished_at: Optional[datetime] = cast(datetime, redis_dict.get('ended_at'))
+        self.job_key: JobKey = job_key
+        self.status: Optional[str] = rq_job.get_status()
+        self.result: Optional[object] = rq_job.result
+        self.description: Optional[str] = rq_job.description
+        self.meta: Dict[str, str] = rq_job.meta
+        self.exc_info: Optional[str] = rq_job.exc_info
+        self.started_at: Optional[datetime] = rq_job.started_at
+        self.finished_at: Optional[datetime] = rq_job.ended_at
 
     def __str__(self) -> str:
         return f'<BackgroundJob {str(self.job_key)}>'
@@ -130,7 +138,7 @@ class Dispatcher(object):
     """
 
     def __init__(self) -> None:
-        self._redis_conn = redis.Redis()
+        self._redis_conn = default_redis_conn()
         self._scheduler = rq_scheduler.Scheduler(queue_name=GigantumQueues.default_queue.value,
                                                  connection=self._redis_conn)
 
@@ -188,20 +196,7 @@ class Dispatcher(object):
             logger.warning(f"Query to task {job_key} not found in Redis")
             return None
 
-        # Fetch the RQ job. There needs to be a little processing done on it first.
-        rq_job = rq.job.Job.fetch(job_key.key_str.split(':')[-1],
-                                  connection=redis.Redis())
-
-        # Build the properly decoded dict, which will be returned.
-        decoded_dict = {}
-        for k in job_dict.keys():
-            try:
-                decoded_dict[k.decode('utf-8')] = getattr(rq_job, k.decode())
-            except AttributeError as e:
-                logger.debug(e)
-
-        decoded_dict.update({'_key': job_key.key_str})
-        return JobStatus(decoded_dict)
+        return JobStatus(job_key)
 
     def unschedule_task(self, job_key: JobKey) -> bool:
         """Cancel a scheduled task. Note, this does NOT cancel "dispatched" tasks, only ones created

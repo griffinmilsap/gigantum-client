@@ -51,10 +51,13 @@ class TestConda3PackageManager(object):
         lb = build_lb_image_for_env_conda[0]
         username = build_lb_image_for_env_conda[1]
         result = mrg.list_versions("python-coveralls", lb, username)
-        assert len(result) == 6
-        assert result[4] == "2.6.0"
-        assert result[1] == "2.9.1"
-        assert result[0] == "2.9.2"
+        assert len(result) > 6
+        # We use negative indexing here because the list is sorted newest to oldest
+        # New versions may be added at the beginning, but if we count from the end,
+        # hopefully that's stable
+        assert result[-2] == "2.6.0"
+        assert result[-5] == "2.9.1"
+        assert result[-6] == "2.9.2"
 
     def test_list_installed_packages(self, build_lb_image_for_env_conda):
         """Test list_installed_packages command

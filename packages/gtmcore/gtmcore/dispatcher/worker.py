@@ -9,6 +9,7 @@ from rq import Connection, Queue, Worker
 
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
+from gtmcore.dispatcher import default_redis_conn
 
 logger = LMLogger.get_logger()
 
@@ -22,8 +23,9 @@ class WorkerService:
     allotment of queues and workers, as well as optional bursting of
     workers and jobs. """
 
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config_path: Optional[str] = None, db: Optional[int] = None):
         self._config = Configuration(config_file=config_path).config
+        self._redis_db = db
         self._worker_process_lock = Lock()
         self._worker_process_list: List[Process] = []
         self._is_monitoring = True
@@ -75,7 +77,7 @@ class WorkerService:
 
     def get_all_workers(self, queue_name: str) -> List[Worker]:
         """ Returns a list of all the given workers for the given queue. """
-        return Worker.all(queue=Queue(queue_name, connection=redis.Redis()))
+        return Worker.all(queue=Queue(queue_name, connection=default_redis_conn()))
 
     def monitor_burstable_queue(self) -> None:
         """Blocking routine to monitor the default queue and burst new workers if needed.
@@ -95,7 +97,6 @@ class WorkerService:
                     # this due to a minor bug in RQ (apparently). Using `Queue.get_jobs`
                     # does not properly work, so we cannot count the number of queued
                     # jobs.
-                    logger.warning(f"Bursting new worker for {burstable_queue}")
                     worker_proc = self._start_worker(burstable_queue, burst=True)
                     self._append_worker_process(worker_proc)
             time.sleep(5)
@@ -123,11 +124,17 @@ class WorkerService:
 def start_rq_worker(queue_name: str, burst: bool = False) -> None:
     """Start an RQ worker for the given queue. """
     try:
-        with Connection():
+        with Connection(connection=redis.Redis(db=13)):
             q = Queue(name=queue_name)
-            logger.info(f"Starting {'BURSTED ' if burst else ''}"
+            logger.info(f"Starting {'bursted ' if burst else ''}"
                         f"RQ worker for in {queue_name}")
-            Worker(q).work(burst=burst)
+            if burst:
+                Worker(q).work(burst=True)
+            else:
+                # This is to bypass a problem when the user closes their laptop
+                # (All the workers time out and die). This should prevent that up until a week.
+                wk_in_secs = 60 * 60 * 24 * 7
+                Worker(q, default_result_ttl=wk_in_secs, default_worker_ttl=wk_in_secs).work()
     except Exception as e:
         logger.exception("Worker in pid {} failed with exception {}".format(os.getpid(), e))
         raise
@@ -151,6 +158,7 @@ class QueueLoader:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Launch RQ workers per config file')
     parser.add_argument('--config', type=str, default=None, help='Path to config file')
+    parser.add_argument('--db', type=int, default=None, help='Redis DB to use')
 
     try:
         args = parser.parse_args()

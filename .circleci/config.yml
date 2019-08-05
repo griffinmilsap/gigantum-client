@@ -60,7 +60,7 @@ jobs:
             export SKIP_ENV_TESTS=1
             export SKIP_BG_TESTS=1
             redis-server > /dev/null 2> /dev/null &
-            rqscheduler --interval=2 2> /dev/null &
+            rqscheduler --interval=2 --db 13 2> /dev/null &
             python3 /home/circleci/repo/packages/gtmcore/gtmcore/dispatcher/worker.py &
             pytest --cov=gtmcore packages/gtmcore/gtmcore/
             codecov -F core
@@ -124,7 +124,7 @@ jobs:
             export PYTHONPATH=$PYTHONPATH:/home/circleci/repo/packages/gtmcore
             cd /home/circleci/repo
             redis-server > /dev/null 2> /dev/null &
-            rqscheduler --interval=2 2> /dev/null &
+            rqscheduler --interval=2 --db 13 2> /dev/null &
             python3 /home/circleci/repo/packages/gtmcore/gtmcore/dispatcher/worker.py &
             pytest --cov=gtmcore packages/gtmcore/gtmcore/dispatcher/tests
             codecov -F core
