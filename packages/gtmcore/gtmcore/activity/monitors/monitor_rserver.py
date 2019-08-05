@@ -171,8 +171,8 @@ class RServerMonitor(DevEnvMonitor):
                 logger.info(f"Started RStudio Server Notebook Activity Monitor: Process {process_id}")
 
                 # Update redis
-                redis_conn.hset(activity_monitor_key, "process_id", process_id)
-                redis_conn.hset(activity_monitor_key, "run", True)
+                redis_conn.hset(activity_monitor_key, "process_id", process_id.key_str)
+                redis_conn.hset(activity_monitor_key, "run", "True")
                 redis_conn.hset(activity_monitor_key, "logfile_path",
                                 MITMProxyOperations.get_mitmlogfile_path(labbook_container_name))
 
