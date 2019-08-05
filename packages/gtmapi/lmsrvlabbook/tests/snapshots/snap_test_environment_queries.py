@@ -266,7 +266,7 @@ snapshots['TestEnvironmentServiceQueries.test_get_package_manager_metadata 2'] =
                                 'docsUrl': 'http://anaconda.org/conda-forge/python-coveralls',
                                 'fromBase': False,
                                 'id': 'UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcHl0aG9uLWNvdmVyYWxscyYyLjUuMA==',
-                                'latestVersion': '2.9.2',
+                                'latestVersion': '2.9.3',
                                 'manager': 'conda3',
                                 'package': 'python-coveralls',
                                 'version': '2.5.0'
@@ -436,12 +436,12 @@ snapshots['TestEnvironmentServiceQueries.test_package_query_with_errors_conda 1'
                 },
                 {
                     'description': 'Python interface to coveralls.io API\\n',
-                    'id': 'UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcHl0aG9uLWNvdmVyYWxscyYyLjkuMg==',
+                    'id': 'UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcHl0aG9uLWNvdmVyYWxscyYyLjkuMw==',
                     'isValid': True,
-                    'latestVersion': '2.9.2',
+                    'latestVersion': '2.9.3',
                     'manager': 'conda3',
                     'package': 'python-coveralls',
-                    'version': '2.9.2'
+                    'version': '2.9.3'
                 },
                 {
                     'description': None,

@@ -6,6 +6,7 @@ from confhttpproxy import ProxyRouter
 from typing import Optional, Tuple, List
 
 import redis
+from docker.errors import NotFound
 
 from gtmcore.configuration import get_docker_client
 from gtmcore.container.utils import ps_search
@@ -47,13 +48,14 @@ class MITMProxyOperations(object):
         devtool_endpoint = f"http://{devtool_ip}:8787"
 
         for monitored_labbook_name in cls.get_running_proxies():
+            # We clean up all running MITM proxy containers
             if (monitored_labbook_name != labbook_container_name) and \
                     (cls.get_devtool_endpoint(monitored_labbook_name) == devtool_endpoint):
                 # Some other MITM proxy is pointing at our dev tool
                 cls.stop_mitm_proxy(monitored_labbook_name)
 
         if not redis_conn.exists(mitm_key):
-            # start mitm proxy if it's not configured yet
+            # start mitm proxy if it's not configured yet - we'll delete a stopped container first in this call
             mitm_endpoint = cls.start_mitm_proxy(devtool_endpoint, labbook_container_name)
 
             # add route
@@ -205,6 +207,17 @@ class MITMProxyOperations(object):
         }
 
         docker_client = get_docker_client()
+
+        try:
+            zombie_container = docker_client.containers.get(nametag)
+            # Should have already cleaned up running containers before calling
+            # So we could assume this is stopped, but this shouldn't happen often
+            # and it doesn't hurt to be paranoid
+            logger.warning(f"Removing stopped container {nametag}, will create anew")
+            zombie_container.remove(force=True)
+        except NotFound:
+            # good!
+            pass
 
         container = docker_client.containers.run("gigantum/mitmproxy_proxy:" + CURRENT_MITMPROXY_TAG, detach=True,
                                                  init=True, name=nametag, volumes=volumes_dict,
