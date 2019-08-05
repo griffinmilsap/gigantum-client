@@ -47,7 +47,7 @@ ENV_UNIT_TEST_REV = 2
 
 def flush_redis_repo_cache():
     r = redis.Redis(db=7)
-    r.flushall()
+    r.flushdb()
 
 
 def _create_temp_work_dir(override_dict: dict = None, lfs_enabled: bool = True):
