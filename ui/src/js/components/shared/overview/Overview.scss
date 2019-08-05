@@ -120,11 +120,7 @@
 
   .Overview__readme--editing-buttons {
     position: relative;
-    @include flex(center, row);
-
-    button {
-      margin: 0 10px;
-    }
+    @include flex(flex-end, row);
 
     .BranchMenu__menu-pointer{
       right: auto;

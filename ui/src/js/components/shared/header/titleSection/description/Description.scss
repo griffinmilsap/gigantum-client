@@ -45,6 +45,7 @@
     -webkit-line-clamp: 3;
     &--hovered {
       @include boxShadow();
+      border-radius: 0 6px 6px 0;
       border: 1px solid $romanSilver;
 
       .Description__text{
@@ -97,7 +98,8 @@
     width: 20px;
     height: 20px;
     background: url('~Images/icons/x-close-azure.svg') no-repeat center center;
-    background-size: 28px;
+    background-size: 32px;
+    border-radius: 20px;
     border: none;
 }
 .Description__input-save{
@@ -105,7 +107,8 @@
     width: 20px;
     height: 20px;
     background: url('~Images/icons/check-selected.svg') no-repeat center center;
-    background-size: 30px;
+    background-size: 32px;
+    border-radius: 20px;
     border: none;
 }
 

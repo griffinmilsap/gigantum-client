@@ -32,7 +32,7 @@ const ReadmeEdit = ({
 
           <button
             type="button"
-            className="Overview__readme-save"
+            className="Overview__readme-save Btn--last"
             disabled={false}
             onClick={() => { saveReadme(); }}
           >

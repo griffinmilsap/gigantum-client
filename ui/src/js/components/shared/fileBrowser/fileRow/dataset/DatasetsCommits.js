@@ -55,7 +55,7 @@ export default ({
         tooltipShown
         && (
         <div className="InfoTooltip">
-          {`Dataset link is ${commitsBehind} commits behind. Select "Update Dataset Link" to the latest dataset version. `}
+          {`Dataset link is ${commitsBehind} commits behind. Select "Link to latest version" to update to the latest dataset version. `}
           <a
             target="_blank"
             href="https://docs.gigantum.com/docs/using-datasets-with-projects"

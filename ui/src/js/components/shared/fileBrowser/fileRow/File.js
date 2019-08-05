@@ -33,6 +33,7 @@ class File extends Component {
       newFileName: props.filename,
       renameEditMode: false,
       hover: false,
+      forceUpdate: false,
     };
     this._setSelected = this._setSelected.bind(this);
     this._renameEditMode = this._renameEditMode.bind(this);
@@ -43,11 +44,8 @@ class File extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const isSelected = (nextProps.multiSelect === 'all')
-      ? true
-      : (nextProps.multiSelect === 'none')
-        ? false
-        : state.isSelected;
+    let isSelected = (nextProps.multiSelect === 'none') ? false : state.isSelected;
+    isSelected = ((nextProps.multiSelect === 'all') && !state.forceUpdate) ? true : isSelected;
 
     if ((nextProps.isOverCurrent !== nextProps.isOverChildFile) && !nextProps.isDragging && state.hover) {
       nextProps.updateParentDropZone(nextProps.isOverCurrent);
@@ -55,6 +53,7 @@ class File extends Component {
     return {
       ...state,
       isSelected,
+      forceUpdate: false,
     };
   }
 
@@ -72,7 +71,7 @@ class File extends Component {
   _setSelected(evt, isSelected) {
     const { props } = this;
     props.updateChildState(props.fileData.edge.node.key, isSelected, false);
-    this.setState({ isSelected }, () => {
+    this.setState({ isSelected, forceUpdate: true }, () => {
       Object.keys(this.refs).forEach((ref) => {
         this.refs[ref].getDecoratedComponentInstance().getDecoratedComponentInstance()._setSelected();
       });

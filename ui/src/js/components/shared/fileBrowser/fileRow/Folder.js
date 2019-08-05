@@ -33,6 +33,7 @@ class Folder extends Component {
       isOverChildFile: false,
       renameValue: props.filename,
       isDownloading: false,
+      forceUpdate: false,
     };
 
     this._setSelected = this._setSelected.bind(this);
@@ -51,18 +52,19 @@ class Folder extends Component {
 
 
   static getDerivedStateFromProps(nextProps, state) {
-    const isSelected = (nextProps.multiSelect === 'all')
-      ? true
-      : (nextProps.multiSelect === 'none')
-        ? false
-        : state.isSelected;
-    const isIncomplete = (nextProps.multiSelect === 'none') ? false : state.isIncomplete;
+    let isSelected = (nextProps.multiSelect === 'none') ? false : state.isSelected;
+    isSelected = ((nextProps.multiSelect === 'all') && !state.forceUpdate) ? true : isSelected;
+
+    const isIncomplete = ((nextProps.multiSelect === 'none') || (nextProps.multiSelect === 'all'))
+      ? false
+      : state.isIncomplete;
     return {
       ...state,
       isOver: nextProps.isOver,
       prevIsOverState: state.isOver,
       isSelected,
       isIncomplete,
+      forceUpdate: false,
 
     };
   }
@@ -107,6 +109,7 @@ class Folder extends Component {
     this.setState(
       {
         isSelected,
+        forceUpdate: true,
         isIncomplete: false,
       },
       () => {
@@ -685,6 +688,7 @@ class Folder extends Component {
                     updateChildState={props.updateChildState}
                     parentDownloading={state.downloadingAll}
                     section={props.section}
+                    relay={props.relay}
                     isDownloading={state.isDownloading || props.isDownloading}
                     fileSizePrompt={props.fileSizePrompt}
                     checkLocal={props.checkLocal}

@@ -97,6 +97,8 @@ class FileBrowser extends Component {
     const childrenState = state.isFetching ? state.childrenState : {};
     const selectedFiles = [];
     let selectedCount = 0;
+    let selectedFileCount = 0;
+    let selectedFolderCount = 0;
 
     const files = props.files.edges;
 
@@ -166,16 +168,23 @@ class FileBrowser extends Component {
       }
       let isCurrentSelected = false;
       selectedFiles.forEach((selectedFileKey) => {
-        if (key.startsWith(selectedFileKey)) {
+        if (key.startsWith(selectedFileKey) && !(childrenState[selectedFileKey].isExpanded)) {
           isCurrentSelected = true;
+        } else {
+          isCurrentSelected = childrenState[key].isSelected;
         }
       });
       if (isCurrentSelected) {
         selectedCount += 1;
+        if (childrenState[key].edge.node.isDir) {
+          selectedFolderCount += 1;
+        } else {
+          selectedFileCount += 1;
+        }
       }
     });
 
-    let multiSelect = (selectedCount === count) ? 'all' : 'partial';
+    let multiSelect = (selectedCount >= count) ? 'all' : 'partial';
     multiSelect = selectedCount === 0 ? 'none' : multiSelect;
 
     return {
@@ -183,6 +192,8 @@ class FileBrowser extends Component {
       childrenState,
       isRefetching: false,
       selectedCount,
+      selectedFileCount,
+      selectedFolderCount,
       search: count === previousCount ? state.search : '',
       count,
       multiSelect,
@@ -310,27 +321,26 @@ class FileBrowser extends Component {
     *  @param {boolean} isAddingFolder - update if the value is incomplete
     *  @return {}
     */
-  @boundMethod
-  _updateChildState(key, isSelected, isIncomplete, isExpanded, isAddingFolder) {
-    const { state } = this;
-    let isChildSelected = false;
-    let count = 0;
-    const { childrenState } = this.state;
+  _updateChildState = (key, isSelected, isIncomplete, isExpanded, isAddingFolder) => {
+    let multiCount = 0;
+    let multiSelect;
+    const { state, props } = this;
+    const { childrenState } = state;
     childrenState[key].isSelected = isSelected;
     childrenState[key].isIncomplete = isIncomplete;
     childrenState[key].isExpanded = isExpanded;
     childrenState[key].isAddingFolder = isAddingFolder;
 
-    for (const key in childrenState) {
-      if (childrenState[key]) {
-        if (childrenState[key].isSelected) {
-          isChildSelected = true;
-        }
-        count++;
+    Object.keys(childrenState).forEach((childKey) => {
+      if (childrenState[childKey].isSelected) {
+        multiCount += 1;
       }
-    }
+    });
 
-    this.setState({ childrenState });
+    multiSelect = (multiCount >= props.files.edges.length) ? 'all' : 'partial';
+    multiSelect = multiCount === 0 ? 'none' : multiSelect;
+
+    this.setState({ childrenState, multiSelect });
   }
 
   /**
@@ -478,6 +488,7 @@ class FileBrowser extends Component {
         const isSelected = (childrenState[key].edge.node.key !== 'untracked/') && (multiSelect === 'all');
         childrenState[key].isSelected = isSelected;
         if (isSelected) {
+          childrenState[key].isIncomplete = false;
           isSelectedCount += 1;
         }
       }
@@ -765,6 +776,13 @@ class FileBrowser extends Component {
     const childrenKeys = folderKeys.concat(fileKeys);
     const readOnly = props.section === 'data' && !props.isManaged;
     const toDownload = [];
+    const folderPlural = state.selectedFolderCount > 1 ? 's' : '';
+    const filePlural = state.selectedFileCount > 1 ? 's' : '';
+    const folderToolbarText = `${state.selectedFolderCount} folder${folderPlural}`;
+    const fileToolbarText = `${state.selectedFileCount} file${filePlural}`;
+    let toolbarText = `${folderToolbarText} and ${fileToolbarText} selected`;
+    toolbarText = !state.selectedFolderCount ? `${fileToolbarText} selected` : toolbarText;
+    toolbarText = !state.selectedFileCount ? `${folderToolbarText} selected` : toolbarText;
     if (props.section === 'data') {
       Object.keys(state.childrenState).forEach((key) => {
         if (state.childrenState[key].isSelected && !state.childrenState[key].edge.node.isLocal) {
@@ -1022,7 +1040,7 @@ class FileBrowser extends Component {
           && (
         <div className="FileBrowser__toolbar flex align-items--center justify--space-between">
           <div className="FileBrowser__toolbar-text">
-            {`${state.selectedCount} files selected`}
+            {toolbarText}
           </div>
           <div>
             {

@@ -54,7 +54,6 @@ export const fileHandler = () => {
             index: 0,
           };
         }
-
         edges.forEach((edge, index) => {
 
           if (edge.node) {
@@ -85,13 +84,14 @@ export const fileHandler = () => {
                       }
                     }
                 } else if (currentObject && !currentObject[key]) {
-
+                    const newKey = `${splitKey.slice(0, index + 1).join('/')}/`;
                     currentObject[key] = {
                       children: {},
                       edge: {
                         node: {
-                          key: `${splitKey.slice(0, index + 1).join('/')}/`,
+                          key: newKey,
                           isDir: true,
+                          isLocal: true,
                           isDataset: !!datasetName,
                           modifiedAt: Math.floor(Date.now() / 1000),
                           owner: datasetOwner || null,

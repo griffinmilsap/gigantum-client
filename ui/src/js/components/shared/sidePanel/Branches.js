@@ -573,7 +573,7 @@ class Branches extends Component {
                          !activeUpToDate && (props.activeBranch.commitsAhead !== undefined) && (props.activeBranch.commitsAhead !== null)
                         && (
                         <div
-                          className="Branches__commits Tooltip-data"
+                          className="Branches__commits Tooltip-data Tooltip-data--left"
                           data-tooltip={activeCommitsText}
                         >
                           { (props.activeBranch.commitsBehind !== 0)

@@ -18,11 +18,13 @@ const insertFileBrowserEdge = (edge, mutationData, component) => {
     const { id } = responseNode;
     const nodeExists = store.get(id);
     const node = nodeExists ? store.get(id) : store.create(id, 'LabbookFile');
-
+    const responseKey = responseNode.key.startsWith('/')
+      ? responseNode.key.substring(1)
+      : responseNode.key;
     node.setValue(responseNode.size, 'size');
     node.setValue(false, 'isDir');
     node.setValue(responseNode.id, 'id');
-    node.setValue(responseNode.key, 'key');
+    node.setValue(responseKey, 'key');
     node.setValue(responseNode.modifiedAt, 'modifiedAt');
 
     if (responseNode.isLocal) {
