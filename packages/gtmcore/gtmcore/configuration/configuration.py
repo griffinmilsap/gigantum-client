@@ -66,6 +66,9 @@ class Configuration(object):
     def download_cpu_limit(self) -> int:
         """Return the max number of CPUs to use (i.e. concurrent jobs) when downloading dataset files
 
+        Will limit to a maximum of 8 workers if auto returns more than 8. This will avoid most bandwidth issues.
+        If a user has a ton of bandwidth, they can adjust this setting manually in the config file to blast.
+
         Returns:
             int
         """
@@ -74,6 +77,8 @@ class Configuration(object):
             num_cpus = os.cpu_count()
             if not num_cpus:
                 num_cpus = 1
+            if num_cpus > 8:
+                num_cpus = 8
             return num_cpus
         else:
             return int(config_val)
@@ -81,6 +86,9 @@ class Configuration(object):
     @property
     def upload_cpu_limit(self) -> int:
         """Return the max number of CPUs to use (i.e. concurrent jobs) when uploading dataset files
+
+        Will limit to a maximum of 8 workers if auto returns more than 8. This will avoid most bandwidth issues.
+        If a user has a ton of bandwidth, they can adjust this setting manually in the config file to blast.
 
         Returns:
             int
@@ -90,6 +98,8 @@ class Configuration(object):
             num_cpus = os.cpu_count()
             if not num_cpus:
                 num_cpus = 1
+            if num_cpus > 8:
+                num_cpus = 8
             return num_cpus
         else:
             return int(config_val)

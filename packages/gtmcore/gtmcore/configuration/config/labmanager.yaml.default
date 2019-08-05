@@ -99,18 +99,21 @@ proxy:
 datasets:
   cache_manager: "host"
   hash_cpu_limit: "auto"
+  # For download_cpu_limit and upload_cpu_limit:
+  #   - "auto": will set number of workers based on number of cores with a max of 8
+  #   - <int>: will use the number of workers specified. Useful when you want to limit workers or use more than 8
   download_cpu_limit: "auto"
   upload_cpu_limit: "auto"
   backends:
     gigantum_object_v1:
       # File size in bytes that will trigger a multipart vs. traditional upload.
-      # Also used as the size of each part (48 MiB)
-      multipart_chunk_size: 50331648
-      # Number of bytes to read and send during a PUT request (4 MiB)
-      upload_chunk_size: 4194304
+      # Also used as the size of each part (16 MiB)
+      multipart_chunk_size: 16777216
+      # Number of bytes to read and send during a PUT request (1 MiB)
+      upload_chunk_size: 1048576
       # Maximum number of bytes to download from the stream at a time before writing to disk (4 MiB)
       download_chunk_size: 4194304
-      num_workers: 10
+      num_workers: 4
     public_s3_bucket:
       # 4 MiB
       download_chunk_size: 4194304
