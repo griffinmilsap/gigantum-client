@@ -37,6 +37,19 @@ def helper_write_large_file():
         os.remove(temp_file_name)
 
 
+@pytest.fixture()
+def helper_write_two_part_file():
+    temp_file_name = os.path.join('/tmp', 'object', uuid.uuid4().hex)
+    os.makedirs(os.path.join('/tmp', 'object'), exist_ok=True)
+    with open(temp_file_name, 'wt') as tf:
+        tf.write(''.join(random.choices(string.ascii_uppercase + string.digits, k=(30 * (10 ** 6)))))
+        tf.flush()
+
+    yield temp_file_name
+    if os.path.exists(temp_file_name):
+        os.remove(temp_file_name)
+
+
 def chunk_update_callback(completed_bytes: int):
     """Method to update the job's metadata and provide feedback to the UI"""
     assert type(completed_bytes) == int
@@ -214,14 +227,20 @@ class TestStorageBackendGigantum(object):
                 await psu.prepare_multipart_upload(session)
                 assert psu.multipart_upload_id == 'fakeid123'
                 assert psu._multipart_completed_parts == list()
-                assert len(psu._multipart_parts) == 2
+                assert len(psu._multipart_parts) == 4
                 assert psu._multipart_parts[0].part_number == 1
                 assert psu._multipart_parts[0].start_byte == 0
                 assert psu._multipart_parts[0].end_byte == multipart_chunk_size
                 assert psu._multipart_parts[1].part_number == 2
                 assert psu._multipart_parts[1].start_byte == multipart_chunk_size
-                assert psu._multipart_parts[1].end_byte < multipart_chunk_size * 2
-                assert psu._multipart_parts[1].end_byte > multipart_chunk_size
+                assert psu._multipart_parts[1].end_byte == multipart_chunk_size * 2
+                assert psu._multipart_parts[2].part_number == 3
+                assert psu._multipart_parts[2].start_byte == multipart_chunk_size * 2
+                assert psu._multipart_parts[2].end_byte == multipart_chunk_size * 3
+                assert psu._multipart_parts[3].part_number == 4
+                assert psu._multipart_parts[3].start_byte == multipart_chunk_size * 3
+                assert psu._multipart_parts[3].end_byte < multipart_chunk_size * 4
+                assert psu._multipart_parts[3].end_byte > multipart_chunk_size * 3
 
                 await psu.get_presigned_s3_url(session)
 
@@ -937,7 +956,7 @@ class TestStorageBackendGigantum(object):
             obj1_src_path = helper_write_object(object_dir, obj1_id, 'abcd')
             obj2_src_path = helper_write_object(object_dir, obj2_id,
                                                 ''.join(random.choices(string.ascii_uppercase + string.digits,
-                                                                       k=(60 * (10 ** 6)))))
+                                                                       k=(30 * (10 ** 6)))))
             assert os.path.isfile(obj1_src_path) is True
             assert os.path.isfile(obj2_src_path) is True
 
@@ -999,6 +1018,16 @@ class TestStorageBackendGigantum(object):
             mocked_responses.put(f"https://dummyurl.com/{obj2_id}?params=2",
                                  headers={'Etag': 'asdfasdf'},
                                  status=200)
+
+            # Fail complete multipart once to demonstrate retry
+            mocked_responses.post(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/'
+                                  f'multipart/fakeid123',
+                                  payload={
+                                             "namespace": ds.namespace,
+                                             "obj_id": obj2_id,
+                                             "dataset": ds.name,
+                                  },
+                                  status=500)
 
             mocked_responses.post(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/'
                                   f'multipart/fakeid123',
@@ -1094,6 +1123,11 @@ class TestStorageBackendGigantum(object):
                                  f'fakeid123/part/2',
                                  status=500)
 
+            # Fail abort multipart once to test retry
+            mocked_responses.delete(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/'
+                                    f'multipart/fakeid123',
+                                    status=500)
+
             mocked_responses.delete(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/'
                                     f'multipart/fakeid123',
                                     status=204)
@@ -1159,7 +1193,7 @@ class TestStorageBackendGigantum(object):
 
     @pytest.mark.asyncio
     async def test_presigneds3upload_file_loader_multipart(self, event_loop, mock_dataset_with_cache_dir,
-                                                           helper_write_large_file):
+                                                           helper_write_two_part_file):
         with aioresponses() as mocked_responses:
             def update_fn(completed_bytes):
                 assert completed_bytes > 0
@@ -1176,7 +1210,7 @@ class TestStorageBackendGigantum(object):
             upload_chunk_size = backend_config['upload_chunk_size']
             multipart_chunk_size = backend_config['multipart_chunk_size']
 
-            object_details = PushObject(object_path=helper_write_large_file,
+            object_details = PushObject(object_path=helper_write_two_part_file,
                                         revision=ds.git.repo.head.commit.hexsha,
                                         dataset_path='myfile1.txt')
             psu = PresignedS3Upload(object_service_root, headers, multipart_chunk_size, upload_chunk_size,
@@ -1184,12 +1218,12 @@ class TestStorageBackendGigantum(object):
 
             assert psu.is_multipart is True
 
-            iterator = psu._file_loader(helper_write_large_file, update_fn)
+            iterator = psu._file_loader(helper_write_two_part_file, update_fn)
             with pytest.raises(ValueError):
                 # Multipart upload and you haven't set up the parts yet
                 await iterator.__anext__()
 
-            obj2_id = os.path.basename(helper_write_large_file)
+            obj2_id = os.path.basename(helper_write_two_part_file)
             mocked_responses.post(f'https://api.gigantum.com/object-v1/{ds.namespace}/{ds.name}/{obj2_id}/multipart',
                                   payload={
                                       "namespace": ds.namespace,
@@ -1206,7 +1240,7 @@ class TestStorageBackendGigantum(object):
 
             num_chunks = 0
             saved_data = bytes()
-            iterator = psu._file_loader(helper_write_large_file, update_fn)
+            iterator = psu._file_loader(helper_write_two_part_file, update_fn)
 
             # Do the first chunk
             try:
@@ -1215,34 +1249,34 @@ class TestStorageBackendGigantum(object):
                     num_chunks += 1
                     saved_data = saved_data + chunk
                     assert len(chunk) == upload_chunk_size
-                    if num_chunks > 12:
+                    if num_chunks > 16:
                         assert "Too many chunks"
             except StopAsyncIteration:
                 # Raises StopAsyncIteration when no more byte
-                assert num_chunks == 12
+                assert num_chunks == 16
 
             psu.mark_current_part_complete("fakeetag")
 
             # Do the second chunk
             num_chunks = 0
-            iterator = psu._file_loader(helper_write_large_file, update_fn)
+            iterator = psu._file_loader(helper_write_two_part_file, update_fn)
             try:
                 while True:
                     chunk = await iterator.__anext__()
                     num_chunks += 1
                     saved_data = saved_data + chunk
-                    if num_chunks == 3:
-                        assert len(chunk) == 1279744
+                    if num_chunks == 13:
+                        assert len(chunk) == 639872
                     else:
                         assert len(chunk) == upload_chunk_size
-                    if num_chunks > 3:
+                    if num_chunks > 13:
                         assert "Too many chunks"
             except StopAsyncIteration:
                 # Raises StopAsyncIteration when no more byte
-                assert num_chunks == 3
+                assert num_chunks == 13
 
             # Make sure the content is correct
-            with open(helper_write_large_file, 'rb') as source:
+            with open(helper_write_two_part_file, 'rb') as source:
                 data = source.read()
                 assert data == saved_data
 

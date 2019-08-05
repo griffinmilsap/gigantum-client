@@ -3,10 +3,8 @@ import aiohttp
 import aiofiles
 import copy
 import snappy
-import tempfile
 import requests
 import math
-import time
 
 from gtmcore.dataset import Dataset
 from gtmcore.dataset.storage.backend import ManagedStorageBackend
@@ -23,6 +21,8 @@ logger = LMLogger.get_logger()
 # Namedtuples to track parts in a multipart upload
 MultipartPart = NamedTuple("MultipartUploadPart", [('part_number', int), ('start_byte', int), ('end_byte', int)])
 MultipartPartCompleted = NamedTuple("MultipartUploadPart", [('part_number', int), ('etag', str)])
+
+OBJ_SRV_TIMEOUT = aiohttp.ClientTimeout(total=5 * 60, connect=60, sock_connect=None, sock_read=None)
 
 
 class PresignedS3Upload(object):
@@ -178,24 +178,32 @@ class PresignedS3Upload(object):
         error_status = None
         error_msg = None
         while try_count < 3:
-            async with session.put(url, headers=self.object_service_headers) as response:
-                if response.status == 200:
-                    # Successfully signed the request
-                    response_data = await response.json()
-                    self.presigned_s3_url = response_data.get("presigned_url")
-                    self.set_s3_headers(response_data.get("key_id"))
-                    return
-                elif response.status == 403:
-                    # Forbidden indicates Object already exists,
-                    # don't need to re-push since we deduplicate so mark it skip
-                    self.skip_object = True
-                    return
-                else:
-                    # Something when wrong while trying to pre-sign the URL.
-                    error_msg = await response.json()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
+            try:
+                async with session.put(url, timeout=OBJ_SRV_TIMEOUT, headers=self.object_service_headers) as response:
+                    if response.status == 200:
+                        # Successfully signed the request
+                        response_data = await response.json()
+                        self.presigned_s3_url = response_data.get("presigned_url")
+                        self.set_s3_headers(response_data.get("key_id"))
+                        return
+                    elif response.status == 403:
+                        # Forbidden indicates Object already exists,
+                        # don't need to re-push since we deduplicate so mark it skip
+                        self.skip_object = True
+                        return
+                    else:
+                        # Something when wrong while trying to pre-sign the URL.
+                        error_msg = await response.json()
+                        error_status = response.status
+                        await asyncio.sleep(try_count ** 2)
+                        try_count += 1
+
+            except asyncio.TimeoutError:
+                # The request timed out
+                error_msg = "Request Timed Out"
+                error_status = 500
+                await asyncio.sleep(try_count ** 2)
+                try_count += 1
 
         raise IOError(f"Failed to get pre-signed URL for PUT at "
                       f"{self.object_details.dataset_path}:{self.object_id}."
@@ -264,27 +272,34 @@ class PresignedS3Upload(object):
         error_status = None
         error_msg = None
         while try_count < 3:
-            async with session.post(f"{self.service_root}/{self.object_id}/multipart",
-                                    headers=self.object_service_headers) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    self.multipart_upload_id = data['upload_id']
-                    logger.info(f"Created multipart upload for {self.object_details.dataset_path} at"
-                                f" {self.object_details.revision[0:8]}, with {len(self._multipart_parts)} "
-                                f"parts: {self.multipart_upload_id}")
-                    return
-                elif response.status == 403:
-                    # Forbidden indicates Object already exists,
-                    # don't need to re-push since we deduplicate so mark it skip
-                    self.skip_object = True
-                    return
-                else:
-                    # An error occurred
-                    logger.warning(f"Failed to push {self.object_details.dataset_path}. Try {try_count + 1} of 3")
-                    error_msg = await response.text()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
+            try:
+                async with session.post(f"{self.service_root}/{self.object_id}/multipart",
+                                        headers=self.object_service_headers,
+                                        timeout=OBJ_SRV_TIMEOUT) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        self.multipart_upload_id = data['upload_id']
+                        logger.info(f"Created multipart upload for {self.object_details.dataset_path} at"
+                                    f" {self.object_details.revision[0:8]}, with {len(self._multipart_parts)} "
+                                    f"parts: {self.multipart_upload_id}")
+                        return
+                    elif response.status == 403:
+                        # Forbidden indicates Object already exists,
+                        # don't need to re-push since we deduplicate so mark it skip
+                        self.skip_object = True
+                        return
+                    else:
+                        # An error occurred
+                        logger.warning(f"Failed to push {self.object_details.dataset_path}. Try {try_count + 1} of 3")
+                        error_msg = await response.text()
+                        error_status = response.status
+                        await asyncio.sleep(try_count ** 2)
+                        try_count += 1
+            except asyncio.TimeoutError:
+                error_msg = "Request Timed Out"
+                error_status = 500
+                await asyncio.sleep(try_count ** 2)
+                try_count += 1
 
         raise IOError(f"Failed to push {self.object_details.dataset_path} to storage backend."
                       f" Status: {error_status}. Response: {error_msg}")
@@ -305,22 +320,31 @@ class PresignedS3Upload(object):
         error_status = None
         error_msg = None
         while try_count < 3:
-            async with session.post(f"{self.service_root}/{self.object_id}/multipart/{self.multipart_upload_id}",
-                                    json=self.get_completed_parts(),
-                                    headers=self.object_service_headers) as response:
-                if response.status != 200:
-                    # An error occurred
-                    logger.warning(f"Failed to complete {self.object_details.dataset_path}. Try {try_count + 1} of 3")
-                    error_msg = await response.text()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
-                else:
-                    # All good.
-                    logger.info(f"Completed multipart upload {self.multipart_upload_id} for "
-                                f"{self.object_details.dataset_path} at {self.object_details.revision[0:8]}.")
-                    self.remove_compressed_file()
-                    return
+            try:
+                async with session.post(f"{self.service_root}/{self.object_id}/multipart/{self.multipart_upload_id}",
+                                        json=self.get_completed_parts(),
+                                        headers=self.object_service_headers,
+                                        timeout=OBJ_SRV_TIMEOUT) as response:
+                    if response.status != 200:
+                        # An error occurred
+                        logger.warning(f"Failed to complete {self.object_details.dataset_path}. "
+                                       f"Try {try_count + 1} of 3")
+                        error_msg = await response.text()
+                        error_status = response.status
+                        await asyncio.sleep(try_count ** 2)
+                        try_count += 1
+                    else:
+                        # All good.
+                        logger.info(f"Completed multipart upload {self.multipart_upload_id} for "
+                                    f"{self.object_details.dataset_path} at {self.object_details.revision[0:8]}.")
+                        self.remove_compressed_file()
+                        return
+
+            except asyncio.TimeoutError:
+                error_msg = "Request Timed Out"
+                error_status = 500
+                await asyncio.sleep(try_count ** 2)
+                try_count += 1
 
         raise IOError(f"Failed to complete multipart upload for {self.object_details.dataset_path}."
                       f" Status: {error_status}. Response: {error_msg}")
@@ -341,20 +365,27 @@ class PresignedS3Upload(object):
         error_status = None
         error_msg = None
         while try_count < 3:
-            async with session.delete(f"{self.service_root}/{self.object_id}/multipart/{self.multipart_upload_id}",
-                                      headers=self.object_service_headers) as response:
-                if response.status != 204:
-                    # An error occurred
-                    logger.warning(f"Failed to abort {self.object_details.dataset_path}. Try {try_count + 1} of 3")
-                    error_msg = await response.text()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
-                else:
-                    # All good.
-                    logger.info(f"Aborted multipart upload {self.multipart_upload_id} for "
-                                f"{self.object_details.dataset_path} at {self.object_details.revision[0:8]}.")
-                    return
+            try:
+                async with session.delete(f"{self.service_root}/{self.object_id}/multipart/{self.multipart_upload_id}",
+                                          headers=self.object_service_headers,
+                                          timeout=OBJ_SRV_TIMEOUT) as response:
+                    if response.status != 204:
+                        # An error occurred
+                        logger.warning(f"Failed to abort {self.object_details.dataset_path}. Try {try_count + 1} of 3")
+                        error_msg = await response.text()
+                        error_status = response.status
+                        await asyncio.sleep(try_count ** 2)
+                        try_count += 1
+                    else:
+                        # All good.
+                        logger.info(f"Aborted multipart upload {self.multipart_upload_id} for "
+                                    f"{self.object_details.dataset_path} at {self.object_details.revision[0:8]}.")
+                        return
+            except asyncio.TimeoutError:
+                error_msg = "Request Timed Out"
+                error_status = 500
+                await asyncio.sleep(try_count ** 2)
+                try_count += 1
 
         raise IOError(f"Failed to abort multipart upload for {self.object_details.dataset_path}."
                       f" Status: {error_status}. Response: {error_msg}")
@@ -385,18 +416,26 @@ class PresignedS3Upload(object):
         try_count = 0
         error_msg = None
         error_status = None
+        timeout = aiohttp.ClientTimeout(total=15*60, connect=2*60, sock_connect=None, sock_read=None)
         while try_count < 3:
-            async with session.put(self.presigned_s3_url, headers=headers,
-                                   data=self._file_loader(filename=self.compressed_object_path,
-                                                          progress_update_fn=progress_update_fn)) as response:
-                if response.status != 200:
-                    # An error occurred, retry
-                    error_msg = await response.text()
-                    error_status = response.status
-                    await asyncio.sleep(try_count ** 2)
-                    try_count += 1
-                else:
-                    return response.headers['Etag']
+            try:
+                async with session.put(self.presigned_s3_url, headers=headers, timeout=timeout,
+                                       data=self._file_loader(filename=self.compressed_object_path,
+                                                              progress_update_fn=progress_update_fn)) as response:
+                    if response.status != 200:
+                        # An error occurred, retry
+                        error_msg = await response.text()
+                        error_status = response.status
+                        await asyncio.sleep(try_count ** 2)
+                        try_count += 1
+                    else:
+                        return response.headers['Etag']
+
+            except asyncio.TimeoutError:
+                error_msg = "Request Timed Out"
+                error_status = 500
+                await asyncio.sleep(try_count ** 2)
+                try_count += 1
 
         raise IOError(f"Failed to push {self.object_details.dataset_path} to storage backend."
                       f" Status: {error_status}. Response: {error_msg}")
@@ -434,7 +473,8 @@ class PresignedS3Download(object):
         # Get the object id from the object path
         _, obj_id = self.object_details.object_path.rsplit('/', 1)
 
-        async with session.get(f"{self.service_root}/{obj_id}", headers=self.object_service_headers) as response:
+        async with session.get(f"{self.service_root}/{obj_id}", timeout=OBJ_SRV_TIMEOUT,
+                               headers=self.object_service_headers) as response:
             if response.status == 200:
                 # Successfully signed the request
                 response_data = await response.json()
@@ -458,7 +498,9 @@ class PresignedS3Download(object):
         """
         try:
             decompressor = snappy.StreamDecompressor()
-            async with session.get(self.presigned_s3_url) as response:
+            timeout = aiohttp.ClientTimeout(total=None, connect=2 * 60, sock_connect=None, sock_read=5*60)
+
+            async with session.get(self.presigned_s3_url, timeout=timeout) as response:
                 if response.status != 200:
                     # An error occurred
                     body = await response.text()
@@ -955,7 +997,10 @@ to Gigantum Cloud will count towards your storage quota and include all versions
         # not timeout before they can be used if there are a lot of files.
         queue: asyncio.LifoQueue = asyncio.LifoQueue()
 
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(total=None, connect=None,
+                                        sock_connect=None, sock_read=None)
+
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             workers = []
             for i in range(num_workers):
                 task = asyncio.ensure_future(self._pull_object_consumer(queue, session, progress_update_fn))
