@@ -97,7 +97,6 @@ class WorkerService:
                     # this due to a minor bug in RQ (apparently). Using `Queue.get_jobs`
                     # does not properly work, so we cannot count the number of queued
                     # jobs.
-                    logger.warning(f"Bursting new worker for {burstable_queue}")
                     worker_proc = self._start_worker(burstable_queue, burst=True)
                     self._append_worker_process(worker_proc)
             time.sleep(5)
@@ -127,7 +126,7 @@ def start_rq_worker(queue_name: str, burst: bool = False) -> None:
     try:
         with Connection(connection=redis.Redis(db=13)):
             q = Queue(name=queue_name)
-            logger.info(f"Starting {'BURSTED ' if burst else ''}"
+            logger.info(f"Starting {'bursted ' if burst else ''}"
                         f"RQ worker for in {queue_name}")
             if burst:
                 Worker(q).work(burst=True)
