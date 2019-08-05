@@ -416,7 +416,7 @@ class TestLabBookServiceQueries(object):
         assert r['data']['labbook']['name'] == 'labbook1'
         d = r['data']['labbook']['creationDateUtc']
         n = aniso8601.parse_datetime(d)
-        assert (datetime.datetime.utcnow() - n).total_seconds() < 5
+        assert (datetime.datetime.now(tz=datetime.timezone.utc) - n).total_seconds() < 5
         assert n.microsecond == 0
         assert n.tzname() in ["+00:00"]
 
@@ -1440,7 +1440,7 @@ class TestLabBookServiceQueries(object):
         # using aniso8601 to parse because built-in datetime doesn't parse the UTC offset properly (configured for js)
         modified_on_1 = aniso8601.parse_datetime(d)
         assert modified_on_1.microsecond == 0
-        assert modified_on_1.tzname() in ["+00:00", None]
+        assert modified_on_1.tzname() in ["+00:00"]
 
         time.sleep(2)
         lb.write_readme("##Summary\nThis is my readme!!")
@@ -1451,8 +1451,8 @@ class TestLabBookServiceQueries(object):
         d = r['data']['labbook']['modifiedOnUtc']
         modified_on_2 = aniso8601.parse_datetime(d)
 
-        assert (datetime.datetime.utcnow() - modified_on_1).total_seconds() < 30
-        assert (datetime.datetime.utcnow() - modified_on_2).total_seconds() < 30
+        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_1).total_seconds() < 30
+        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_2).total_seconds() < 30
         assert modified_on_2 > modified_on_1
 
     @responses.activate

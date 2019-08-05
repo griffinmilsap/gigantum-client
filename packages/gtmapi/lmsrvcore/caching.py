@@ -102,7 +102,7 @@ class RepoCacheEntry:
             last_update = self._date(self.db.hget(self.key, 'last_cache_update'))
         if last_update is None:
             raise ValueError("Cannot retrieve last_cache_update_field")
-        delay_secs = (datetime.datetime.utcnow() - last_update).total_seconds()
+        delay_secs = (datetime.datetime.now(tz=datetime.timezone.utc) - last_update).total_seconds()
         if delay_secs > self.REFRESH_PERIOD_SEC:
             self.fetch_cachable_fields()
         return self.db.hget(self.key, hash_field)
