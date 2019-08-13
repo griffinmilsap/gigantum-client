@@ -105,7 +105,7 @@ class RepoCacheController:
     `cached_*` methods retrieve the given fields, and insert it into the cache
     if needed to be re-fetched.
     """
-    def __init__(self, cache_token: str, cache_entry_type: type[RepoCacheEntry]):
+    def __init__(self, cache_token: str, cache_entry_type):
         """ Note: Intended to be a PRIVATE constructor"""
         self.db = redis.StrictRedis(db=7)
         self.cache_token = cache_token
