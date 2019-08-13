@@ -133,7 +133,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
 
     def resolve_description(self, info):
         """Return the description. """
-        r = LabbookCacheController()
+        r = LabbookCacheController.build()
         return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_environment(self, info):
