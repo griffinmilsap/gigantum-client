@@ -145,8 +145,8 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        return info.context.dataset_loader.load(f"{get_logged_in_username()}&{self.owner}&{self.name}").then(
-            lambda dataset: dataset.creation_date)
+        r = DatasetCacheController.build()
+        return r.cached_created_time((get_logged_in_username(), self.owner, self.name))
 
     def _fetch_collaborators(self, dataset, info):
         """Helper method to fetch this dataset's collaborators
@@ -253,8 +253,8 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        return info.context.dataset_loader.load(f"{get_logged_in_username()}&{self.owner}&{self.name}").then(
-            lambda dataset: dataset.modified_on)
+        r = DatasetCacheController.build()
+        return r.cached_modified_on((get_logged_in_username(), self.owner, self.name))
 
     def helper_resolve_activity_records(self, dataset, kwargs):
         """Helper method to generate ActivityRecord objects and populate the connection"""
