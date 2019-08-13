@@ -1,6 +1,4 @@
 import graphene
-import time
-import os
 
 from gtmcore.logging import LMLogger
 from gtmcore.dispatcher import Dispatcher
@@ -14,7 +12,7 @@ from gtmcore.files import FileOperations
 from gtmcore.environment.utils import get_package_manager
 
 from lmsrvcore.caching import RepoCacheController
-from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
+from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
 from lmsrvcore.auth.identity import parse_token
 

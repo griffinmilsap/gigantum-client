@@ -70,7 +70,7 @@ class RepoCacheEntry:
     @staticmethod
     def _extract_id(key_value: str) -> Tuple[str, str, str]:
         token, user, owner, name = key_value.rsplit('&', 3)
-        assert token == 'MODIFY_CACHE'
+        assert token == 'LABBOOK_CACHE'
         return user, owner, name
 
     def fetch_cachable_fields(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
@@ -131,3 +131,24 @@ class RepoCacheEntry:
         """Remove this entry from the Redis cache. """
         logger.warning(f"Flushing cache entry for {self}")
         self.db.hdel(self.key, 'creation_date', 'modified_on', 'last_cache_update', 'description')
+
+
+class DatasetCacheEntry(RepoCacheEntry):
+    @staticmethod
+    def _extract_id(key_value: str) -> Tuple[str, str, str]:
+        token, user, owner, name = key_value.rsplit('&', 3)
+        assert token == 'DATASET_CACHE'
+        return user, owner, name
+
+    def fetch_cachable_fields(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
+        logger.debug(f"Fetching {self.key} fields from disk.")
+        self.clear()
+        ds = InventoryManager().load_dataset(*self._extract_id(self.key))
+        create_ts = ds.creation_date
+        modify_ts = ds.modified_on
+        description = ds.description
+        self.db.hset(self.key, 'description', description)
+        self.db.hset(self.key, 'creation_date', modify_ts.strftime("%Y-%m-%dT%H:%M:%S.%f"))
+        self.db.hset(self.key, 'modified_on', modify_ts.strftime("%Y-%m-%dT%H:%M:%S.%f"))
+        self.db.hset(self.key, 'last_cache_update', datetime.datetime.utcnow().isoformat())
+        return create_ts, modify_ts, description

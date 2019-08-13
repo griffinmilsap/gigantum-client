@@ -3,6 +3,7 @@ import base64
 import flask
 from gtmcore.activity import ActivityStore
 
+from lmsrvcore.caching import RepoCacheController
 from lmsrvcore.auth.identity import parse_token
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
@@ -11,9 +12,7 @@ from gtmcore.dataset.manifest import Manifest
 from gtmcore.workflows.gitlab import GitLabManager, ProjectPermissions, GitLabException
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
-
 from gtmcore.inventory.branching import BranchManager
-
 
 from lmsrvlabbook.api.objects.datasettype import DatasetType
 from lmsrvlabbook.api.objects.collaborator import Collaborator
@@ -21,10 +20,6 @@ from lmsrvlabbook.api.connections.activity import ActivityConnection
 from lmsrvlabbook.api.objects.activity import ActivityDetailObject, ActivityRecordObject
 from lmsrvlabbook.api.connections.datasetfile import DatasetFileConnection, DatasetFile
 from lmsrvlabbook.api.objects.overview import DatasetOverview
-
-from gtmcore.logging import LMLogger
-logger = LMLogger.get_logger()
-
 
 logger = LMLogger.get_logger()
 
@@ -132,11 +127,8 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
     def resolve_description(self, info):
         """Get number of commits the active_branch is behind its remote counterpart.
         Returns 0 if up-to-date or if local only."""
-        if not self.description:
-            return info.context.dataset_loader.load(f"{get_logged_in_username()}&{self.owner}&{self.name}").then(
-                lambda dataset: dataset.description)
-
-        return self.description
+        r = RepoCacheController()
+        return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_schema_version(self, info):
         """Get number of commits the active_branch is behind its remote counterpart.

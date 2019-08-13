@@ -76,8 +76,8 @@ class RepositoryCacheMiddleware:
         if not owner:
             owner = input_vals.get('labbook_owner')
         # TODO! Include support for datasets.
-        #if not owner:
-        #    owner = input_vals.get('dataset_owner')
+        if not owner:
+            owner = input_vals.get('dataset_owner')
         if owner is None:
             raise UnknownRepo("No repository owner detected")
 
@@ -85,8 +85,8 @@ class RepositoryCacheMiddleware:
         if not repo_name:
             repo_name = input_vals.get('labbook_name')
         # TODO! Include support for datasets.
-        #if not repo_name:
-        #    repo_name = input_vals.get('dataset_name')
+        if not repo_name:
+            repo_name = input_vals.get('dataset_name')
 
         if repo_name is None:
             raise UnknownRepo("No repository name detected")
