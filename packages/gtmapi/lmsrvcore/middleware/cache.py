@@ -39,9 +39,9 @@ class RepositoryCacheMiddleware:
 
         if info.operation.operation == 'mutation':
             try:
-                username, owner, name = self.parse_mutation(info.operation, info.variable_values)
-                r = LabbookCacheController.build()
-                r.clear_entry((username, owner, name))
+                repo_type, username, owner, name = self.parse_mutation(info.operation, info.variable_values)
+                cache_control = DatasetCacheController if repo_type == 'dataset' else LabbookCacheController
+                cache_control.build().clear_entry((username, owner, name))
             except UnknownRepo as e:
                 logger.warning(f'Mutation {info.operation.name} not associated with a repo: {e}')
             except SkipRepo:
@@ -52,7 +52,7 @@ class RepositoryCacheMiddleware:
         return_value = next(root, info, **args)
         return return_value
 
-    def parse_mutation(self, operation_obj, variable_values: Dict) -> Tuple[str, str, str]:
+    def parse_mutation(self, operation_obj, variable_values: Dict) -> Tuple[str, str, str, str]:
         """ Infers and extracts a repository (Labbook/Dataset) owner and name field from a given
         mutation. Note that there are somewhat inconsistent namings in certain Mutation inputs,
         so this method uses a variety of methods to capture it.
@@ -72,12 +72,15 @@ class RepositoryCacheMiddleware:
         if operation_obj.name.value in self.skip_mutations:
             raise SkipRepo(f"Skip mutation {operation_obj.name}")
 
+        repo_type = 'labbook'
         owner = input_vals.get('owner')
         if not owner:
             owner = input_vals.get('labbook_owner')
         # TODO! Include support for datasets.
         if not owner:
             owner = input_vals.get('dataset_owner')
+            repo_type = 'dataset'
+
         if owner is None:
             raise UnknownRepo("No repository owner detected")
 
@@ -87,10 +90,11 @@ class RepositoryCacheMiddleware:
         # TODO! Include support for datasets.
         if not repo_name:
             repo_name = input_vals.get('dataset_name')
+            repo_type = 'dataset'
 
         if repo_name is None:
             raise UnknownRepo("No repository name detected")
 
-        return get_logged_in_username(), owner, repo_name
+        return repo_type, get_logged_in_username(), owner, repo_name
 
 
