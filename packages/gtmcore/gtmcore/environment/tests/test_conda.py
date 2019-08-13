@@ -166,7 +166,7 @@ class TestConda3PackageManager(object):
         assert result[0].package == "nltk"
         assert result[0].description == 'Natural Language Toolkit'
         assert result[0].docs_url == 'http://www.nltk.org/'
-        assert result[0].latest_version == '3.2.5'
+        assert result[0].latest_version == '3.4.4'
         assert result[1].package == "cdutil"
         assert result[1].description == 'A set of tools to manipulate climate data'
         assert result[1].docs_url == 'http://anaconda.org/conda-forge/cdutil'
