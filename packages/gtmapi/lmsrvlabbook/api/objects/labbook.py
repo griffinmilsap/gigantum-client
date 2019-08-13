@@ -11,7 +11,7 @@ from gtmcore.workflows import LabbookWorkflow
 from gtmcore.files import FileOperations
 from gtmcore.environment.utils import get_package_manager
 
-from lmsrvcore.caching import RepoCacheController
+from lmsrvcore.caching import LabbookCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
 from lmsrvcore.auth.identity import parse_token
@@ -133,7 +133,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
 
     def resolve_description(self, info):
         """Return the description. """
-        r = RepoCacheController()
+        r = LabbookCacheController()
         return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_environment(self, info):
@@ -231,7 +231,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = RepoCacheController()
+        r = LabbookCacheController.build()
         return r.cached_created_time((get_logged_in_username(), self.owner, self.name))
 
     def resolve_modified_on_utc(self, info):
@@ -245,7 +245,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = RepoCacheController()
+        r = LabbookCacheController.build()
         return r.cached_modified_on((get_logged_in_username(), self.owner, self.name))
 
     @staticmethod

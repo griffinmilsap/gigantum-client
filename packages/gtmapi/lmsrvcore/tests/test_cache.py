@@ -1,5 +1,5 @@
 import gtmcore.configuration
-from lmsrvcore.caching import RepoCacheController, RepoCacheEntry
+from lmsrvcore.caching import LabbookCacheController, DatasetCacheController
 
 from gtmcore.fixtures import mock_labbook
 
@@ -13,7 +13,7 @@ class TestRepoCacheMiddleware:
         c, _, lb = mock_labbook
         username = 'test'
         monkeypatch.setattr(gtmcore.configuration.configuration.Configuration, 'find_default_config', lambda _: c)
-        r = RepoCacheController()
+        r = LabbookCacheController.build()
         r.clear_entry((username, lb.owner, lb.name))
         assert lb.description == r.cached_description((username, lb.owner, lb.name))
         assert lb.creation_date.utctimetuple() == r.cached_created_time((username, lb.owner, lb.name)).utctimetuple()
@@ -26,7 +26,7 @@ class TestRepoCacheMiddleware:
         c, _, lb = mock_labbook
         username = 'test'
         monkeypatch.setattr(gtmcore.configuration.configuration.Configuration, 'find_default_config', lambda _: c)
-        r = RepoCacheController()
+        r = LabbookCacheController.build()
         r.clear_entry((username, lb.owner, lb.name))
 
         # Retrieve the values and put them in the cache

@@ -3,7 +3,7 @@ import base64
 import flask
 from gtmcore.activity import ActivityStore
 
-from lmsrvcore.caching import RepoCacheController
+from lmsrvcore.caching import DatasetCacheController
 from lmsrvcore.auth.identity import parse_token
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
@@ -127,7 +127,7 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
     def resolve_description(self, info):
         """Get number of commits the active_branch is behind its remote counterpart.
         Returns 0 if up-to-date or if local only."""
-        r = RepoCacheController()
+        r = DatasetCacheController.build()
         return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_schema_version(self, info):

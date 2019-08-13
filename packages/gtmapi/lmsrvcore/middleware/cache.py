@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 
 from gtmcore.logging import LMLogger
 from lmsrvcore.auth.user import get_logged_in_username
-from lmsrvcore.caching import RepoCacheController
+from lmsrvcore.caching import LabbookCacheController, DatasetCacheController
 
 logger = LMLogger.get_logger()
 
@@ -40,7 +40,7 @@ class RepositoryCacheMiddleware:
         if info.operation.operation == 'mutation':
             try:
                 username, owner, name = self.parse_mutation(info.operation, info.variable_values)
-                r = RepoCacheController()
+                r = LabbookCacheController.build()
                 r.clear_entry((username, owner, name))
             except UnknownRepo as e:
                 logger.warning(f'Mutation {info.operation.name} not associated with a repo: {e}')

@@ -28,7 +28,7 @@ from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.configuration import Configuration
 
-from lmsrvcore.caching import RepoCacheController
+from lmsrvcore.caching import LabbookCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.connections import ListBasedConnection
 from lmsrvcore.auth.identity import parse_token
@@ -108,22 +108,22 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
 
         # Collect all labbooks for all owners
         inv_manager = InventoryManager()
-        r = RepoCacheController()
+        cache_controller = LabbookCacheController.build()
         ids = inv_manager.list_repository_ids(username, 'labbook')
 
         safe_ids = []
         for (uname, owner, project_name) in ids:
             try:
-                r.cached_modified_on((username, owner, project_name))
-                r.cached_created_time((username, owner, project_name))
+                cache_controller.cached_modified_on((username, owner, project_name))
+                cache_controller.cached_created_time((username, owner, project_name))
                 safe_ids.append((uname, owner, project_name))
             except Exception as e:
                 logger.warning(f"Error loading LabBook {uname, owner, project_name}: {e}")
 
         if order_by == 'modified_on':
-            sort_key = lambda tup: r.cached_modified_on(tup)
+            sort_key = lambda tup: cache_controller.cached_modified_on(tup)
         elif order_by == 'created_on':
-            sort_key = lambda tup: r.cached_created_time(tup)
+            sort_key = lambda tup: cache_controller.cached_created_time(tup)
         else:
             sort_key = lambda tup: tup[2]
 
