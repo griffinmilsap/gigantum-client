@@ -1,6 +1,6 @@
 import redis
 import datetime
-from abc import ABC, abstractmethod, abstractclassmethod
+from abc import ABC, abstractmethod
 from typing import Tuple, Optional
 
 from gtmcore.logging import LMLogger
@@ -29,7 +29,8 @@ class RepoCacheEntry(ABC):
 
     @abstractmethod
     def _load_repo(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
-        pass
+        """This contains methods for retrieving description, modified time, and created time."""
+        raise NotImplemented
 
     def fetch_cachable_fields(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
         logger.debug(f"Fetching {self.key} fields from disk.")
@@ -152,10 +153,12 @@ class RepoCacheController(ABC):
 
 
 class LabbookCacheController(RepoCacheController):
+    """Cache-manager for Labbooks"""
     def __init__(self):
         super().__init__('LABBOOK_CACHE', LabbookCacheEntry)
 
 
 class DatasetCacheController(RepoCacheController):
+    """Cache-manager for Datasets"""
     def __init__(self):
         super().__init__('DATASET_CACHE', DatasetCacheEntry)
