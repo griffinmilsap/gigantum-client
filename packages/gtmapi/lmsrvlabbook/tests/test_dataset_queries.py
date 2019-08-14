@@ -1,10 +1,10 @@
-import pytest
 import os
 import aniso8601
 import time
 import datetime
-
 from snapshottest import snapshot
+
+from lmsrvcore.caching import DatasetCacheController
 from lmsrvlabbook.tests.fixtures import fixture_working_dir_dataset_populated_scoped, fixture_working_dir
 
 from gtmcore.inventory.inventory import InventoryManager
@@ -216,6 +216,8 @@ class TestDatasetQueries(object):
             tf.write("asdfasdf")
         ds.git.add_all()
         ds.git.commit("Changing the repo")
+
+        DatasetCacheController.build().clear_all()
 
         # Run query again
         snapshot.assert_match(fixture_working_dir_dataset_populated_scoped[2].execute(query))

@@ -3,15 +3,14 @@ import graphene
 import requests
 import flask
 import time
-
-
-from lmsrvlabbook.api.connections.dataset import Dataset, DatasetConnection
-from lmsrvlabbook.api.connections.remotedataset import RemoteDatasetConnection, RemoteDataset
+from natsort import natsorted
 
 from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.configuration import Configuration
 
+from lmsrvlabbook.api.connections.dataset import Dataset, DatasetConnection
+from lmsrvlabbook.api.connections.remotedataset import RemoteDatasetConnection, RemoteDataset
 from lmsrvcore.caching import DatasetCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.auth.identity import parse_token
@@ -103,12 +102,13 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
 
         if order_by == 'modified_on':
             sort_key = lambda tup: cache_controller.cached_modified_on(tup)
+            sorted_ids = sorted(safe_ids, key=sort_key)
         elif order_by == 'created_on':
             sort_key = lambda tup: cache_controller.cached_created_time(tup)
+            sorted_ids = sorted(safe_ids, key=sort_key)
         else:
-            sort_key = lambda tup: tup[2]
+            sorted_ids = natsorted(safe_ids, key=lambda elt: elt[2])
 
-        sorted_ids = sorted(safe_ids, key=sort_key)
         if reverse:
             sorted_ids.reverse()
 
