@@ -360,6 +360,9 @@ class TestDatasetQueries(object):
         ds.git.add_all()
         ds.git.commit("testing")
 
+        import redis
+        redis.StrictRedis(db=7).flushdb()
+
         r = fixture_working_dir_dataset_populated_scoped[2].execute(modified_query)
         assert 'errors' not in r
         d = r['data']['dataset']['modifiedOnUtc']

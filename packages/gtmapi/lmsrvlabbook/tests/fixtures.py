@@ -38,6 +38,7 @@ from gtmcore.environment.bundledapp import BundledAppManager
 
 from gtmcore.inventory.inventory import InventoryManager
 from lmsrvcore.middleware import DataloaderMiddleware, error_middleware, RepositoryCacheMiddleware
+from lmsrvcore.caching import LabbookCacheController, DatasetCacheController
 from lmsrvcore.tests.fixtures import insert_cached_identity
 
 from gtmcore.fixtures import (ENV_UNIT_TEST_REPO, ENV_UNIT_TEST_REV, ENV_UNIT_TEST_BASE)
@@ -177,7 +178,8 @@ def fixture_working_dir_lfs_disabled():
             flask.g.user_obj = app.config["LABMGR_ID_MGR"].get_user_profile()
 
             # Create a test client
-            client = Client(schema, middleware=[DataloaderMiddleware(), RepositoryCacheMiddleware()], context_value=ContextMock())
+            client = Client(schema, middleware=[DataloaderMiddleware(), RepositoryCacheMiddleware()],
+                            context_value=ContextMock())
 
             yield config_file, temp_dir, client, schema  # name of the config file, temporary working directory, the schema
 
@@ -345,6 +347,9 @@ def fixture_working_dir_dataset_populated_scoped():
     im.create_dataset('default', 'default', "dataset1", storage_type="gigantum_object_v1", description="Cats 1")
     time.sleep(1.1)
 
+    # Flush Redis cache for Repo info
+    DatasetCacheController.build().clear_all()
+
     with patch.object(Configuration, 'find_default_config', lambda self: config_file):
         # Load User identity into app context
         app = Flask("lmsrvlabbook")
@@ -356,7 +361,8 @@ def fixture_working_dir_dataset_populated_scoped():
             flask.g.user_obj = app.config["LABMGR_ID_MGR"].get_user_profile()
 
             # Create a test client
-            client = Client(schema, middleware=[DataloaderMiddleware(), RepositoryCacheMiddleware()], context_value=ContextMock())
+            client = Client(schema, middleware=[DataloaderMiddleware(), RepositoryCacheMiddleware()],
+                            context_value=ContextMock())
 
             yield config_file, temp_dir, client, schema
 

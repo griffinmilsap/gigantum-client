@@ -152,6 +152,9 @@ class RepoCacheController(ABC):
         """ Flush this entry from the cache - ie indicate it is stale """
         self.cache_entry_type(self.db, self._make_key(id_tuple)).clear()
 
+    def clear_all(self):
+        self.db.flushdb()
+
 
 class LabbookCacheController(RepoCacheController):
     @classmethod
