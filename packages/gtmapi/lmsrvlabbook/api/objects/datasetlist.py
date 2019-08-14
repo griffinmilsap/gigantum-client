@@ -88,7 +88,7 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
 
         # Collect all datasets for all owners
         inv_manager = InventoryManager()
-        cache_controller = DatasetCacheController.build()
+        cache_controller = DatasetCacheController()
         ids = inv_manager.list_repository_ids(username, 'dataset')
 
         safe_ids = []

@@ -129,7 +129,7 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
     def resolve_description(self, info):
         """Get number of commits the active_branch is behind its remote counterpart.
         Returns 0 if up-to-date or if local only."""
-        r = DatasetCacheController.build()
+        r = DatasetCacheController()
         return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_schema_version(self, info):
@@ -147,7 +147,7 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = DatasetCacheController.build()
+        r = DatasetCacheController()
         return r.cached_created_time((get_logged_in_username(), self.owner, self.name))
 
     def _fetch_collaborators(self, dataset, info):
@@ -255,7 +255,7 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = DatasetCacheController.build()
+        r = DatasetCacheController()
         return r.cached_modified_on((get_logged_in_username(), self.owner, self.name))
 
     def helper_resolve_activity_records(self, dataset, kwargs):

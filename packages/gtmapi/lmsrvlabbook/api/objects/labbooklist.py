@@ -107,7 +107,7 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
 
         # Collect all labbooks for all owners
         inv_manager = InventoryManager()
-        cache_controller = LabbookCacheController.build()
+        cache_controller = LabbookCacheController()
         ids = inv_manager.list_repository_ids(username, 'labbook')
 
         safe_ids = []

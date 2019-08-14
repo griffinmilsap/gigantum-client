@@ -85,7 +85,7 @@ class RepositoryCacheMiddleware:
         if not names:
             raise UnknownRepo("No repository name detected")
 
-        lb_cache, ds_cache = LabbookCacheController.build(), DatasetCacheController.build()
+        lb_cache, ds_cache = LabbookCacheController(), DatasetCacheController()
         for owner, name in product(owners, names):
             lb_cache.clear_entry((get_logged_in_username(), owner, name))
             ds_cache.clear_entry((get_logged_in_username(), owner, name))

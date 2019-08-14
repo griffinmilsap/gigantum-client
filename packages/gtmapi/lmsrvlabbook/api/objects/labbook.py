@@ -133,7 +133,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
 
     def resolve_description(self, info):
         """Return the description. """
-        r = LabbookCacheController.build()
+        r = LabbookCacheController()
         return r.cached_description((get_logged_in_username(), self.owner, self.name))
 
     def resolve_environment(self, info):
@@ -231,7 +231,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = LabbookCacheController.build()
+        r = LabbookCacheController()
         return r.cached_created_time((get_logged_in_username(), self.owner, self.name))
 
     def resolve_modified_on_utc(self, info):
@@ -245,7 +245,7 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         Returns:
 
         """
-        r = LabbookCacheController.build()
+        r = LabbookCacheController()
         return r.cached_modified_on((get_logged_in_username(), self.owner, self.name))
 
     @staticmethod

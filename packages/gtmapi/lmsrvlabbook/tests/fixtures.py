@@ -348,7 +348,7 @@ def fixture_working_dir_dataset_populated_scoped():
     time.sleep(1.1)
 
     # Flush Redis cache for Repo info
-    DatasetCacheController.build().clear_all()
+    DatasetCacheController().clear_all()
 
     with patch.object(Configuration, 'find_default_config', lambda self: config_file):
         # Load User identity into app context

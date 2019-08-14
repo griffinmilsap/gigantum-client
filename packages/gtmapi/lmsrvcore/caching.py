@@ -113,11 +113,6 @@ class RepoCacheController(ABC):
         self.cache_token = cache_token
         self.cache_entry_type = cache_entry_type
 
-    @classmethod
-    @abstractmethod
-    def build(cls):
-        raise NotImplemented()
-
     def _make_key(self, id_tuple: Tuple[str, str, str]) -> str:
         return '&'.join([self.cache_token, *id_tuple])
 
@@ -157,13 +152,10 @@ class RepoCacheController(ABC):
 
 
 class LabbookCacheController(RepoCacheController):
-    @classmethod
-    def build(cls):
-        return cls('LABBOOK_CACHE', LabbookCacheEntry)
+    def __init__(self):
+        super().__init__('LABBOOK_CACHE', LabbookCacheEntry)
 
 
 class DatasetCacheController(RepoCacheController):
-    @classmethod
-    def build(cls):
-        return cls('DATASET_CACHE', DatasetCacheEntry)
-
+    def __init__(self):
+        super().__init__('DATASET_CACHE', DatasetCacheEntry)

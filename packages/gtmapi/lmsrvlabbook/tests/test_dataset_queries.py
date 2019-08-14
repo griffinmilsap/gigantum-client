@@ -217,7 +217,7 @@ class TestDatasetQueries(object):
         ds.git.add_all()
         ds.git.commit("Changing the repo")
 
-        DatasetCacheController.build().clear_all()
+        DatasetCacheController().clear_all()
 
         # Run query again
         snapshot.assert_match(fixture_working_dir_dataset_populated_scoped[2].execute(query))
@@ -362,7 +362,7 @@ class TestDatasetQueries(object):
         ds.git.add_all()
         ds.git.commit("testing")
 
-        DatasetCacheController.build().clear_all()
+        DatasetCacheController().clear_all()
 
         r = fixture_working_dir_dataset_populated_scoped[2].execute(modified_query)
         assert 'errors' not in r
