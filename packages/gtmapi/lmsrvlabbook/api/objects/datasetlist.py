@@ -2,16 +2,22 @@ import base64
 import graphene
 import requests
 import flask
+import time
+
 
 from lmsrvlabbook.api.connections.dataset import Dataset, DatasetConnection
 from lmsrvlabbook.api.connections.remotedataset import RemoteDatasetConnection, RemoteDataset
 
+from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.configuration import Configuration
 
+from lmsrvcore.caching import DatasetCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.auth.identity import parse_token
 from lmsrvcore.api.connections import ListBasedConnection
+
+logger = LMLogger.get_logger()
 
 
 class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
@@ -71,6 +77,7 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
         Returns:
             list(Dataset)
         """
+        t0 = time.time()
         username = get_logged_in_username()
 
         if sort == "desc":
@@ -81,14 +88,32 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
             raise ValueError(f"Unsupported sort_str: {sort}. Use `desc`, `asc`")
 
         # Collect all datasets for all owners
-        local_datasets = InventoryManager().list_datasets(username=username, sort_mode=order_by)
+        inv_manager = InventoryManager()
+        cache_controller = DatasetCacheController.build()
+        ids = inv_manager.list_repository_ids(username, 'dataset')
+
+        safe_ids = []
+        for (uname, owner, dataset_name) in ids:
+            try:
+                cache_controller.cached_modified_on((username, owner, dataset_name))
+                cache_controller.cached_created_time((username, owner, dataset_name))
+                safe_ids.append((uname, owner, dataset_name))
+            except Exception as e:
+                logger.warning(f"Error loading Dataset {uname, owner, dataset_name}: {e}")
+
+        if order_by == 'modified_on':
+            sort_key = lambda tup: cache_controller.cached_modified_on(tup)
+        elif order_by == 'created_on':
+            sort_key = lambda tup: cache_controller.cached_created_time(tup)
+        else:
+            sort_key = lambda tup: tup[2]
+
+        sorted_ids = sorted(safe_ids, key=sort_key)
         if reverse:
-            local_datasets.reverse()
+            sorted_ids.reverse()
 
-        edges = [(ds.namespace, ds.name) for ds in local_datasets]
+        edges = [(tup[1], tup[2]) for tup in sorted_ids]
         cursors = [base64.b64encode("{}".format(cnt).encode("UTF-8")).decode("UTF-8") for cnt, x in enumerate(edges)]
-
-        # Process slicing and cursor args
         lbc = ListBasedConnection(edges, cursors, kwargs)
         lbc.apply()
 
@@ -102,7 +127,9 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
             edge_objs.append(DatasetConnection.Edge(node=Dataset(**create_data),
                                                     cursor=cursor))
 
-        return DatasetConnection(edges=edge_objs, page_info=lbc.page_info)
+        dc = DatasetConnection(edges=edge_objs, page_info=lbc.page_info)
+        logger.info(f"Listed datasets in {time.time()-t0:.2f}sec")
+        return dc
 
     def resolve_remote_datasets(self, info, order_by: str, sort: str, **kwargs):
         """Method to return a all RemoteDataset instances for the logged in user

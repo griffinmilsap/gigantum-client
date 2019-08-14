@@ -22,7 +22,6 @@ import base64
 import graphene
 import requests
 import flask
-from typing import Any, Optional, Tuple
 
 from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager

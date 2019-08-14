@@ -1,5 +1,6 @@
 import redis
 import datetime
+from abc import ABC, abstractmethod
 from typing import Tuple, Optional
 
 from gtmcore.logging import LMLogger
@@ -8,7 +9,7 @@ from gtmcore.inventory.inventory import InventoryManager
 logger = LMLogger.get_logger()
 
 
-class RepoCacheEntry:
+class RepoCacheEntry(ABC):
     """ Represents a specific entry in the cache for a specific Repository """
 
     # Entries become stale after 24 hours
@@ -26,8 +27,9 @@ class RepoCacheEntry:
         token, user, owner, name = key_value.rsplit('&', 3)
         return user, owner, name
 
+    @abstractmethod
     def _load_repo(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
-        raise NotImplemented()
+        pass
 
     def fetch_cachable_fields(self) -> Tuple[datetime.datetime, datetime.datetime, str]:
         logger.debug(f"Fetching {self.key} fields from disk.")
