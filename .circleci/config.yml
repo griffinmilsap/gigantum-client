@@ -239,4 +239,3 @@ workflows:
       - fossa:
           requires:
             - test-confhttpproxy
-

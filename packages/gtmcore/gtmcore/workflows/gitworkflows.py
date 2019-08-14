@@ -391,4 +391,8 @@ class DatasetWorkflow(GitWorkflow):
         v = super().sync(username, remote, override, feedback_callback, pull_only,
                          access_token, id_token)
         self._push_dataset_objects(username, feedback_callback, access_token, id_token)
+
+        # Invalidate manifest cached data because the manifest can change on sync
+        manifest = Manifest(self.dataset, username)
+        manifest.force_reload()
         return v

@@ -315,7 +315,7 @@ def process_linked_datasets(labbook: LabBook, logged_in_username: str) -> None:
     im = InventoryManager(config_file=labbook.client_config.config_file)
 
     # Update linked datasets inside the Project or clean them out if needed
-    im.update_linked_datasets(labbook, logged_in_username, init=True)
+    im.update_linked_datasets(labbook, logged_in_username)
 
     # Check for linked datasets, and schedule auto-imports
     d = Dispatcher()

@@ -330,8 +330,11 @@ class ModifyDatasetLink(graphene.relay.ClientIDMutation):
                 im.unlink_dataset_from_labbook(dataset_owner, dataset_name, lb)
             elif action == 'update':
                 ds = im.update_linked_dataset_reference(dataset_owner, dataset_name, lb)
+
+                # Reload cache and relink revision due to update
                 m = Manifest(ds, logged_in_username)
                 m.force_reload()
+                m.link_revision()
 
                 info.context.dataset_loader.prime(f"{get_logged_in_username()}&{dataset_owner}&{dataset_name}", ds)
             else:

@@ -1,5 +1,6 @@
 import graphene
 import base64
+import math
 import flask
 from gtmcore.activity import ActivityStore
 
@@ -12,6 +13,7 @@ from gtmcore.dataset.manifest import Manifest
 from gtmcore.workflows.gitlab import GitLabManager, ProjectPermissions, GitLabException
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
+from gtmcore.configuration.utils import call_subprocess
 from gtmcore.inventory.branching import BranchManager
 
 from lmsrvlabbook.api.objects.datasettype import DatasetType
@@ -502,12 +504,25 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         return info.context.dataset_loader.load(f"{get_logged_in_username()}&{self.owner}&{self.name}").then(
             lambda dataset: dataset.backend.verify_contents(dataset, logger.info))
 
-    def helper_resolve_commits_behind(self, dataset):
+    def helper_resolve_commits_behind(self, dataset) -> int:
         """Helper to get the commits behind for a dataset. Used for linked datasets to see if
         they are out of date"""
         bm = BranchManager(dataset)
         bm.fetch()
-        return bm.get_commits_behind(branch_name='master')
+
+        current_hash = call_subprocess(['git', 'rev-list', 'HEAD', '--max-count=1'],
+                                       cwd=dataset.root_dir, check=True)
+
+        commit_list = call_subprocess(['git', 'log', f'{current_hash.strip()}..origin/master', '--pretty=oneline'],
+                                      cwd=dataset.root_dir, check=True)
+        if not commit_list:
+            commits_behind = 0
+        else:
+            commit_list = [x for x in commit_list.split('\n') if x != ""]
+            commits_behind = len(commit_list)
+            commits_behind = int(math.ceil(float(commits_behind) / 2.0))
+
+        return commits_behind
 
     def resolve_commits_behind(self, info):
         """Method to get the commits behind for a dataset. Used for linked datasets to see if

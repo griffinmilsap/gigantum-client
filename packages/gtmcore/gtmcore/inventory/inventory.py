@@ -122,57 +122,6 @@ class InventoryManager(object):
         lb = self.load_labbook_from_directory(final_path)
         return lb
 
-    @staticmethod
-    def update_linked_datasets(labbook: LabBook, username: str, init: bool = False) -> None:
-        """Method to initialize or update all git submodule references for linked datasets.
-
-        This is used when loading and initializing linked datasets
-
-        Args:
-            labbook: The labbook instance to inspect
-            username: the current logged in username
-            init: a flag indicating if the `git submodule init` command should be run
-
-        Returns:
-            None
-        """
-        # List all existing linked datasets IN this repository
-        existing_dataset_abs_paths = glob.glob(os.path.join(labbook.root_dir, '.gigantum', 'datasets', "*/*"))
-
-        if len(labbook.git.repo.submodules) > 0:
-            for submodule in labbook.git.list_submodules():
-                try:
-                    namespace, dataset_name = submodule['name'].split("&")
-                    rel_submodule_dir = os.path.join('.gigantum', 'datasets', namespace, dataset_name)
-                    submodule_dir = os.path.join(labbook.root_dir, rel_submodule_dir)
-
-                    # If submodule is currently present, init/update it, don't remove it!
-                    if submodule_dir in existing_dataset_abs_paths:
-                        existing_dataset_abs_paths.remove(submodule_dir)
-
-                    if init:
-                        # Optionally Init submodule
-                        call_subprocess(['git', 'submodule', 'init', rel_submodule_dir],
-                                        cwd=labbook.root_dir, check=True)
-                    # Update submodule
-                    call_subprocess(['git', 'submodule', 'update', rel_submodule_dir],
-                                    cwd=labbook.root_dir, check=True)
-
-                    ds = InventoryManager().load_dataset_from_directory(submodule_dir)
-                    ds.namespace = namespace
-                    manifest = Manifest(ds, username)
-                    manifest.link_revision()
-
-                except Exception as err:
-                    logger.error(f"Failed to initialize linked Dataset (submodule reference): {submodule['name']}. "
-                                 f"This may be an actual error or simply due to repository permissions")
-                    logger.exception(err)
-                    continue
-
-        # Clean out lingering dataset files if you previously had a dataset linked, but now don't
-        for submodule_dir in existing_dataset_abs_paths:
-            shutil.rmtree(submodule_dir)
-
     def put_labbook(self, path: str, username: str, owner: str) -> LabBook:
         """ Take given path to a candidate labbook and insert it
         into its proper place in the file system.
@@ -873,6 +822,54 @@ class InventoryManager(object):
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
+    @staticmethod
+    def update_linked_datasets(labbook: LabBook, username: str) -> None:
+        """Method to initialize or update all git submodule references for linked datasets.
+
+        This is used when loading and initializing linked datasets
+
+        Args:
+            labbook: The labbook instance to inspect
+            username: the current logged in username
+
+        Returns:
+            None
+        """
+        # List all existing linked datasets IN this repository
+        existing_dataset_abs_paths = glob.glob(os.path.join(labbook.root_dir, '.gigantum', 'datasets', "*/*"))
+
+        if len(labbook.git.repo.submodules) > 0:
+            call_subprocess(['git', 'submodule', 'sync', '--recursive'],
+                            cwd=labbook.root_dir, check=True)
+
+            call_subprocess(['git', 'submodule', 'update', '--init', '--recursive'],
+                            cwd=labbook.root_dir, check=True)
+
+            for submodule in labbook.git.list_submodules():
+                try:
+                    namespace, dataset_name = submodule['name'].split("&")
+                    rel_submodule_dir = os.path.join('.gigantum', 'datasets', namespace, dataset_name)
+                    submodule_dir = os.path.join(labbook.root_dir, rel_submodule_dir)
+
+                    # If submodule is currently present, init/update it, don't remove it!
+                    if submodule_dir in existing_dataset_abs_paths:
+                        existing_dataset_abs_paths.remove(submodule_dir)
+
+                    ds = InventoryManager().load_dataset_from_directory(submodule_dir)
+                    ds.namespace = namespace
+                    manifest = Manifest(ds, username)
+                    manifest.force_reload()
+                    manifest.link_revision()
+
+                except Exception as err:
+                    logger.error(f"Failed to initialize linked Dataset (submodule reference): {submodule['name']}. "
+                                 f"This may be an actual error or simply due to repository permissions")
+                    logger.exception(err)
+
+        # Clean out lingering dataset files if you previously had a dataset linked, but now don't
+        for submodule_dir in existing_dataset_abs_paths:
+            shutil.rmtree(submodule_dir)
+
     def update_linked_dataset_reference(self, dataset_namespace: str, dataset_name: str, labbook: LabBook) -> Dataset:
         """Method to update a linked dataset reference to the latest revision
 
@@ -891,19 +888,25 @@ class InventoryManager(object):
 
         # Update the submodule reference with the latest changes
         original_revision = ds.git.repo.head.object.hexsha
-        ds.git.pull()
-        revision = ds.git.repo.head.object.hexsha
+        ds.git.fetch()
+
+        latest_revision = call_subprocess(['git', 'rev-list', 'origin/master', '--max-count=1'],
+                                          cwd=ds.root_dir, check=True)
+        latest_revision = latest_revision.strip()
 
         # If the submodule has changed, commit the changes.
-        if original_revision != revision:
+        if original_revision != latest_revision:
+            call_subprocess(['git', 'checkout', '-q', latest_revision],
+                            cwd=ds.root_dir, check=True)
+
             labbook.git.add_all()
             commit = labbook.git.commit("Updating submodule ref")
 
             # Add Activity Record
             adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, action=ActivityAction.DELETE)
             adr.add_value('text/markdown',
-                          f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to {revision}")
-            msg = f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to version {revision[0:8]}"
+                          f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to {latest_revision}")
+            msg = f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to version {latest_revision[0:8]}"
             ar = ActivityRecord(ActivityType.DATASET,
                                 message=msg,
                                 linked_commit=commit.hexsha,
@@ -919,10 +922,10 @@ class InventoryManager(object):
         """Method to get all datasets linked to a project
 
         Args:
-            labbook:
+            labbook(LabBook): the labbook to inspect for linked datasets
 
         Returns:
-
+            list
         """
         submodules = labbook.git.list_submodules()
         datasets = list()
