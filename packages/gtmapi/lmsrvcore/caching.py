@@ -1,6 +1,6 @@
 import redis
 import datetime
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from typing import Tuple, Optional
 
 from gtmcore.logging import LMLogger
@@ -100,7 +100,7 @@ class DatasetCacheEntry(RepoCacheEntry):
         return ds.creation_date, ds.modified_on, ds.description
 
 
-class RepoCacheController:
+class RepoCacheController(ABC):
     """
     This class represents an interface to the cache that stores specific
     repository fields (modified time, created time, description). The
@@ -114,6 +114,7 @@ class RepoCacheController:
         self.cache_entry_type = cache_entry_type
 
     @classmethod
+    @abstractmethod
     def build(cls):
         raise NotImplemented()
 
