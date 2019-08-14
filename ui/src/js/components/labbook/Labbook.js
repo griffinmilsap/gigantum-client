@@ -52,25 +52,44 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 };
 
+/**
+   @param {Object} labbook
+   @param {Object} isBuildingObject
+   determines if project is building
+   @return {Boolean}
+  */
+const determineIsBuilding = (labbook, isBuildingObject) => {
+  const { owner, name } = labbook;
+  return (isBuildingObject[`${owner}_${name}`]
+    ? isBuildingObject[`${owner}_${name}`]
+    : false);
+};
+
+/**
+   @param {Object} props
+   determines if project is locked
+   @return {Boolean}
+  */
+const determineIsLocked = (props) => {
+  const {
+    labbook,
+    isBuildingObject,
+    isSynching,
+    isPublishing,
+  } = props;
+  return (
+    (labbook.environment.containerStatus !== 'NOT_RUNNING')
+    || (labbook.environment.imageStatus === 'BUILD_IN_PROGRESS')
+    || (labbook.environment.imageStatus === 'BUILD_QUEUED')
+    || determineIsBuilding(labbook, isBuildingObject)
+    || isSynching
+    || isPublishing
+  );
+};
+
 class Labbook extends Component {
-  constructor(props) {
-    super(props);
-
-    localStorage.setItem('owner', store.getState().routes.owner);
-    // bind functions here
-    this._toggleBranchesView = this._toggleBranchesView.bind(this);
-    this._branchViewClickedOff = this._branchViewClickedOff.bind(this);
-
-    setCallbackRoute(props.location.pathname);
-  }
-
   state = {
-    isLocked: (this.props.labbook.environment.containerStatus !== 'NOT_RUNNING')
-      || (this.props.labbook.environment.imageStatus === 'BUILD_IN_PROGRESS')
-      || (this.props.labbook.environment.imageStatus === 'BUILD_QUEUED')
-      || this.props.isBuilding
-      || this.props.isSynching
-      || this.props.isPublishing,
+    isLocked: determineIsLocked(this.props),
     collaborators: this.props.labbook.collaborators,
     canManageCollaborators: this.props.labbook.canManageCollaborators,
     branches: this.props.labbook.branches,
@@ -164,6 +183,9 @@ class Labbook extends Component {
   componentDidMount() {
     const { props, state } = this;
     const { name, owner } = props.labbook;
+
+    localStorage.setItem('owner', store.getState().routes.owner);
+    setCallbackRoute(props.location.pathname);
 
     this.mounted = true;
     document.title = `${owner}/${name}`;
@@ -353,7 +375,8 @@ class Labbook extends Component {
     const { props } = this;
     const { owner, name } = props.labbook;
     const self = this;
-    const { isBuilding } = props;
+    const isBuilding = determineIsBuilding(props.labbook, props.isBuildingObject);
+
 
     if (this.mounted) {
       if (!isLabbookUpdate) {
@@ -366,7 +389,7 @@ class Labbook extends Component {
             if ((previousImageStatus !== 'BUILD_IN_PROGRESS')
               && (environment.imageStatus === 'EXISTS')
               && isBuilding) {
-              setBuildingState(false);
+              setBuildingState(owner, name, false);
             }
           }
           setTimeout(() => {
@@ -520,7 +543,7 @@ class Labbook extends Component {
     scrolls to top of window
     @return {boolean, string}
   */
-  _getMigrationInfo() {
+  _getMigrationInfo = () => {
     const { props, state } = this;
     const isOwner = (localStorage.getItem('username') === props.labbook.owner);
     const {
@@ -549,7 +572,8 @@ class Labbook extends Component {
   // TODO move migration code into it's own component
   render() {
     const { props, state } = this;
-    const isLocked = props.isBuilding
+    const isBuilding = determineIsBuilding(props.labbook, props.isBuildingObject);
+    const isLocked = isBuilding
       || props.isSyncing
       || props.isPublishing
       || state.isLocked;
@@ -609,6 +633,7 @@ class Labbook extends Component {
                       className="Button Labbook__deprecated-action"
                       onClick={() => this._toggleMigrationModal()}
                       disabled={state.migrationInProgress || state.isLocked}
+                      type="button"
                     >
                     Migrate
                     </button>
@@ -658,8 +683,8 @@ class Labbook extends Component {
                           ? (
                             <ul>
                               {
-                            oldBranches.map(({ branchName }) => (
-                              <li key={branchName}>{branchName}</li>
+                            oldBranches.map(({ branchname }) => (
+                              <li key={branchname}>{branchname}</li>
                             ))
                           }
                             </ul>
@@ -675,6 +700,7 @@ class Labbook extends Component {
                             <button
                               onClick={() => this._toggleMigrationModal()}
                               className="Btn--flat"
+                              type="button"
                             >
                             Cancel
                             </button>
@@ -717,9 +743,9 @@ class Labbook extends Component {
                                 href="https://docs.gigantum.com/docs/project-migration"
                                 rel="noopener noreferrer"
                               >
-                              Learn More.
-                            </a>
-                          <p>Remember to notify collaborators that this project has been migrated. They may need to re-import the project.</p>
+                                Learn More.
+                              </a>
+                              <p>Remember to notify collaborators that this project has been migrated. They may need to re-import the project.</p>
                             </div>
                             <div className="Labbook__migration-buttons">
                               <button

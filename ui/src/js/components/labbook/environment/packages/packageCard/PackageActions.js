@@ -13,6 +13,7 @@ export default class PackageActions extends Component {
   */
   _updatePackage() {
     const { props } = this;
+    const { owner, name } = props;
     const data = {
       packages: [{
         ...props.packageNode,
@@ -21,7 +22,7 @@ export default class PackageActions extends Component {
       duplicates: [props.id],
     };
     props.selectPackages(true);
-    props.setBuildingState(true);
+    props.setBuildingState(owner, name, true);
     const callback = () => {
       props.buildCallback();
     };
@@ -34,11 +35,12 @@ export default class PackageActions extends Component {
   */
   _removePackage() {
     const { props } = this;
+    const { owner, name } = props;
     const data = {
       packages: [props.packageNode],
     };
     props.selectPackages(true);
-    props.setBuildingState(true);
+    props.setBuildingState(owner, name, true);
     const callback = () => {
       props.buildCallback();
     };

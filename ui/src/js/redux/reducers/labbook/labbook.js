@@ -1,3 +1,6 @@
+// vendor
+import uuidv4 from 'uuid/v4';
+// constants
 import * as types from 'JS/redux/constants/constants';
 
 export default (
@@ -7,7 +10,7 @@ export default (
     transitionState: {},
     transitioningLabbook: '',
     imageStatus: '',
-    isBuilding: false,
+    isBuildingObject: {},
     isSyncing: false,
     isExporting: false,
     isPublishing: false,
@@ -43,9 +46,14 @@ export default (
       imageStatus: action.payload.imageStatus,
     };
   } if (action.type === types.IS_BUILDING) {
+    const { name, owner } = action.payload;
+    const { isBuildingObject } = state;
+
+    isBuildingObject[`${owner}_${name}`] = action.payload.isBuilding;
     return {
       ...state,
-      isBuilding: action.payload.isBuilding,
+      isBuildingObject,
+      forceUpdate: uuidv4(),
     };
   } if (action.type === types.IS_SYNCING) {
     return {

@@ -1,23 +1,25 @@
 // vendor
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import classNames from 'classnames';
 // components
 import ErrorBoundary from 'Components/common/ErrorBoundary';
-import Tooltip from 'Components/common/Tooltip';
 import ActivityCard from '../ActivityCard';
 import Rollback from './Rollback';
 // assets
 import './CardWrapper.scss';
 
-export default class CardWrapper extends Component {
+export default class CardWrapper extends PureComponent {
   render() {
-    const { props, state } = this;
-    const section = props.section;
-    const record = props.record;
+    const { props } = this;
+    const { record } = props;
 
     const rollbackableDetails = record.edge.node.detailObjects.filter(detailObjs => detailObjs.type !== 'RESULT' && detailObjs.type !== 'CODE_EXECUTED');
-    const hasRollback = ((props.indexItem.i !== 0) || (props.indexItem.timestampIndex !== 0))
-            && (!!rollbackableDetails.length && (props.sectionType === 'labbook'));
+    const isLabbook = (props.sectionType === 'labbook');
+    const hasRollbackDetails = !!rollbackableDetails.length;
+    const isNotFirstIndex = (props.indexItem.i !== 0) || (props.indexItem.timestampIndex !== 0);
+    const hasRollback = (isNotFirstIndex)
+            && (hasRollbackDetails && isLabbook)
+            && !props.isBaseRecord;
 
 
     const activityCardWrapperCSS = classNames({

@@ -375,6 +375,7 @@ const DatasetFragmentContainer = createRefetchContainer(
             parameterType
             value
           }
+          commitsBehind
           datasetType {
               name
               storageType

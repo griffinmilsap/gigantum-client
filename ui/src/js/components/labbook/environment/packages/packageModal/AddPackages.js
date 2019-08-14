@@ -39,6 +39,7 @@ export default class AddPackages extends Component {
     const newPackages = state.packageQueue.slice();
     const duplicates = {};
     const seperatedNewPackages = {};
+    const { owner, name } = props;
     const buildCb = (response, error, id) => {
       props.setBuildId(id);
     };
@@ -61,7 +62,7 @@ export default class AddPackages extends Component {
         duplicates: duplicates[manager] || [],
       };
 
-      setBuildingState(true);
+      setBuildingState(owner, name, true);
 
       const callback = (response) => {
         if (response && isLast) {

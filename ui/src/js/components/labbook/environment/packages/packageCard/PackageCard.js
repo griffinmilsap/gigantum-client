@@ -154,6 +154,7 @@ export default class PackageCard extends Component {
 
   render() {
     const { props, state } = this;
+    const { owner, name } = props;
     const selectedLength = state.selectedPackages.size;
     const propsLength = props.packages.length;
     let multiSelect = selectedLength === propsLength ? 'all' : 'partial';
@@ -193,8 +194,12 @@ export default class PackageCard extends Component {
           isLocked={props.isLocked}
           buildCallback={props.buildCallback}
           setBuildingState={props.setBuildingState}
+          name={name}
+          owner={owner}
         />
         <PackageBody
+          name={name}
+          owner={owner}
           packages={packages}
           isLocked={props.isLocked}
           selectPackages={this._selectPackages}
