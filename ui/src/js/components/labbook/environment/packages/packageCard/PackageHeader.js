@@ -16,8 +16,8 @@ export default class PackageHeader extends Component {
     const data = {
       packages: [...props.selectedPackages.values()],
     };
-
-    props.setBuildingState(true);
+    const { owner, name } = props;
+    props.setBuildingState(owner, name, true);
     const callback = () => {
       props.selectPackages(true);
       props.buildCallback();
@@ -31,6 +31,7 @@ export default class PackageHeader extends Component {
   */
   _updatePackages(updateablePackages) {
     const { props } = this;
+    const { owner, name } = props;
     const duplicateArray = [];
     const newPackageData = updateablePackages.map((pkg) => {
       duplicateArray.push(pkg.id);
@@ -48,7 +49,7 @@ export default class PackageHeader extends Component {
     };
 
     props.selectPackages(true);
-    props.setBuildingState(true);
+    props.setBuildingState(owner, name, true);
     props.packageMutations.addPackages(data, callback);
   }
 

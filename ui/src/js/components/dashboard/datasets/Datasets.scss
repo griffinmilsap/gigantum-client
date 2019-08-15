@@ -135,3 +135,9 @@ Dataset__nav end
   height: calc(100% - 90px);
   @include flex(flex-start, row);
 }
+
+@media screen and (max-width: 1440px) and (min-width: 1124px) {
+  .Datasets__search-container {
+    width: auto;
+  }
+}

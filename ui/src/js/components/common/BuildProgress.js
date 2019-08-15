@@ -60,13 +60,14 @@ class BuildProgress extends Component {
   */
   _cancelBuild = () => {
     const { props } = this;
+    const { owner, name } = props;
     const callback = () => {
       setTimeout(() => {
-        setBuildingState(false);
+        setBuildingState(owner, name, false);
       }, 3000);
     };
 
-    setBuildingState(true);
+    setBuildingState(owner, name, true);
     this.setState({ cancelingBuild: true });
     CancelBuildMutation(
       props.owner,

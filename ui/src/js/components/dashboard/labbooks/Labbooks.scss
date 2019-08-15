@@ -130,3 +130,10 @@
 
   @include flex(flex-start, row);
 }
+
+
+@media screen and (max-width: 1440px) and (min-width: 1124px) {
+  .Labbooks__search-container {
+    width: auto;
+  }
+}

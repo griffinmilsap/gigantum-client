@@ -51,6 +51,7 @@ class Environment extends Component {
   *  callback that triggers buildImage mutation
   */
   _buildCallback = (callback) => {
+    const { props } = this;
     const { labbookName, owner } = this.state;
     let buildData = false;
     if (callback) {
@@ -58,7 +59,7 @@ class Environment extends Component {
         hideFooter: true,
       };
     }
-    setBuildingState(true);
+    setBuildingState(owner, labbookName, true);
     if (store.getState().containerStatus.status === 'Running') {
       StopContainerMutation(
         owner,

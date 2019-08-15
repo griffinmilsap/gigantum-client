@@ -495,10 +495,15 @@ export default class CollaboratorsModal extends Component {
                         <div className="CollaboratorsModal__permissions-header">Read</div>
                         <div className="CollaboratorsModal__permissions-subtext">Read-only permissions. Can only pull updates</div>
                       </li>
-                      <li onClick={() => this._setPermission('readwrite')}>
-                        <div className="CollaboratorsModal__permissions-header">Write</div>
-                        <div className="CollaboratorsModal__permissions-subtext">Read/Write permissions. Can sync to branches other than master</div>
-                      </li>
+                      {
+                        (props.sectionType !== 'dataset')
+                        && (
+                          <li onClick={() => this._setPermission('readwrite')}>
+                            <div className="CollaboratorsModal__permissions-header">Write</div>
+                            <div className="CollaboratorsModal__permissions-subtext">Read/Write permissions. Can sync to branches other than master</div>
+                          </li>
+                        )
+                      }
                       <li onClick={() => this._setPermission('owner')}>
                         <div className="CollaboratorsModal__permissions-header">Admin</div>
                         <div className="CollaboratorsModal__permissions-subtext">Admin permissions. Can sync to master and manage collaborators</div>
@@ -573,10 +578,15 @@ export default class CollaboratorsModal extends Component {
                                   <div className="CollaboratorsModal__permissions-header">Read</div>
                                   <div className="CollaboratorsModal__permissions-subtext">Read-only permissions. Can only pull updates</div>
                                 </li>
-                                <li onClick={() => this._addCollaborator('readwrite', collaboratorName)}>
-                                  <div className="CollaboratorsModal__permissions-header">Write</div>
-                                  <div className="CollaboratorsModal__permissions-subtext">Read/Write permissions. Can sync to branches other than master</div>
-                                </li>
+                                {
+                                  (props.sectionType !== 'dataset')
+                                  && (
+                                  <li onClick={() => this._addCollaborator('readwrite', collaboratorName)}>
+                                      <div className="CollaboratorsModal__permissions-header">Write</div>
+                                    <div className="CollaboratorsModal__permissions-subtext">Read/Write permissions. Can sync to branches other than master</div>
+                                  </li>
+                                  )
+                                }
                                 <li onClick={() => this._addCollaborator('owner', collaboratorName)}>
                                   <div className="CollaboratorsModal__permissions-header">Admin</div>
                                   <div className="CollaboratorsModal__permissions-subtext">Admin permissions. Can sync to master and managed collaborators</div>
@@ -594,7 +604,8 @@ export default class CollaboratorsModal extends Component {
                               clicked={this._removeCollaborator}
                             />
 
-                          </li>);
+                          </li>
+                        );
                       })
                     }
                   </ul>

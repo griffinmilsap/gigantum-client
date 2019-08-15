@@ -1,14 +1,9 @@
 // vendor
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import { boundMethod } from 'autobind-decorator';
 // store
-import store from 'JS/redux/store';
-import { setContainerState } from 'JS/redux/actions/labbook/overview/overview';
-import { setContainerStatus, setContainerMenuVisibility } from 'JS/redux/actions/labbook/containerStatus';
-import { setContainerMenuWarningMessage, setCloseEnvironmentMenus } from 'JS/redux/actions/labbook/environment/environment';
-import { setPackageMenuVisible } from 'JS/redux/actions/labbook/environment/packageDependencies';
-import { setBuildingState, setMergeMode, updateTransitionState } from 'JS/redux/actions/labbook/labbook';
+import { setMergeMode, updateTransitionState } from 'JS/redux/actions/labbook/labbook';
 import { setErrorMessage, setInfoMessage, setWarningMessage } from 'JS/redux/actions/footer';
 // assets
 import './DevTools.scss';

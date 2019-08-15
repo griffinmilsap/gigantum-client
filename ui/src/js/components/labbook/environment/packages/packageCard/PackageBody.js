@@ -6,6 +6,7 @@ import PackageRow from './PackageRow';
 import './PackageBody.scss';
 
 export default (props) => {
+  const { owner, name } = props;
   return (
     <div className="PackageBody">
       {
@@ -14,6 +15,8 @@ export default (props) => {
             key={node.id}
             {...node}
             packageNode={node}
+            name={name}
+            owner={owner}
             selectedPackages={props.selectedPackages}
             selectSinglePackage={props.selectSinglePackage}
             packageMutations={props.packageMutations}

@@ -35,6 +35,7 @@
     }
     &--visible::after,
     &:hover::after{
+      text-transform: capitalize;
       z-index: index($elements, popup);
       font-family: 'NunitoSans';
       position: absolute;

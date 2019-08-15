@@ -92,7 +92,7 @@ class ContainerMutations {
 
 
     const self = this;
-    setBuildingState(true);
+    setBuildingState(owner, name, true);
     BuildImageMutation(
       owner,
       name,
@@ -110,7 +110,7 @@ class ContainerMutations {
   cancelBuild(callback) {
     const { owner, name } = this.state;
 
-    setBuildingState(true);
+    setBuildingState(owner, name, true);
     CancelBuildMutation(
       owner,
       name,

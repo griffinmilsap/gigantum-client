@@ -28,7 +28,7 @@ import './Header.scss';
 const getBranches = (props) => {
   let branches = [];
 
-  if (props.branhces) {
+  if (props.branches) {
     branches = props.branches;
   } else {
     branches = [{

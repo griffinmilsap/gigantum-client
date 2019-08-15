@@ -96,6 +96,8 @@ class Packages extends Component {
             base={props.base}
             togglePackageModal={this._togglePackageModalVisibility}
             packages={flatPackages}
+            name={props.name}
+            owner={props.owner}
             packageMutations={state.packageMutations}
             buildCallback={props.buildCallback}
             setBuildingState={setBuildingState}

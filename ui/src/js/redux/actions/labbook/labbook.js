@@ -6,9 +6,9 @@ import * as types from 'JS/redux/constants/constants';
  * actions
  */
 
-export const setBuildingState = isBuilding => dispatcher(
+export const setBuildingState = (owner, name, isBuilding) => dispatcher(
   types.IS_BUILDING,
-  { isBuilding },
+  { owner, name, isBuilding },
 );
 
 export const setMergeMode = (branchesOpen, mergeFilter) => dispatcher(
@@ -24,9 +24,9 @@ export const setSyncingState = isSyncing => dispatcher(
   { isSyncing },
 );
 
-export const setPublishingState = isPublishing => dispatcher(
+export const setPublishingState = (owner, name, isPublishing) => dispatcher(
   types.IS_PUBLISHING,
-  { isPublishing },
+  { owner, name, isPublishing },
 );
 
 export const setExportingState = isExporting => dispatcher(

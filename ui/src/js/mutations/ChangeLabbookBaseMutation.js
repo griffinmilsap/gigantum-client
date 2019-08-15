@@ -9,6 +9,7 @@ const mutation = graphql`
     changeLabbookBase(input: $input){
       labbook {
         environment {
+          baseLatestRevision
           ...Base_environment
           ...Packages_environment
         }

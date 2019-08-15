@@ -815,6 +815,9 @@ class Activity extends Component {
                       >
                         {
                           state.activityRecords[timestamp].map((record, timestampIndex) => {
+                            const isBaseRecord = !section.activityRecords.pageInfo.hasNextPage
+                              && (section.activityRecords.edges.length - 1 === record.flatIndex);
+
                             if (record.cluster) {
                               return (
                                 <ClusterCardWrapper
@@ -837,6 +840,7 @@ class Activity extends Component {
                             return (
                               <CardWrapper
                                 section={section}
+                                isBaseRecord={isBaseRecord}
                                 isMainWorkspace={props.isMainWorkspace}
                                 activityRecords={state.activityRecords}
                                 clusterElements={clusterElements}
