@@ -59,9 +59,9 @@ def service_telemetry():
     disk_total, disk_avail = _calc_disk_free()
     nvidia_driver = os.environ.get('NVIDIA_DRIVER_VERSION')
     try:
-        rq_total, rq_free = _calc_rq_free()
+        rq_total, rq_free, queue_len = _calc_rq_free()
     except:
-        rq_total, rq_free = 0, 0
+        rq_total, rq_free, queue_len = -1, -1, -1
         
     compute_time = time.time() - t0
     return {
@@ -77,7 +77,8 @@ def service_telemetry():
         'rq': {
             # Total workers, and workers idle/available
             'total': rq_total,
-            'available': rq_free
+            'available': rq_free,
+            'queueLength': queue_len
         },
         # How long it took to collect stats - round to two decimal places
         'collectionTimeSec': float(f'{compute_time:.2f}'),
@@ -111,7 +112,7 @@ def _calc_disk_free() -> Tuple[float, float]:
     return disk_size_num, disk_avail_num
 
 
-def _calc_rq_free() -> Tuple[int, int]:
+def _calc_rq_free() -> Tuple[int, int, int]:
     """Parses the output of `rq info` to return total number
     of workers and the count of workers currently idle."""
 
@@ -119,4 +120,7 @@ def _calc_rq_free() -> Tuple[int, int]:
     with rq.Connection(connection=conn):
         workers: List[rq.Worker] = [w for w in rq.Worker.all()]
     idle_workers = [w for w in workers if w.get_state() == 'idle']
-    return len(workers), len(idle_workers)
+    queues = 'gigantum-default-queue', 'gigantum-build-queue', 'gigantum-publish-queue'
+
+    queue_len = sum([len(rq.Queue(qname, connection=conn)) for qname in queues])
+    return len(workers), len(idle_workers), queue_len
