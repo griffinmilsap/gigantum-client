@@ -32,19 +32,3 @@ class TestLabManagerQueries(object):
         r = fixture_working_dir[2].execute(query)
         assert 'errors' not in r
         assert 'Gigantum Client :: ' in r['data']['buildInfo']
-
-    def test_app_health(self, fixture_working_dir):
-        query = """
-        {
-            appHealth {
-                diskAvailableGb
-                diskTotalGb
-                diskUseWarning
-            }
-        }
-        """
-        r = fixture_working_dir[2].execute(query)
-        assert 'errors' not in r
-        assert r['data']['appHealth']['diskAvailableGb'] > 0.1
-        assert r['data']['appHealth']['diskAvailableGb'] > 6.0
-        assert r['data']['appHealth']['diskUseWarning'] in (True, False)

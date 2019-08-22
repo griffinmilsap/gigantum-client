@@ -26,7 +26,6 @@ from lmsrvlabbook.api.connections.environment import BaseComponentConnection
 from lmsrvlabbook.api.connections.jobstatus import JobStatusConnection
 from lmsrvlabbook.api.objects.datasettype import DatasetType
 from lmsrvlabbook.api.objects.dataset import Dataset
-from lmsrvlabbook.api.objects.apphealth import AppHealthMonitor
 
 logger = LMLogger.get_logger()
 
@@ -54,8 +53,6 @@ class AppQueries(graphene.ObjectType):
 
     # Get the current logged in user identity, primarily used when running offline
     user_identity = graphene.Field(UserIdentity)
-
-    app_health = graphene.Field(AppHealthMonitor)
 
     def resolve_build_info(self, info):
         """Return this LabManager build info (hash, build timestamp, etc)"""
@@ -116,9 +113,6 @@ class AppQueries(graphene.ObjectType):
             UserIdentity
         """
         return UserIdentity()
-
-    def resolve_app_health(self, info):
-        return AppHealthMonitor()
 
 
 class LabbookQuery(AppQueries, graphene.ObjectType):
