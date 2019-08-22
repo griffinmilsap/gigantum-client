@@ -59,27 +59,22 @@ def service_telemetry():
     disk_total, disk_avail = _calc_disk_free()
     nvidia_driver = os.environ.get('NVIDIA_DRIVER_VERSION')
     try:
-        rq_total, rq_free, queue_len = _calc_rq_free()
-    except:
-        rq_total, rq_free, queue_len = -1, -1, -1
+        rq_dict = _calc_rq_free()
+    except Exception as e:
+        rq_dict = {'collectionError': str(e)}
         
     compute_time = time.time() - t0
     return {
-        'memory': {
+        'memoryKb': {
             'total': mem_total,
             'available': mem_avail
         },
-        'disk': {
+        'diskGb': {
             'total': disk_total,
             'available': disk_avail,
             'lowDiskWarning': disk_avail < DISK_WARNING_THRESHOLD_GB
         },
-        'rq': {
-            # Total workers, and workers idle/available
-            'total': rq_total,
-            'available': rq_free,
-            'queueLength': queue_len
-        },
+        'rq': rq_dict,
         # How long it took to collect stats - round to two decimal places
         'collectionTimeSec': float(f'{compute_time:.2f}'),
         'gpu': {
@@ -112,7 +107,7 @@ def _calc_disk_free() -> Tuple[float, float]:
     return disk_size_num, disk_avail_num
 
 
-def _calc_rq_free() -> Tuple[int, int, int]:
+def _calc_rq_free() -> Dict[str, Any]:
     """Parses the output of `rq info` to return total number
     of workers and the count of workers currently idle."""
 
@@ -120,7 +115,12 @@ def _calc_rq_free() -> Tuple[int, int, int]:
     with rq.Connection(connection=conn):
         workers: List[rq.Worker] = [w for w in rq.Worker.all()]
     idle_workers = [w for w in workers if w.get_state() == 'idle']
-    queues = 'gigantum-default-queue', 'gigantum-build-queue', 'gigantum-publish-queue'
-
-    queue_len = sum([len(rq.Queue(qname, connection=conn)) for qname in queues])
-    return len(workers), len(idle_workers), queue_len
+    resp = {
+        'workersTotal': len(workers),
+        'workersIdle': len(idle_workers),
+        'workersUnknown': len([w for w in workers if w.get_state() == '?'])
+    }
+    queues = 'default', 'build', 'publish'
+    resp.update({f'queue{q.capitalize()}Size':
+                     len(rq.Queue(f'gigantum-{q}-queue', connection=conn)) for q in queues})
+    return resp
