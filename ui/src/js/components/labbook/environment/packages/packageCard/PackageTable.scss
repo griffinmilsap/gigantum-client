@@ -77,17 +77,34 @@
   background-size: 12px;
 }
 
+
 .PackageRow.Table__Row:last-child {
   .Tooltip-data {
     &:before {
       top: calc(50% - 23px);
-      left: 0x;
+      left: 8px;
 
       @include triangle('down', 7px, $slateBlue);
       border-bottom: 7px solid transparent;
     }
     &:after {
       top: calc(50% - 61px);
+      left: -60px;
+    }
+  }
+}
+
+.PackageRow.Table__Row:first-child {
+  .Tooltip-data.Btn__upArrow-secondary {
+    &:before {
+      top: calc(100% - 7px);
+      left: 8px;
+
+      @include triangle('up', 7px, $slateBlue);
+      border-top: 7px solid transparent;
+    }
+    &:after {
+      top: calc(100% + 7px) !important;
       left: -60px;
     }
   }

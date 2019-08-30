@@ -16,7 +16,7 @@ export default class PackageActions extends Component {
         ...props.packageNode,
         version: props.packageNode.latestVersion,
       }],
-      duplicates: [props.id],
+      duplicates: [props.packageNode],
     };
     props.selectPackages(true);
     props.setBuildingState(owner, name, true);

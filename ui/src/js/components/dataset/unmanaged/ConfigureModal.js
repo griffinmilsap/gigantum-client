@@ -125,7 +125,10 @@ class ConfigureModal extends Component {
         clearTimeout(this.closeModal);
         this.setState({ buttonState: '' });
       } else {
-        this.setState({ configModalVisible: true, buttonState: '' });
+        this.setState({
+          configModalVisible: true,
+          buttonState: '',
+          });
       }
     };
     const parameters = dataset.backendConfiguration.map(({ parameter, parameterType }) => {
