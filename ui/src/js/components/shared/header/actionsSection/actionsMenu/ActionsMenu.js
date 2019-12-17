@@ -562,6 +562,8 @@ class ActionsMenu extends Component {
               handleClose={() => this._toggleDeleteModal()}
               remoteAdded={props.defaultRemote}
               history={props.history}
+              owner={state.owner}
+              name={state.labbookName}
             />
           )
         }

@@ -31,7 +31,6 @@ function sharedUpdater(store, parentId, deletedId, connectionKey) {
   }
 }
 
-
 export default function DeleteRemoteDatasetMutation(
   datasetName,
   owner,

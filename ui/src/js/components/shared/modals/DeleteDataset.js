@@ -72,7 +72,7 @@ class DeleteDataset extends Component<Props> {
         this.setState({ deletePending: false });
 
         if (error) {
-          setErrorMessage(owner, name, `The was a problem deleting ${name}`, error);
+          setErrorMessage(`The was a problem deleting ${name}`, error);
           this.setState({ deleteDatasetButtonState: 'error' });
 
           setTimeout(() => {
@@ -88,7 +88,7 @@ class DeleteDataset extends Component<Props> {
             }
           }, 1000);
         } else if (deleteRemote) {
-          setInfoMessage(owner, name, `${name} has been remotely deleted`);
+          setInfoMessage(`${name} has been remotely deleted`);
 
           this.setState({ deleteDatasetButtonState: 'finished' });
           setTimeout(() => {
@@ -105,7 +105,7 @@ class DeleteDataset extends Component<Props> {
             }
           }, 1000);
         } else {
-          setInfoMessage(owner, name, `${name} has been deleted`);
+          setInfoMessage(`${name} has been deleted`);
           this.setState({ deleteDatasetButtonState: 'finished' });
           setTimeout(() => {
             history.replace('/datasets/local');
@@ -148,7 +148,7 @@ class DeleteDataset extends Component<Props> {
         this._handleDatasetDelete(name, owner, false, true);
       }
     } else {
-      setWarningMessage(owner, name, 'Names do not match');
+      setWarningMessage('Names do not match');
     }
   }
 
@@ -228,7 +228,7 @@ class DeleteDataset extends Component<Props> {
     } = this.props;
     const deleteText = remoteDelete ? 'Delete Remote Dataset' : 'Delete Dataset';
     const deleteDisabled = deletePending || (name !== userInputName);
-
+    console.log(name, this.props);
     return (
       <Modal
         header={deleteText}

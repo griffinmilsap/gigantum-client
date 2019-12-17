@@ -1,8 +1,12 @@
 import uuidv4 from 'uuid/v4';
 import * as types from 'JS/redux/constants/constants';
 
-let tempId = 0;
-const messageStackHistory = window.sessionStorage.getItem('messageStackHistory') ? JSON.parse(window.sessionStorage.getItem('messageStackHistory')) : [];
+const messageStackHistory = window.sessionStorage.getItem('messageStackHistory')
+  ? JSON.parse(window.sessionStorage.getItem('messageStackHistory'))
+  : [];
+
+
+console.log(messageStackHistory);
 
 export default (state = {
   open: false,
@@ -457,6 +461,5 @@ export default (state = {
       helperVisible: action.payload.helperVisible,
     };
   }
-
   return state;
 };

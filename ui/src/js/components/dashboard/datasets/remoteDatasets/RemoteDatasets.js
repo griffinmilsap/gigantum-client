@@ -171,8 +171,8 @@ class RemoteDatasets extends Component {
               remoteId={state.deleteData.remoteId}
               remoteConnection="RemoteDatasets_remoteDatasets"
               toggleModal={this._toggleDeleteModal}
-              remoteOwner={state.deleteData.remoteOwner}
-              remoteDatasetName={state.deleteData.remoteDatasetName}
+              owner={state.deleteData.remoteOwner}
+              name={state.deleteData.remoteDatasetName}
               remoteUrl={state.deleteData.remoteUrl}
               existsLocally={state.deleteData.existsLocally}
               remoteDelete

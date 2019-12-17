@@ -110,7 +110,7 @@ class FooterMessage extends PureComponent<Props> {
 
           <ul>
             {
-              messageItem.messageBody && messageItem.messageBody.map(item => (
+              messageItem && messageItem.messageBody && messageItem.messageBody.map(item => (
                 <li key={messageItem.id}>
                   <div dangerouslySetInnerHTML={{ __html: item.message }} />
                 </li>

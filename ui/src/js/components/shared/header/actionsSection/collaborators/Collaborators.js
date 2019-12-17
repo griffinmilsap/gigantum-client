@@ -1,3 +1,5 @@
+// @flow
+// vendor
 import { QueryRenderer, graphql } from 'react-relay';
 import React, { Component } from 'react';
 import classNames from 'classnames';
@@ -7,9 +9,8 @@ import environment from 'JS/createRelayEnvironment';
 // store
 import store from 'JS/redux/store';
 import { setCollaborators, setCanManageCollaborators } from 'JS/redux/actions/shared/collaborators/collaborators';
-import { setInfoMessage } from 'JS/redux/actions/footer';
 // components
-import CollaboratorsModal from './CollaboratorsModal';
+import CollaboratorsModal from './modal/CollaboratorsModal';
 // assets
 import './Collaborators.scss';
 
@@ -41,18 +42,33 @@ query CollaboratorsDatasetQuery($name: String!, $owner: String!){
   }
 }`;
 
+/**
+* @param {Array<Object>} collaborators
+* @param {string} owner
+* returns  a fitered list of collaborators
+* @return {Array}
+*/
+const getCollaboratorFiltered = (collaborators, owner) => collaborators
+  && collaborators.filter(
+    ({ collaboratorUsername }) => collaboratorUsername !== owner,
+  ).map(
+    ({ collaboratorUsername }) => collaboratorUsername,
+  );
 
-class CollaboratorButton extends Component {
-  constructor(props) {
-    	super(props);
-    	this.state = {
-      collaboratorModalVisible: false,
-      canClickCollaborators: false,
-      sessionValid: false,
-    };
+type Props = {
+  auth: {
+    renewToken: Function,
+  },
+  sectionType: string,
+  showLoginPrompt: Function,
+}
 
-    this._toggleCollaborators = this._toggleCollaborators.bind(this);
-  }
+class CollaboratorButton extends Component<Props> {
+  state = {
+    collaboratorModalVisible: false,
+    canClickCollaborators: false,
+    sessionValid: false,
+  };
 
   static getDerivedStateFromProps(nextProps, nextState) {
     if (nextProps.menuOpen) {
@@ -77,23 +93,25 @@ class CollaboratorButton extends Component {
   *  shows hide collaborators modal
   *  @return {}
   */
-  _toggleCollaborators(retry) {
-    const { props, state } = this;
+  _toggleCollaborators = (retry) => {
+    const { auth, showLoginPrompt } = this.props;
+    const { sessionValid, collaboratorModalVisible } = this.state;
+
     if (navigator.onLine) {
-      if (state.sessionValid) {
-        this.setState({ collaboratorModalVisible: !state.collaboratorModalVisible });
+      if (sessionValid) {
+        this.setState({ collaboratorModalVisible: !collaboratorModalVisible });
       } else {
-        props.auth.renewToken(true, () => {
-          props.showLoginPrompt();
+        auth.renewToken(true, () => {
+          showLoginPrompt();
         }, () => {
           if (retry) {
             retry();
           }
-          this.setState({ collaboratorModalVisible: !state.collaboratorModalVisible });
+          this.setState({ collaboratorModalVisible: !collaboratorModalVisible });
         });
       }
     } else {
-      props.showLoginPrompt();
+      showLoginPrompt();
     }
   }
 
@@ -103,7 +121,7 @@ class CollaboratorButton extends Component {
   *  gets list of collaborators
   *  @return {}
   */
-  _getCollaboratorList(collaborators, collaboratorFilteredArr) {
+  _getCollaboratorList = (collaborators, collaboratorFilteredArr) => {
     let lastParsedIndex;
     let collaboratorSubText = collaboratorFilteredArr ? collaboratorFilteredArr.join(', ') : '';
 
@@ -115,7 +133,7 @@ class CollaboratorButton extends Component {
       const lastParsed = collaboratorSubText.split(', ')[lastParsedIndex];
 
       if (collaborators[lastParsedIndex] !== lastParsed) {
-        lastParsedIndex--;
+        lastParsedIndex -= 1;
 
         collaboratorSubText = collaboratorSubText.split(', ');
         collaboratorSubText.pop();
@@ -132,36 +150,27 @@ class CollaboratorButton extends Component {
   *  gets info for a collaborator
   *  @return {}
   */
-  _getCollabororInfo(name) {
+  _getCollabororInfo = (name) => {
     let { collaborators, canManageCollaborators } = store.getState().collaborators;
-    collaborators = collaborators && collaborators[name] || null;
-    canManageCollaborators = canManageCollaborators && canManageCollaborators[name] || null;
+    collaborators = collaborators && (collaborators[name] || null);
+    canManageCollaborators = canManageCollaborators && (canManageCollaborators[name] || null);
     return { collaborators, canManageCollaborators };
   }
 
   render() {
     const self = this;
-
-
-    const { props, state } = this;
-
-
-    const { sectionType } = props;
+    const {
+      collaboratorModalVisible,
+    } = this.state;
+    const {
+      showLoginPrompt,
+      sectionType,
+    } = this.props;
     // either labbook or dataset
     // get section from props
 
-    const section = props[sectionType];
-
-
-    const {
-      name,
-      owner,
-    } = section;
-
-
+    const { name, owner } = this.props[sectionType];
     const query = (sectionType === 'dataset') ? CollaboratorsDatasetQuery : CollaboratorsQuery;
-
-
     const { collaborators, canManageCollaborators } = this._getCollabororInfo(name);
 
     return (
@@ -173,117 +182,118 @@ class CollaboratorButton extends Component {
           owner,
         }}
         render={(response) => {
-          const error = response.error;
+          const { props } = response;
 
+          if (props) {
+            const section = (sectionType === 'dataset')
+              ? props.dataset
+              : props.labbook;
+            const collaboratorFilteredArr = getCollaboratorFiltered(section.collaborators, owner);
+            const collaboratorNames = self._getCollaboratorList(
+              section.collaborators,
+              collaboratorFilteredArr,
+            );
 
-          const queryProps = response.props;
-          if (queryProps) {
-            const section = sectionType === 'dataset' ? queryProps.dataset : queryProps.labbook;
             this.canManageCollaborators = section.canManageCollaborators;
             this.collaborators = section.collaborators;
-            props.setCollaborators({ [name]: this.collaborators });
-            props.setCanManageCollaborators({ [name]: this.canManageCollaborators });
 
+            setCollaborators({ [name]: this.collaborators });
+            setCanManageCollaborators({ [name]: this.canManageCollaborators });
+            // declare css here
             const collaboratorButtonCSS = classNames({
               'Collaborators__btn Btn--flat Btn--no-underline': true,
             });
-
-
             const collaboratorCSS = classNames({
               Collaborators: true,
             });
-
-
-            const collaboratorFilteredArr = section.collaborators && section.collaborators.filter(({ collaboratorUsername }) => collaboratorUsername !== owner).map(({ collaboratorUsername }) => collaboratorUsername);
-
-            const collaboratorNames = self._getCollaboratorList(section.collaborators, collaboratorFilteredArr);
 
             return (
 
               <div className={collaboratorCSS}>
                 <button
+                  type="button"
                   onClick={() => this._toggleCollaborators(response.retry)}
                   className={collaboratorButtonCSS}
                 >
                       Collaborators
                   <p className="BranchMenu__collaborator-names">{collaboratorNames}</p>
-                  {
-                    (collaboratorNames.length === 0)
-                    &&
-                    <p>
-                      Click to add
-                    </p>
+
+                  { (collaboratorNames.length === 0)
+                    && (
+                      <p>
+                        Click to add
+                      </p>
+                    )
                   }
                 </button>
 
-                {
-                      this.state.collaboratorModalVisible
-                        && (
-                        <CollaboratorsModal
-                          sectionType={props.sectionType}
-                          key="CollaboratorsModal"
-                          ref="collaborators"
-                          collaborators={section.collaborators}
-                          owner={owner}
-                          labbookName={name}
-                          toggleCollaborators={this._toggleCollaborators}
-                          canManageCollaborators={section.canManageCollaborators}
-                        />
-                        )
+                { collaboratorModalVisible
+                    && (
+                    <CollaboratorsModal
+                      sectionType={sectionType}
+                      key="CollaboratorsModal"
+                      collaborators={section.collaborators}
+                      owner={owner}
+                      name={name}
+                      toggleCollaborators={this._toggleCollaborators}
+                      canManageCollaborators={section.canManageCollaborators}
+                    />
+                    )
 
-                    }
+                }
               </div>
             );
           } if (collaborators !== null) {
+            const collaboratorFilteredArr = getCollaboratorFiltered(collaborators, owner);
+            const collaboratorNames = self._getCollaboratorList(
+              collaborators,
+              collaboratorFilteredArr,
+            );
+
+            // declare css here
             const collaboratorButtonCSS = classNames({
               Collaborators__btn: true,
               'Btn--flat': true,
             });
-
             const collaboratorCSS = classNames({
               Collaborators: true,
             });
-
-            const collaboratorFilteredArr = collaborators && collaborators.filter(({ collaboratorUsername }) => collaboratorUsername !== owner).map(({ collaboratorUsername }) => collaboratorUsername);
-
-            const collaboratorNames = self._getCollaboratorList(collaborators, collaboratorFilteredArr);
 
             return (
 
               <div className={collaboratorCSS}>
                 <button
+                  type="button"
                   onClick={() => this._toggleCollaborators()}
                   className={collaboratorButtonCSS}
                 >
-                      Collaborators
+                  Collaborators
                   <p className="BranchMenu__collaborator-names">{collaboratorNames}</p>
-
                 </button>
 
-                {
-                      this.state.collaboratorModalVisible
-                        && (
-                        <CollaboratorsModal
-                          key="CollaboratorsModal"
-                          ref="collaborators"
-                          collaborators={collaborators}
-                          canManageCollaborators={canManageCollaborators}
-                          owner={owner}
-                          labbookName={name}
-                          toggleCollaborators={this._toggleCollaborators}
-                        />
-                        )
-                    }
+                { collaboratorModalVisible
+                  && (
+                    <CollaboratorsModal
+                      key="CollaboratorsModal"
+                      collaborators={collaborators}
+                      canManageCollaborators={canManageCollaborators}
+                      owner={owner}
+                      labbookName={name}
+                      toggleCollaborators={this._toggleCollaborators}
+                    />
+                  )
+                 }
               </div>
             );
           }
           return (
             <div className="Collaborators disabled">
               <button
-                onClick={() => props.showLoginPrompt()}
+                type="button"
+                onClick={() => showLoginPrompt()}
                 className="Collaborators__btn Btn--flat disabled"
               >
-                      Collaborators
+                Collaborators
               </button>
             </div>
           );
@@ -294,11 +304,9 @@ class CollaboratorButton extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = () => ({});
 
-});
-
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = () => ({
   setCollaborators,
   setCanManageCollaborators,
 });
