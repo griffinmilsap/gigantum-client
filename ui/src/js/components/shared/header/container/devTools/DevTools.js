@@ -19,8 +19,10 @@ class DevTools extends Component {
         const timeStampedName = devToolConfig._timestamps[0].name;
         const threeMonthsAgo = (new Date()).setMonth(new Date().getMonth() - 3);
         if (threeMonthsAgo > oldestConfig) {
-          delete devToolConfig[timeStampedOwner][timeStampedName];
-          if (Object.keys(devToolConfig[timeStampedOwner]).length === 0) {
+          if (devToolConfig[timeStampedOwner] && devToolConfig[timeStampedOwner][timeStampedName]) {
+            delete devToolConfig[timeStampedOwner][timeStampedName];
+          }
+          if (devToolConfig[timeStampedOwner] && Object.keys(devToolConfig[timeStampedOwner]).length === 0) {
             delete devToolConfig[timeStampedOwner];
           }
           devToolConfig._timestamps.shift();

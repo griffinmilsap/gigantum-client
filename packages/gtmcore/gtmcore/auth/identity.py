@@ -273,9 +273,35 @@ class IdentityManager(metaclass=abc.ABCMeta):
                 raise AuthenticationError({"code": "token_expired",
                                            "description": "token is expired"}, 401)
             except jwt.JWTClaimsError as err:
-                raise AuthenticationError({"code": "invalid_claims",
-                                           "description":
-                                               "incorrect claims, please check the audience and issuer"}, 401)
+                # Two-stage provider domain update. Can be removed after the second stage has been deployed
+                if err.args[0] == 'Invalid issuer':
+                    # There was a problem with the issuer of the token. Assume issuer has been moved into the
+                    # gigantum.com domain to remove 3rd party cookie issues and try again.
+                    try:
+                        if limited_validation is False:
+                            payload = jwt.decode(token, self.rsa_key,
+                                                 algorithms=self.config.config['auth']['signing_algorithm'],
+                                                 audience=audience,
+                                                 issuer="https://auth.gigantum.com/",
+                                                 access_token=access_token,
+                                                 options={"verify_at_hash": self.validate_at_hash_claim})
+                        else:
+                            payload = jwt.decode(token, self.rsa_key,
+                                                 algorithms=self.config.config['auth']['signing_algorithm'],
+                                                 audience=audience,
+                                                 issuer="https://auth.gigantum.com/",
+                                                 options={"verify_exp": False,
+                                                          "verify_at_hash": False})
+
+                        return payload
+
+                    except Exception:
+                        raise AuthenticationError({"code": "invalid_header",
+                                                   "description": "Unable to validate authentication token."}, 400)
+                else:
+                    raise AuthenticationError({"code": "invalid_claims",
+                                               "description":
+                                                   "incorrect claims, please check the audience and issuer"}, 401)
             except Exception:
                 raise AuthenticationError({"code": "invalid_header",
                                            "description": "Unable to parse authentication token."}, 400)

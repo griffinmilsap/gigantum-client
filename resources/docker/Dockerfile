@@ -2,7 +2,13 @@
 FROM ubuntu:18.04 as ui-builder
 
 # Install system level dependencies
-RUN apt-get -y update && apt-get -y install git curl gosu nodejs npm
+RUN apt-get -y update && apt-get -y install git curl gosu
+
+# Install Node
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - && \
+    apt-get -y install nodejs
+
+# Install Yarn
 RUN npm install yarn -g
 
 # Install babel-node
@@ -20,6 +26,9 @@ ARG UI_BUILD_SCRIPT=resources/docker/ui_build_script.sh
 COPY ui /opt/ui
 COPY $UI_BUILD_SCRIPT /opt/ui_build_script.sh
 RUN /bin/bash /opt/ui_build_script.sh
+
+
+
 
 
 # PRODUCTION CONTAINER
@@ -46,22 +55,52 @@ ARG HONEYTAIL_INSTALLER=resources/client/honeytail-installer-local.sh
 
 COPY $HONEYTAIL_INSTALLER /tmp/honeytail.sh
 
-# Super instruction to install all dependencies
+# Super instruction to install all dependencies that need apt and clean up to minimize layer size
 RUN apt-get -y update && \
-    apt-get -y --no-install-recommends install git nginx supervisor wget openssl python3 python3-pip python3-distutils \
-    gcc g++ gosu redis-server libjpeg-dev git-lfs python3-setuptools python3-dev libdpkg-perl zip unzip libsnappy-dev && \
+    # Install all apt packages
+    apt-get -y --no-install-recommends install nginx supervisor wget openssl python3 python3-pip python3-distutils \
+    gcc g++ gosu redis-server libjpeg-dev python3-setuptools python3-dev libdpkg-perl zip unzip libsnappy-dev \
+    curl make autoconf dh-autoreconf libcurl4-openssl-dev libexpat1-dev libz-dev && \
+    # Install Git from source to use OpenSSL for better enterprise network support.
+    mkdir /tmp/gitbuild && cd /tmp/gitbuild && \
+	# Get the latest git tarball
+    git_tarball_url="https://www.github.com$(curl 'https://github.com/git/git/tags' | grep -o "/git/git/archive/v2\..*\.tar\.gz" | sort -r | head -1 | tr -d '\n')" && \
+    curl -L --retry 5 "${git_tarball_url}" --output "git-source.tar.gz" && \
+	tar -xf "git-source.tar.gz" --strip 1 && \
+	# Configure the custom git build to use openSSL
+	make configure && \
+    ./configure --prefix=/usr/local --with-openssl NO_TCLTK=1 NO_GETTEXT=1 && \
+    # Build and install git
+    make -j2 && \
+    make install && \
+    cd /tmp && rm -rf ./gitbuild && \
+    # Get the latest git LFS binary
+    mkdir /tmp/lfs_install && cd /tmp/lfs_install && \
+	git_lfs_tarball_url="https://www.github.com$(curl 'https://github.com/git-lfs/git-lfs/releases' | grep -o "/git-lfs/git-lfs/releases/download/v2..*/git-lfs-linux-amd64-v2..*.tar.gz" | sort -r | head -1 | tr -d '\n')" && \
+    curl -L --retry 5 "${git_lfs_tarball_url}" --output "git-lfs.tar.gz" && \
+    tar -xf "git-lfs.tar.gz" && \
+    # Configure Git-LFS
+    cp ./git-lfs /usr/local/bin/git-lfs && \
+    chmod 755 /usr/local/bin/git-lfs && \
     git lfs install && \
+    cd /tmp && rm -rf ./lfs_install && \
+    # Install node so you can run the CHP, and install the CHP
     apt-get -y install curl gnupg gnupg1 gnupg2 && \
-    curl -sL https://deb.nodesource.com/setup_8.x | bash && \
+    curl -sL https://deb.nodesource.com/setup_11.x | bash && \
     apt-get -y install nodejs && \
     npm install -g configurable-http-proxy && \
     cd /opt/confhttpproxy && pip3 install . && \
+    # Install client package dependencies
     pip3 install wheel && \
     pip3 install -r /opt/gtmcore/requirements.txt && \
     pip3 install -r /opt/gtmapi/requirements.txt && \
     pip3 install uwsgi && \
+    # Configure Honeytail (If running in a cluster, will be a noop otherwise)
     chmod u+x /tmp/honeytail.sh && /tmp/honeytail.sh && \
-    apt-get -qq -y remove gcc g++ python3-dev wget curl gnupg gnupg1 gnupg2 && \
+    # Cleanup!
+    apt-get -qq -y remove gcc g++ wget curl gnupg gnupg1 gnupg2 make autoconf dh-autoreconf && \
+    apt-get -qq -y autoremove && \
+    apt-get -qq -y autoclean && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/dpkg.log && \
     rm /tmp/honeytail.sh
@@ -70,14 +109,13 @@ RUN apt-get -y update && \
 # TODO: Make pip installs once refactor is completed
 COPY packages/gtmapi /opt/gtmapi
 COPY packages/gtmcore /opt/gtmcore
-
 RUN cd /opt/gtmcore/ && python3 setup.py install
 
 # Install testing requirements (will essentially be a noop in production)
 COPY build/requirements-testing.txt /opt/requirements-testing.txt
 RUN pip3 install -r /opt/requirements-testing.txt
 
-# Setup lmcommon config file - should be written by automation before copy
+# Setup client config file - should be written by automation before copy
 COPY $CLIENT_CONFIG_FILE /etc/gigantum/labmanager.yaml
 
 # Setup logging config file
@@ -106,9 +144,7 @@ COPY $SUPERVISOR_CONFIG /etc/supervisor/conf.d/supervisord.conf
 COPY $ENTRYPOINT_FILE /usr/local/bin/entrypoint.sh
 RUN chmod u+x /usr/local/bin/entrypoint.sh
 
-
-
-# Setup demo labbook
+# Setup demo project
 COPY resources/my-first-project.zip /opt/my-first-project.zip
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

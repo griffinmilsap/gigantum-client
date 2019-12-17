@@ -50,6 +50,18 @@ fi
 # Setup LFS
 gosu giguser git lfs install
 
+# Setup custom CA certs if provided by the user
+CERT_COUNT=`ls -1 /mnt/gigantum/certificates/*.crt 2>/dev/null | wc -l`
+if [[ ${CERT_COUNT} != 0 ]];then
+  echo "Configuring user provided CA certificates"
+  cp /mnt/gigantum/certificates/*.crt /usr/local/share/ca-certificates/
+  update-ca-certificates
+  export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+else
+  echo "No user provided CA certificates found. Skipping CA update."
+fi
+
 # Start supervisord
 gosu giguser /usr/bin/supervisord &
 exec gosu giguser "$@"
