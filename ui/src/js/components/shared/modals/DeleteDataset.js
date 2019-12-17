@@ -228,7 +228,7 @@ class DeleteDataset extends Component<Props> {
     } = this.props;
     const deleteText = remoteDelete ? 'Delete Remote Dataset' : 'Delete Dataset';
     const deleteDisabled = deletePending || (name !== userInputName);
-    console.log(name, this.props);
+    
     return (
       <Modal
         header={deleteText}
