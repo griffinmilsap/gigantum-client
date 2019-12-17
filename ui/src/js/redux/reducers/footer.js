@@ -5,9 +5,6 @@ const messageStackHistory = window.sessionStorage.getItem('messageStackHistory')
   ? JSON.parse(window.sessionStorage.getItem('messageStackHistory'))
   : [];
 
-
-console.log(messageStackHistory);
-
 export default (state = {
   open: false,
   uploadOpen: false,
