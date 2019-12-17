@@ -193,3 +193,47 @@ class TestImageBuilder(object):
         docker_lines = dockerfile_text.split(os.linesep)
         for line in test_lines:
             assert line in docker_lines
+
+    def test_install_user_defined_ca(self, mock_labbook):
+        """Test if the Dockerfile builds with user defined cas when cert files are available"""
+        lb = mock_labbook[2]
+
+        erm = RepositoryManager(mock_labbook[0])
+        erm.update_repositories()
+        erm.index_repositories()
+        cm = ComponentManager(lb)
+        cm.add_base(ENV_UNIT_TEST_REPO, ENV_UNIT_TEST_BASE, ENV_UNIT_TEST_REV)
+
+        # No files in certificate dir, CA code shouldn't run
+        test_lines = ["# Configure user provided CA certificates",
+                      "RUN update-ca-certificates",
+                      "ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt "
+                      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"]
+
+        # No files in the certificate dir, CA code shouldn't run
+        ib = ImageBuilder(lb)
+        dockerfile_text = ib.assemble_dockerfile(write=False)
+        docker_lines = dockerfile_text.split(os.linesep)
+        for line in test_lines:
+            assert line not in docker_lines
+
+        # A file without a .crt extension in certificate dir, CA code still shouldn't run
+        certificate_dir_container = os.path.join(lb.client_config.config['git']['working_directory'], 'certificates')
+        os.makedirs(certificate_dir_container, exist_ok=True)
+        with open(os.path.join(certificate_dir_container, 'test.txt'), 'wt') as tf:
+            tf.write("dummy file")
+
+        dockerfile_text = ib.assemble_dockerfile(write=False)
+        docker_lines = dockerfile_text.split(os.linesep)
+        for line in test_lines:
+            assert line not in docker_lines
+
+        # A file WITH a .crt extension in certificate dir, CA code SHOULD run
+        certificate_dir_container = os.path.join(lb.client_config.config['git']['working_directory'], 'certificates')
+        with open(os.path.join(certificate_dir_container, 'myCA.crt'), 'wt') as tf:
+            tf.write("a faked CA file")
+
+        dockerfile_text = ib.assemble_dockerfile(write=False)
+        docker_lines = dockerfile_text.split(os.linesep)
+        for line in test_lines:
+            assert line in docker_lines

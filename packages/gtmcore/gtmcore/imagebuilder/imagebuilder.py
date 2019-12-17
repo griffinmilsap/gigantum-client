@@ -1,6 +1,7 @@
 import datetime
 import functools
 import glob
+import shutil
 import os
 from string import Template
 
@@ -129,6 +130,31 @@ class ImageBuilder(object):
 
         return docker_lines
 
+    def _install_user_defined_ca(self) -> List[str]:
+        """Step to add layers to install user defined CA certificates into Project containers"""
+        docker_lines: List[str] = list()
+        certificate_dir_client = os.path.join(self.labbook.client_config.config['git']['working_directory'],
+                                              'certificates')
+        certificate_files = [x for x in glob.glob(os.path.join(certificate_dir_client, "*.crt"))]
+
+        # Only perform this step if there are .crt files in the `certificates` dir in the root of the working dir
+        if certificate_files:
+            # Copy certificates into an untracked directory within the container build context
+            project_build_context = os.path.join(self.labbook.root_dir, '.gigantum', 'env', 'certificates')
+            os.makedirs(project_build_context, exist_ok=True)
+            for filename in certificate_files:
+                shutil.copy(filename, project_build_context)
+
+            # Render Dockerfile contents
+            docker_lines.append("# Configure user provided CA certificates")
+            docker_lines.append(f"COPY certificates/*.crt /usr/local/share/ca-certificates/")
+            docker_lines.append(f"RUN update-ca-certificates")
+            docker_lines.append(f"ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt "
+                                f"SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt")
+            docker_lines.append("")
+
+        return docker_lines
+
     def _load_packages(self) -> List[str]:
         """Load packages from yaml files in expected location in directory tree. """
         root_dir = os.path.join(self.labbook.root_dir, '.gigantum', 'env', 'package_manager')
@@ -216,6 +242,7 @@ class ImageBuilder(object):
         """
         assembly_pipeline = [self._extra_base_images,
                              self._load_baseimage,
+                             self._install_user_defined_ca,
                              self._load_packages,
                              self._load_docker_snippets,
                              self._load_bundled_apps,

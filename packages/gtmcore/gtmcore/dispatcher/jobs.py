@@ -266,9 +266,10 @@ def build_labbook_image(path: str, username: str, tag: Optional[str] = None, noc
     Returns:
         Docker image ID
     """
-
     logger = LMLogger.get_logger()
     logger.info(f"Starting build_labbook_image({path}, {username}, {tag}, {nocache}) in pid {os.getpid()}")
+
+    user_defined_ca_dir = os.path.join(path, '.gigantum', 'env', 'certificates')
 
     try:
         job = get_current_job()
@@ -289,11 +290,18 @@ def build_labbook_image(path: str, username: str, tag: Optional[str] = None, noc
         container_ops = container_for_context(username, path=path, override_image_name=tag)
         container_ops.build_image(nocache=nocache, feedback_callback=save_metadata_callback)
 
+        # Remove all user defined CA certificates. We do not want to leak these by any accidental copy or commit!
+        if os.path.isdir(user_defined_ca_dir):
+            shutil.rmtree(user_defined_ca_dir)
+
         logger.info(f"Completed build_labbook_image in pid {os.getpid()}: {container_ops.image_tag}")
         # This used to return and image ID, but this nametag should work equally well for all docker-py operations
         # Also note that we can be certain image_tag is not None, but we add some logic for the type-checker
         return container_ops.image_tag or ''
     except Exception as e:
+        if os.path.isdir(user_defined_ca_dir):
+            # Remove all user defined CA certificates. We do not want to leak these by any accidental copy or commit!
+            shutil.rmtree(user_defined_ca_dir)
         logger.error(f"Error on build_labbook_image in pid {os.getpid()}: {e}")
         raise
 

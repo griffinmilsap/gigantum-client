@@ -11,4 +11,3 @@ echo "  \"client_id\": \"${AUTH_TEMP_CLIENT_ID}\"," >> ${AUTH_PATH}
 echo "  \"client_secret\": \"${AUTH_TEMP_CLIENT_SECRET}\"," >> ${AUTH_PATH}
 echo "  \"scope\": \"openid profile email user_metadata\"" >> ${AUTH_PATH}
 echo "}" >> ${AUTH_PATH}
-

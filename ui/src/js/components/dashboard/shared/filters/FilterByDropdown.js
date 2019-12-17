@@ -74,7 +74,7 @@ class FilterByDropdown extends Component {
             onClick={() => props.setFilter('owner')}
           >
            My
-            {` ${props.type}`}
+            {` ${props.type}s`}
             {props.filter === 'owner' ? ' ✓ ' : ''}
           </li>
           <li
