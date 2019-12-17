@@ -470,7 +470,7 @@ class Datasets extends Component {
 
             <FilterByDropdown
               {...this.state}
-              type="Datasets"
+              type="Dataset"
               toggleFilterMenu={this._toggleFilterMenu}
               setFilter={this._setFilter}
             />
