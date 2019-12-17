@@ -1,84 +1,67 @@
+// @flow
 // vendor
 import React, { Component } from 'react';
-import uuidv4 from 'uuid/v4';
 // store
 import {
   setErrorMessage,
   setWarningMessage,
   setInfoMessage,
-  setMultiInfoMessage,
 } from 'JS/redux/actions/footer';
-import store from 'JS/redux/store';
 // Mutations
 import DeleteDatasetMutation from 'Mutations/DeleteDatasetMutation';
-import ImportRemoteDatasetMutation from 'Mutations/ImportRemoteDatasetMutation';
 // components
 import ButtonLoader from 'Components/common/ButtonLoader';
 import Modal from 'Components/common/Modal';
 // assets
 import './DeleteDataset.scss';
 
+type Props = {
+  history: {
+    replace: Function,
+  },
+  name: string,
+  remoteDelete: bool,
+  owner: string,
+  handleClose: Function,
+  remoteId: string,
+  datasetListId: string,
+  remoteConnection: string,
+  existsLocally: bool,
+  remoteAdded: bool,
+  toggleModal: Function,
+}
 
-export default class DeleteDataset extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      datasetName: '',
-      deletePending: false,
-      deleteDatasetButtonState: '',
-      id: uuidv4(),
-    };
-    this._deleteDataset = this._deleteDataset.bind(this);
-  }
-
-  /**
-      *  @param {String} owner
-      *  @param {String} datasetName
-      *  @param {String} remote
-      *  @param {Function} callback
-      *  handles importing dataset mutation
-  */
-  _handleImportDataset = (owner, datasetName, remote, callback) => {
-    const { state } = this;
-    ImportRemoteDatasetMutation(
-      owner,
-      datasetName,
-      remote,
-      (response, error) => {
-        if (error) {
-          console.error(error);
-          const messageData = {
-            id: state.id,
-            message: 'ERROR: Could not delete remote Dataset',
-            isLast: null,
-            error: true,
-            messageBody: error,
-          };
-          setMultiInfoMessage(messageData);
-        } else if (response) {
-          callback();
-        }
-      },
-    );
-  }
+class DeleteDataset extends Component<Props> {
+  state = {
+    userInputName: '',
+    deletePending: false,
+    deleteDatasetButtonState: '',
+  };
 
   /**
-    @param {String} datasetName
+    @param {String} name
     @param {String} owner
     @param {Boolean} deleteLocal
     @param {Boolean} deleteRemote
     @param {Boolean} forceImportLocal
     fires delete dataset mutation
   */
-  _handleDatasetDelete(datasetName, owner, deleteLocal, deleteRemote) {
-    const { props } = this;
+  _handleDatasetDelete = (
+    name,
+    owner,
+    deleteLocal,
+    deleteRemote,
+  ) => {
     const {
       remoteId,
       datasetListId,
       remoteConnection,
-    } = props;
+      toggleModal,
+      history,
+    } = this.props;
+
     DeleteDatasetMutation(
-      datasetName,
+      name,
       owner,
       remoteId,
       datasetListId,
@@ -89,42 +72,43 @@ export default class DeleteDataset extends Component {
         this.setState({ deletePending: false });
 
         if (error) {
-          setErrorMessage(`The was a problem deleting ${datasetName}`, error);
+          setErrorMessage(owner, name, `The was a problem deleting ${name}`, error);
           this.setState({ deleteDatasetButtonState: 'error' });
+
           setTimeout(() => {
             this.setState({
-              datasetName: '',
+              userInputName: '',
               deletePending: false,
               deleteDatasetButtonState: '',
             });
-            props.toggleModal();
+            toggleModal();
 
             if (document.getElementById('deleteInput')) {
               document.getElementById('deleteInput').value = '';
             }
           }, 1000);
         } else if (deleteRemote) {
-          setInfoMessage(`${datasetName} has been remotely deleted`);
+          setInfoMessage(owner, name, `${name} has been remotely deleted`);
 
           this.setState({ deleteDatasetButtonState: 'finished' });
           setTimeout(() => {
             this.setState({
-              datasetName: '',
+              userInputName: '',
               deletePending: false,
               deleteDatasetButtonState: '',
             });
 
-            props.toggleModal();
+            toggleModal();
 
             if (document.getElementById('deleteInput')) {
               document.getElementById('deleteInput').value = '';
             }
           }, 1000);
         } else {
-          setInfoMessage(`${datasetName} has been deleted`);
+          setInfoMessage(owner, name, `${name} has been deleted`);
           this.setState({ deleteDatasetButtonState: 'finished' });
           setTimeout(() => {
-            props.history.replace('/datasets/local');
+            history.replace('/datasets/local');
           }, 2000);
         }
       },
@@ -135,44 +119,36 @@ export default class DeleteDataset extends Component {
 
   /**
     @param {object} evt
-    sets state of datasetName
+    sets state of name
   */
-  _setDatasetName(evt) {
-    this.setState({ datasetName: evt.target.value });
+  _setDatasetName = (evt) => {
+    this.setState({ userInputName: evt.target.value });
   }
 
   /**
   @param {}
   fires appropriate delete dataset mutation
-*/
-  _deleteDataset() {
-    const { props, state } = this;
-    const { labbookName, owner } = props.remoteDelete
-      ? {
-        labbookName: props.remoteDatasetName,
-        owner: props.remoteOwner,
-      }
-      : store.getState().routes;
-    const datasetName = labbookName;
-    const remote = props.remoteUrl;
+  */
+  _deleteDataset = () => {
+    const { userInputName } = this.state;
+    const {
+      name,
+      owner,
+      remoteDelete,
+    } = this.props;
 
-
-    if (datasetName === state.datasetName) {
+    if (name === userInputName) {
       this.setState({
         deletePending: true,
         deleteDatasetButtonState: 'loading',
       });
-      if (!props.remoteDelete) {
-        this._handleDatasetDelete(datasetName, owner, true, false);
-      } else if (props.remoteDelete && props.existsLocally) {
-        this._handleDatasetDelete(datasetName, owner, false, true);
+      if (!remoteDelete) {
+        this._handleDatasetDelete(name, owner, true, false);
       } else {
-        this._handleImportDataset(owner, datasetName, remote, () => {
-          this._handleDatasetDelete(datasetName, owner, true, true);
-        });
+        this._handleDatasetDelete(name, owner, false, true);
       }
     } else {
-      setWarningMessage('Names do not match');
+      setWarningMessage(owner, name, 'Names do not match');
     }
   }
 
@@ -181,18 +157,22 @@ export default class DeleteDataset extends Component {
   *  determines the warning text to be displayed to the user
 */
   _getExplanationText() {
-    const { props } = this;
-    const { labbookName, owner } = store.getState().routes;
-    const datasetName = labbookName;
+    const {
+      name,
+      owner,
+      remoteDelete,
+      existsLocally,
+      remoteAdded,
+    } = this.props;
 
-    if (props.remoteDelete) {
-      if (props.existsLocally) {
+    if (remoteDelete) {
+      if (existsLocally) {
         return (
           <div>
             <p>
               This will delete
               {' '}
-              <b>{props.remoteDatasetName}</b>
+              <b>{name}</b>
               {' '}
               from the cloud.
             </p>
@@ -204,23 +184,23 @@ export default class DeleteDataset extends Component {
         <p>
           This will delete
           {' '}
-          <b>{props.remoteDatasetName}</b>
+          <b>{name}</b>
           {' '}
           from the cloud.
           All data will be removed and can not be recovered.
         </p>
       );
-    } if (props.remoteAdded) {
+    } if (remoteAdded) {
       return (
         <div>
           <p>
             This will delete
             {' '}
-            <b>{datasetName}</b>
+            <b>{name}</b>
             {' '}
             from this Gigantum client.
           </p>
-          <p>{`You can still download it from gigantum.com/${owner}/${datasetName}.`}</p>
+          <p>{`You can still download it from gigantum.com/${owner}/${name}.`}</p>
         </div>
       );
     }
@@ -228,7 +208,7 @@ export default class DeleteDataset extends Component {
       <p>
         This will delete
         {' '}
-        <b>{datasetName}</b>
+        <b>{name}</b>
         {' '}
         from this Gigantum instance. All data will be removed and can not be recovered.
       </p>
@@ -236,16 +216,23 @@ export default class DeleteDataset extends Component {
   }
 
   render() {
-    const { props, state } = this;
-    const deleteText = props.remoteDelete ? 'Delete Remote Dataset' : 'Delete Dataset';
-    const { labbookName } = props.remoteDelete
-      ? { labbookName: props.remoteDatasetName }
-      : store.getState().routes;
-    const datasetName = labbookName;
+    const {
+      userInputName,
+      deleteDatasetButtonState,
+      deletePending,
+    } = this.state;
+    const {
+      name,
+      remoteDelete,
+      handleClose,
+    } = this.props;
+    const deleteText = remoteDelete ? 'Delete Remote Dataset' : 'Delete Dataset';
+    const deleteDisabled = deletePending || (name !== userInputName);
+
     return (
       <Modal
         header={deleteText}
-        handleClose={() => props.handleClose()}
+        handleClose={() => handleClose()}
         size="medium"
         icon="delete"
         renderContent={() => (
@@ -253,7 +240,7 @@ export default class DeleteDataset extends Component {
             {this._getExplanationText()}
             <input
               id="deleteInput"
-              placeholder={`Enter ${datasetName} to delete`}
+              placeholder={`Enter ${name} to delete`}
               onKeyUp={(evt) => { this._setDatasetName(evt); }}
               onChange={(evt) => { this._setDatasetName(evt); }}
               type="text"
@@ -262,16 +249,16 @@ export default class DeleteDataset extends Component {
               <button
                 type="button"
                 className="Btn Btn--flat"
-                onClick={() => props.handleClose()}
+                onClick={() => handleClose()}
               >
                 Cancel
               </button>
               <ButtonLoader
-                buttonState={state.deleteDatasetButtonState}
+                buttonState={deleteDatasetButtonState}
                 buttonText={deleteText}
                 className="Btn Btn--wide Btn--last"
                 params={{}}
-                buttonDisabled={state.deletePending || datasetName !== state.datasetName}
+                buttonDisabled={deleteDisabled}
                 clicked={this._deleteDataset}
               />
             </div>
@@ -282,3 +269,5 @@ export default class DeleteDataset extends Component {
     );
   }
 }
+
+export default DeleteDataset;
