@@ -42,6 +42,7 @@ export default class PackageModal extends Component<Props> {
           return (
             <BuildProgress
               {...this.props}
+              toggleModal={togglePackageModal}
               headerText="Installing Packages"
               buildId={buildId}
             />
