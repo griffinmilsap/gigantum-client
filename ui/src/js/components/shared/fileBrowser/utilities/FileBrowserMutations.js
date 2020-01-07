@@ -26,7 +26,6 @@ class FileBrowserMutations {
     * pass above props to state
     */
   constructor(props) {
-    console.log(props);
     this.state = props;
   }
 
@@ -265,7 +264,6 @@ class FileBrowserMutations {
       name,
     } = this.state;
     const { transactionId } = store.getState().fileBrowser;
-    console.log(this, data);
     CompleteBatchUploadTransactionMutation(
       connection,
       owner,

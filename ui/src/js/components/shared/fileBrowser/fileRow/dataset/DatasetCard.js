@@ -110,7 +110,6 @@ class DatasetCard extends Component<Props> {
       name,
       mutations,
     } = this.props;
-    console.log(this);
     const datasetOwner = dataset.owner;
     const datasetName = dataset.name;
     const data = {

@@ -451,7 +451,6 @@ export default class MultithreadUploader {
       name,
       connection,
     } = this.mutationData;
-    console.log(this.mutationData);
     const callback = (response, error) => {
       const totalFiles = this.uploadData.filesData.length;
 
