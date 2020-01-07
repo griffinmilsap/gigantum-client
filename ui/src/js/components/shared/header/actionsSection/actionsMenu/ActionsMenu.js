@@ -425,7 +425,6 @@ class ActionsMenu extends Component<Props> {
         exporting: true,
         menuOpen: false,
       });
-
       const exportType = (sectionType === 'dataset') ? 'Dataset' : 'Project';
 
       setInfoMessage(owner, name, `Exporting ${name} ${exportType}`);
