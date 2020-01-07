@@ -433,10 +433,12 @@ class ActionsMenu extends Component<Props> {
 
       setExportingState(true);
       if (sectionType !== 'dataset') {
+        console.log(owner, name);
         ExportLabbookMutation(
           owner,
           name,
           (response, error) => {
+            console.log(response);
             if (response.exportLabbook) {
               this._jobStatus(response.exportLabbook.jobKey);
             } else {

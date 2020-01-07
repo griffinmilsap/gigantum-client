@@ -691,7 +691,7 @@ class Branches extends Component<Props> {
                 const branchUpToDate = branch.commitsAhead === 0 && branch.commitsBehind === 0;
                 const branchStatusText = branch.isLocal ? branch.isRemote ? 'Local & Remote' : 'Local only' : 'Remote only';
 
-
+                // declare css
                 const branchContainerCSS = classNames({
                   Branches__branch: true,
                   'Branches__branch--selected': (branch.branchName === state.mergeModalVisible) || (branch.branchName === state.deleteModalVisible),

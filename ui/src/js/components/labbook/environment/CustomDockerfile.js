@@ -55,8 +55,8 @@ class CustomDockerfile extends Component<Props> {
       isLocked,
       owner,
       name,
-    } = props;
-    const { props, state } = this;
+    } = this.props;
+    const { state } = this;
     const { status } = store.getState().containerStatus;
     const canEditEnvironment = config.containerStatus.canEditEnvironment(status)
       && !isLocked;

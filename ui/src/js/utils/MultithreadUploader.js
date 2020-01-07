@@ -448,10 +448,10 @@ export default class MultithreadUploader {
   completeUpload = () => {
     const {
       owner,
-      labbookName,
+      name,
       connection,
     } = this.mutationData;
-
+    console.log(this.mutationData);
     const callback = (response, error) => {
       const totalFiles = this.uploadData.filesData.length;
 
@@ -466,7 +466,7 @@ export default class MultithreadUploader {
           this.finishedCallback,
           {
             owner,
-            name: labbookName,
+            name,
           },
         );
       }
@@ -481,7 +481,7 @@ export default class MultithreadUploader {
         CompleteDatasetUploadTransactionMutation(
           connection,
           owner,
-          labbookName,
+          name,
           false,
           false,
           this.transactionId,
@@ -491,7 +491,7 @@ export default class MultithreadUploader {
         CompleteBatchUploadTransactionMutation(
           connection,
           owner,
-          labbookName,
+          name,
           false,
           false,
           this.transactionId,

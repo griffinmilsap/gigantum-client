@@ -37,6 +37,8 @@ export default function AddLabbookFileMutation(
     },
   };
 
+  console.log(variables);
+
   commitMutation(
     environment,
     {

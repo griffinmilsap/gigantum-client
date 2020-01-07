@@ -10,7 +10,7 @@ const addFileUpload = (data) => {
   const {
     connection,
     owner,
-    labbookName,
+    name,
     parentId,
     section,
   } = file.mutationData;
@@ -57,7 +57,7 @@ const addFileUpload = (data) => {
     AddLabbookFileMutation(
       connection,
       owner,
-      labbookName,
+      name,
       parentId,
       path,
       chunk,
@@ -73,7 +73,7 @@ const addFileUpload = (data) => {
     AddDatasetFileMutation(
       connection,
       owner,
-      labbookName,
+      name,
       parentId,
       path,
       chunk,
