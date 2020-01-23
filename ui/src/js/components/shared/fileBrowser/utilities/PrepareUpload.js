@@ -26,6 +26,32 @@ const clearFileUpload = (owner, name) => {
   setFileBrowserLock(owner, name, false);
 };
 
+
+/**
+* Returns section and fileSize limit for given section
+* @param {Object} mutationData
+*
+* @return {}
+*/
+const getSectionLimit = (mutationData) => {
+  const { section } = mutationData;
+  const sectionText = section.charAt(0).toUpperCase() + section.slice(1, section.length);
+
+  if (section === 'code') {
+    const fileSizeLimit = '100MB';
+    return { section: sectionText, fileSizeLimit };
+  }
+
+  if ((section === 'input') || (section === 'output')) {
+    const fileSizeLimit = '500MB';
+    const sectionTextComplete = `${sectionText} Data`;
+    return { section: sectionTextComplete, fileSizeLimit };
+  }
+
+  const fileSizeLimit = '15GB';
+  return { section: sectionText, fileSizeLimit };
+};
+
 /**
 * Removes files that are not allowed to be uploaded to gigantum.
 * @param {Array} files
@@ -234,7 +260,6 @@ const handleCallback = (filesTemp, path, mutationData, component) => {
   if (filesTemp.length > 0) {
     const fileSizeData = checkFileSize(filesTemp, mutationData.connection, owner, labbookName);
 
-
     if (fileSizeData.tooManyFiles) {
       setUploadMessageRemove('Too many files', null, 0);
       setWarningMessage(owner, labbookName, 'Exceeded upload limit, up to 10,000 files can be uploaded at once');
@@ -246,8 +271,11 @@ const handleCallback = (filesTemp, path, mutationData, component) => {
       if (fileSizeData.fileSizeNotAllowed.length > 0) {
         const fileToolarge = fileSizeData.fileSizeNotAllowed.map(file => file.entry.fullPath);
         const fileListAsString = fileToolarge.join(', ');
-        setWarningMessage(owner, labbookName, `The following files are too large to upload to this section ${fileListAsString}`);
-      } else {
+        const { section, fileSizeLimit } = getSectionLimit(mutationData);
+        setWarningMessage(owner, labbookName, `The following files are too large to upload to this section ${fileListAsString}, ${section} has a limit of ${fileSizeLimit}`);
+      }
+
+      if (fileSizeData.filesAllowed.length > 0) {
         const navigateConfirm = (evt) => {
           evt.preventDefault();
           evt.returnValue = '';
@@ -271,6 +299,9 @@ const handleCallback = (filesTemp, path, mutationData, component) => {
         uploadInstance.startUpload(finishedCallback);
         setFileBrowserLock(owner, labbookName, true);
         setUploadMessageUpdate(`Uploading ${fileData.filesAllowed.length} files, 0% complete`);
+      } else {
+        setUploadMessageRemove('', null, 0);
+        setFileBrowserLock(owner, labbookName, false);
       }
     };
 
@@ -284,7 +315,7 @@ const handleCallback = (filesTemp, path, mutationData, component) => {
       uploadCallback(fileSizeData);
     }
   } else {
-    clearFileUpload(owner, labbookName)
+    clearFileUpload(owner, labbookName);
   }
 };
 
@@ -304,7 +335,6 @@ const uploadFromFileSelector = (dndItem, callback) => {
       name: item.name,
     },
   }));
-
 
   callback(files);
 };
