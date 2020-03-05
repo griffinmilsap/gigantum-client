@@ -119,7 +119,9 @@ export default class ActionsMenu extends Component {
     const disableButtons = props.section === 'data' && (!props.edge.node.isLocal || (props.folder && !props.isLocal));
     const deleteTooltip = disableButtons ? 'Must download before deleting' : 'Delete';
     const renameTooltip = disableButtons ? 'Must download before renaming' : 'Rename';
-    const isUntrackedDirectory = (props.edge.node.key === 'untracked/') && props.folder && (props.section === 'output');
+    const isUntrackedDirectory = (props.edge.node.key === 'untracked/')
+      && props.folder
+      && (props.section !== 'data');
     // declare css here
     const popupCSS = classNames({
       ActionsMenu__popup: true,

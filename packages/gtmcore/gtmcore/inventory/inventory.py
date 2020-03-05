@@ -2,6 +2,8 @@ import os
 import shutil
 import uuid
 import datetime
+from pathlib import Path
+
 from natsort import natsorted
 from pkg_resources import resource_filename
 import pathlib
@@ -17,7 +19,7 @@ from gtmcore.gitlib import GitAuthor, RepoLocation
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
 from gtmcore.configuration.utils import call_subprocess
-from gtmcore.labbook import SecretStore
+from gtmcore.labbook import SecretStore, LabBook
 from gtmcore.labbook.labbook import LabBook
 from gtmcore.dataset.dataset import Dataset
 from gtmcore.inventory import Repository
@@ -46,6 +48,10 @@ class InventoryManager(object):
         a messy and error-prone process. Any other functionality that needs to insert
         data into the inventory no longer needs to be aware of any specifics of the internal
         structure of it or worry about cleanup. """
+
+    # This is a class attribute so it can be referenced easily by other code (e.g., migrations in gitworkflow_utils.py)
+    # There should be no leading or trailing slash, but a leading slash will be added for the .gitignore
+    untracked_dirs = [Path(d) for d in ['code/untracked', 'input/untracked', 'output/untracked']]
 
     def __init__(self, config_file: Optional[str] = None) -> None:
         self.config_file = config_file
@@ -124,8 +130,9 @@ class InventoryManager(object):
         return lb
 
     def put_labbook(self, path: str, username: str, owner: str) -> LabBook:
-        """ Take given path to a candidate labbook and insert it
-        into its proper place in the file system.
+        """ Take given path to a candidate labbook and insert it into its proper place in the file system.
+
+        Additionally makes sure that untracked directories are present
 
         Args:
             path: Path to a given labbook
@@ -134,14 +141,19 @@ class InventoryManager(object):
 
         Returns:
             LabBook
+
+        Raises:
+            InventoryException
         """
         try:
             lb = self._put_labbook(path, username, owner)
-
-            return lb
         except Exception as e:
             logger.error(e)
             raise InventoryException(e)
+
+        self.ensure_untracked_spaces(lb)
+
+        return lb
 
     def load_labbook_from_directory(self, path: str, author: Optional[GitAuthor] = None) -> LabBook:
         """ Load and return a LabBook object from a given path on disk
@@ -345,15 +357,12 @@ class InventoryManager(object):
             if not os.path.isdir(user_dir):
                 os.makedirs(user_dir)
 
-            # Create owner dir - store LabBooks in working dir > logged in user > owner
+            # Ensure owner dir exists - store LabBooks in working dir / logged in user / owner
             owner_dir = os.path.join(user_dir, owner["username"])
-            if not os.path.isdir(owner_dir):
-                os.makedirs(owner_dir)
+            os.makedirs(owner_dir, exist_ok=True)
 
-                # Create `labbooks` subdir in the owner dir
-                owner_dir = os.path.join(owner_dir, "labbooks")
-            else:
-                owner_dir = os.path.join(owner_dir, "labbooks")
+            # Create `labbooks` subdir in the owner dir
+            owner_dir = os.path.join(owner_dir, "labbooks")
 
             # Verify name not already in use
             if os.path.isdir(os.path.join(owner_dir, name)):
@@ -379,24 +388,19 @@ class InventoryManager(object):
                 labbook.git.commit("Configuring LFS")
 
             # Create Directory Structure
-            dirs = [
-                'code', 'input', 'output', 'output/untracked', '.gigantum',
-                os.path.join('.gigantum', 'env'),
-                os.path.join('.gigantum', 'env', 'base'),
-                os.path.join('.gigantum', 'env', 'custom'),
-                os.path.join('.gigantum', 'env', 'package_manager'),
-                os.path.join('.gigantum', 'activity'),
-                os.path.join('.gigantum', 'activity', 'log'),
-                os.path.join('.gigantum', 'activity', 'index'),
-                os.path.join('.gigantum', 'activity', 'importance'),
-            ]
+            gigantum_dir = Path('.gigantum')
+            dirs = self.untracked_dirs + [Path(d) for d in ['code', 'input', 'output']] +\
+                   [gigantum_dir / 'env',
+                    gigantum_dir / 'env' / 'base',
+                    gigantum_dir / 'env' / 'custom',
+                    gigantum_dir / 'env' / 'package_manager',
+                    gigantum_dir / 'activity',
+                    gigantum_dir / 'activity' / 'log',
+                    gigantum_dir / 'activity' / 'index',
+                    gigantum_dir / 'activity' / 'importance',
+                    ]
 
-            for d in dirs:
-                p = os.path.join(labbook.root_dir, d, '.gitkeep')
-                os.makedirs(os.path.dirname(p), exist_ok=True)
-                with open(p, 'w') as gk:
-                    gk.write("This file is necessary to keep this directory tracked by Git"
-                             " and archivable by compression tools. Do not delete or modify!")
+            self.gitkeep_dirs(labbook, dirs)
 
             labbook._save_gigantum_data()
             # Create .gitignore default file
@@ -407,10 +411,29 @@ class InventoryManager(object):
 
             # NOTE: this string is used to indicate there are no more activity records to get. Changing the string will
             # break activity paging.
-            # TODO: Improve method for detecting the first activity record
             labbook.git.commit(f"Creating new empty LabBook: {name}")
 
             return labbook.root_dir
+
+    @staticmethod
+    def gitkeep_dirs(labbook: LabBook, dirs: List[Path]) -> None:
+        """Add a .gitkeep file to each directory in dirs, and commit to git
+
+        Args:
+            labbook: The Project where the (relative) directories are located
+            dirs: A list of relative directories from the Project root
+        """
+        for d in dirs:
+            gitkeep_file = labbook.root_dir / d / '.gitkeep'
+            gitkeep_file.parent.mkdir(parents=True, exist_ok=True)
+            gitkeep_file.write_text("This file is necessary to keep this directory tracked by Git"
+                                    " and archivable by compression tools. Do not delete or modify!")
+
+            try:
+                labbook.git.add(gitkeep_file)
+            except subprocess.CalledProcessError:
+                logger.error(f'Problem adding {d / ".gitkeep"} to Git - check your .gitignore?')
+
 
     def delete_labbook(self, username: str, owner: str, labbook_name: str) -> List[DatasetCleanupJob]:
         """Delete a Labbook from this Gigantum working directory.
@@ -986,3 +1009,45 @@ class InventoryManager(object):
                 continue
 
         return datasets
+
+    def ensure_untracked_spaces(self, labbook: LabBook) -> bool:
+        """Ensure untracked directories exist in all standard locations specified in InventoryManager
+
+        This function is idempotent - it can be safely called repeatedly on the same Project
+
+        Args:
+            labbook: the Project we're checking and potentially updating
+
+        Returns:
+            Did we create missing untracked folders?
+
+        Raises:
+            FileExistsError if for some reason there is a *file* with the desired name of an untracked dir
+        """
+        if labbook.schema < 2:
+            logger.info(f'Not adding untracked dirs to un-migrated Project with schema {labbook.schema}')
+            return False
+
+        gitignore_path = Path(labbook.root_dir) / '.gitignore'
+        with gitignore_path.open() as gi_file:
+            # Remove standard whitespace plus '/'
+            gitignore_lines = [d.strip('\t\n\r\x0b\f /') for d in gi_file]
+
+        missing_untracked = []
+        for udir in InventoryManager.untracked_dirs:
+            if str(udir) not in gitignore_lines:
+                missing_untracked.append(udir)
+
+        if missing_untracked:
+            self.gitkeep_dirs(labbook, missing_untracked)
+
+            with open(gitignore_path, 'a') as gi_file:
+                gi_file.write(f'\n\n# added missing untracked area(s)\n')
+                # We use an initial slash to limit git searching to the repo root
+                gi_file.writelines(f'/{udir}\n' for udir in missing_untracked)
+
+            labbook.sweep_uncommitted_changes(extra_msg="Added Git-ignored untracked areas.")
+
+            return True
+        else:
+            return False

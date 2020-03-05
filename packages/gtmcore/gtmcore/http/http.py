@@ -102,7 +102,7 @@ class ConcurrentRequestManager(object):
         async with self.semaphore:
             return await self._fetch(url_obj)
 
-    async def _resolve_worker(self, url_objs: List[ConcurrentRequest]) -> List[Any]:
+    async def _resolve_worker(self, url_objs: List[ConcurrentRequest]) -> List:
         """Method to gather all resolve tasks"""
         tasks = list()
         for url_obj in url_objs:

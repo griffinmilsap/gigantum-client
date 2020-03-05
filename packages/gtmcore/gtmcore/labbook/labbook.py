@@ -3,17 +3,14 @@ import re
 import yaml
 import datetime
 import glob
-import json
 
-from typing import (Dict, Optional, Any)
-from collections import OrderedDict
+from typing import Optional
 
 from gtmcore.exceptions import GigantumException
 from gtmcore.gitlib import GitAuthor
 from gtmcore.logging import LMLogger
 from gtmcore.labbook.schemas import validate_labbook_schema, translate_schema, CURRENT_SCHEMA
-from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord, ActivityDetailType, ActivityDetailRecord, \
-    ActivityAction
+from gtmcore.activity import ActivityType, ActivityDetailType
 
 from gtmcore.inventory.repository import Repository
 
@@ -168,10 +165,6 @@ class LabBook(Repository):
                 self._load_gigantum_data()
             else:
                 raise GigantumException('Cannot find configuration yaml file')
-
-        if self.schema == 2:
-            # Make sure untracked directory exists (it and its contents are ignored)
-            os.makedirs(os.path.join(self.root_dir, 'output', 'untracked'), exist_ok=True)
 
     def _validate_gigantum_data(self) -> None:
         """Method to validate the LabBook data file contents

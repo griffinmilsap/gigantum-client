@@ -230,23 +230,6 @@ def migrate_labbook_schema(labbook: LabBook) -> None:
     ars.create_activity_record(ar)
 
 
-def migrate_labbook_untracked_space(labbook: LabBook) -> None:
-
-    gitignore_path = os.path.join(labbook.root_dir, '.gitignore')
-    gitignored_lines = open(gitignore_path).readlines()
-    has_untracked_dir = any(['output/untracked' in l.strip() for l in gitignored_lines])
-    if not has_untracked_dir:
-        with open(gitignore_path, 'a') as gi_file:
-            gi_file.write('\n\n# Migrated - allow untracked area\n'
-                          'output/untracked\n')
-        labbook.sweep_uncommitted_changes(extra_msg="Added untracked area")
-
-    # Make the untracked directory -- makedirs is no-op if already exists
-    untracked_path = os.path.join(labbook.root_dir, 'output/untracked')
-    if not os.path.exists(untracked_path):
-        os.makedirs(untracked_path, exist_ok=True)
-
-
 def migrate_labbook_branches(labbook: LabBook) -> None:
     bm = BranchManager(labbook)
     if 'gm.workspace' not in bm.active_branch:

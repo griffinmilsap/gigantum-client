@@ -113,7 +113,6 @@ class FileOperations(object):
 
         rel_path = os.path.join(section, finfo['key'])
 
-        # If we are setting this section to be untracked
         activity_type, activity_detail_type, section_str = \
             labbook.get_activity_type_from_section(section)
 

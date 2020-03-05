@@ -145,15 +145,16 @@ class TestLabbookFileOperations(object):
 
     def test_untracked_file_operations(selfself, mock_labbook):
         lb = mock_labbook[2]
-        full_untracked_path = os.path.join(lb.root_dir, 'output/untracked/new-untracked/untracked.txt')
+        for base in ['output', 'input', 'code']:
+            full_untracked_path = os.path.join(lb.root_dir, base, 'untracked/new-untracked/untracked.txt')
 
-        FO.makedir(lb, 'output/untracked/new-untracked')
-        with open(full_untracked_path, 'w') as untracked_file:
-            untracked_file.write('This is not tracked\n')
-        assert os.path.exists(full_untracked_path)
+            FO.makedir(lb, f'{base}/untracked/new-untracked')
+            with open(full_untracked_path, 'w') as untracked_file:
+                untracked_file.write('This is not tracked\n')
+            assert os.path.exists(full_untracked_path)
 
-        FO.delete_files(lb, 'output', ['untracked/new-untracked'])
-        assert not os.path.exists(full_untracked_path)
+            FO.delete_files(lb, base, ['untracked/new-untracked'])
+            assert not os.path.exists(full_untracked_path)
 
     def test_move_file_as_rename_in_same_dir(self, mock_labbook, sample_src_file):
         lb = mock_labbook[2]
@@ -292,31 +293,31 @@ class TestLabbookFileOperations(object):
         assert all([d['key'][0] != '/' for d in dir_walks_hidden])
 
         # Spot check some entries
-        assert len(dir_walks_hidden) == 15
+        assert len(dir_walks_hidden) == 17
         assert dir_walks_hidden[0]['key'] == '.hidden_dir/'
         assert dir_walks_hidden[0]['is_dir'] is True
         assert dir_walks_hidden[3]['key'] == 'mouse_dir/'
         assert dir_walks_hidden[3]['is_dir'] is True
-        assert dir_walks_hidden[6]['key'] == '.hidden_dir/.gitkeep'
-        assert dir_walks_hidden[6]['is_dir'] is False
-        assert dir_walks_hidden[13]['key'] == 'mouse_dir/new_dir/.gitkeep'
-        assert dir_walks_hidden[13]['is_dir'] is False
+        assert dir_walks_hidden[7]['key'] == '.hidden_dir/.gitkeep'
+        assert dir_walks_hidden[7]['is_dir'] is False
+        assert dir_walks_hidden[14]['key'] == 'mouse_dir/new_dir/.gitkeep'
+        assert dir_walks_hidden[14]['is_dir'] is False
 
         # Since the file is in a hidden directory, it should not be found.
         dir_walks = FO.walkdir(lb, 'code')
         # Spot check some entries
-        assert len(dir_walks) == 7
+        assert len(dir_walks) == 8
         assert dir_walks[0]['key'] == 'cat_dir/'
         assert dir_walks[0]['is_dir'] is True
         assert dir_walks[1]['key'] == 'dog_dir/'
         assert dir_walks[1]['is_dir'] is True
         assert dir_walks[2]['key'] == 'mouse_dir/'
         assert dir_walks[2]['is_dir'] is True
-        assert dir_walks[3]['is_dir'] is False
         assert dir_walks[4]['is_dir'] is False
-        assert dir_walks[5]['is_dir'] is True
-        assert dir_walks[5]['key'] == 'mouse_dir/new_dir/'
-        assert dir_walks[6]['is_dir'] is False
+        assert dir_walks[5]['is_dir'] is False
+        assert dir_walks[6]['is_dir'] is True
+        assert dir_walks[6]['key'] == 'mouse_dir/new_dir/'
+        assert dir_walks[7]['is_dir'] is False
 
     def test_listdir(self, mock_labbook, sample_src_file):
         def write_test_file(base, name):
@@ -336,13 +337,14 @@ class TestLabbookFileOperations(object):
 
         # List just the code dir
         data = FO.listdir(lb, "code", base_path='')
-        assert len(data) == 3
+        assert len(data) == 4
         assert data[0]['key'] == 'new_dir/'
         assert data[1]['key'] == 'test_subdir1.txt'
         assert data[2]['key'] == 'test_subdir2.txt'
+        assert data[3]['key'] == 'untracked/'
 
         data = FO.listdir(lb, "input", base_path='')
-        assert len(data) == 0
+        assert len(data) == 1
 
         # List just the code/subdir dir
         data = FO.listdir(lb, "code", base_path='new_dir')
