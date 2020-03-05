@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import uuidv4 from 'uuid/v4';
-// config
-import config from 'JS/config';
 // queries
 import UserIdentity from 'JS/Auth/UserIdentity';
 // components
@@ -12,8 +10,8 @@ import Modal from 'Components/common/Modal';
 // store
 import store from 'JS/redux/store';
 // mutations
-import ImportRemoteDatasetMutation from 'Mutations/ImportRemoteDatasetMutation';
-import ImportRemoteLabbookMutation from 'Mutations/ImportRemoteLabbookMutation';
+import ImportRemoteDatasetMutation from 'Mutations/repository/import/ImportRemoteDatasetMutation';
+import ImportRemoteLabbookMutation from 'Mutations/repository/import/ImportRemoteLabbookMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 // utilities
 import prepareUpload from './PrepareUpload';

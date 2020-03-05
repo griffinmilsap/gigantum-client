@@ -2,8 +2,8 @@
 // vendor
 import React, { Component } from 'react';
 // Mutations
-import DeleteLabbookMutation from 'Mutations/DeleteLabbookMutation';
-import DeleteRemoteLabbookMutation from 'Mutations/DeleteRemoteLabbookMutation';
+import DeleteLabbookMutation from 'Mutations/repository/delete/DeleteLabbookMutation';
+import DeleteRemoteLabbookMutation from 'Mutations/repository/delete/DeleteRemoteLabbookMutation';
 // components
 import ButtonLoader from 'Components/common/ButtonLoader';
 import Modal from 'Components/common/Modal';

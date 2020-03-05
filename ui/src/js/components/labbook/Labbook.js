@@ -26,9 +26,9 @@ import BranchMutations from 'Components/shared/utils/BranchMutations';
 // config
 import Config from 'JS/config';
 // mutations
-import LabbookContainerStatusMutation from 'Mutations/LabbookContainerStatusMutation';
-import LabbookLookupMutation from 'Mutations/LabbookLookupMutation';
-import MigrateProjectMutation from 'Mutations/MigrateProjectMutation';
+import LabbookContainerStatusMutation from 'Mutations/repository/labbook/LabbookContainerStatusMutation';
+import LabbookLookupMutation from 'Mutations/repository/labbook/LabbookLookupMutation';
+import MigrateProjectMutation from 'Mutations/repository/migrate/MigrateProjectMutation';
 // components
 import Loader from 'Components/common/Loader';
 import Login from 'Components/login/Login';

@@ -4,8 +4,8 @@ import ReactMarkdown from 'react-markdown';
 import SimpleMDE from 'simplemde';
 import classNames from 'classnames';
 // mutations
-import WriteLabbookReadmeMutation from 'Mutations/WriteLabbookReadmeMutation';
-import WriteDatasetReadmeMutation from 'Mutations/WriteDatasetReadmeMutation';
+import WriteLabbookReadmeMutation from 'Mutations/repository/readme/WriteLabbookReadmeMutation';
+import WriteDatasetReadmeMutation from 'Mutations/repository/readme/WriteDatasetReadmeMutation';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';
 // components

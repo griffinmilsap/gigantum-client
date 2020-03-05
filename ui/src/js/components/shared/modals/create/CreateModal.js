@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import queryString from 'querystring';
 // mutations
-import CreateLabbookMutation from 'Mutations/CreateLabbookMutation';
-import CreateDatasetMutation from 'Mutations/CreateDatasetMutation';
+import CreateLabbookMutation from 'Mutations/repository/create/CreateLabbookMutation';
+import CreateDatasetMutation from 'Mutations/repository/create/CreateDatasetMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';

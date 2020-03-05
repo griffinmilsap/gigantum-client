@@ -1,7 +1,7 @@
 import AddDatasetFileMutation from 'Mutations/fileBrowser/AddDatasetFileMutation';
 import AddLabbookFileMutation from 'Mutations/fileBrowser/AddLabbookFileMutation';
-import ImportLabbookMutation from 'Mutations/ImportLabbookMutation';
-import ImportDatasetMutation from 'Mutations/ImportDatasetMutation';
+import ImportLabbookMutation from 'Mutations/repository/import/ImportLabbookMutation';
+import ImportDatasetMutation from 'Mutations/repository/import/ImportDatasetMutation';
 import UploadSecretsFileMutation from 'Mutations/environment/UploadSecretsFileMutation';
 
 /* eslint-disable */

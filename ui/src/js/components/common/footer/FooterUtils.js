@@ -9,10 +9,10 @@ import {
   setUploadMessageRemove,
 } from 'JS/redux/actions/footer';
 // mutations
-import FetchLabbookEdgeMutation from 'Mutations/FetchLabbookEdgeMutation';
-import FetchDatasetEdgeMutation from 'Mutations/FetchDatasetEdgeMutation';
-import FetchDatasetFilesMutation from 'Mutations/FetchDatasetFilesMutation';
-import FetchLabbookDatasetFilesMutation from 'Mutations/FetchLabbookDatasetFilesMutation';
+import FetchLabbookEdgeMutation from 'Mutations/repository/fetch/FetchLabbookEdgeMutation';
+import FetchDatasetEdgeMutation from 'Mutations/repository/fetch/FetchDatasetEdgeMutation';
+import FetchDatasetFilesMutation from 'Mutations/repository/fetch/FetchDatasetFilesMutation';
+import FetchLabbookDatasetFilesMutation from 'Mutations/repository/fetch/FetchLabbookDatasetFilesMutation';
 // Queries
 import UpdateDasetCommits from 'Components/shared/header/branches/UpdateDatasetCommits';
 

@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import CodeBlock from 'Components/labbook/renderers/CodeBlock';
 import Tooltip from 'Components/common/Tooltip';
 // mutations
-import AddCustomDockerMutation from 'Mutations/AddCustomDockerMutation';
+import AddCustomDockerMutation from 'Mutations/environment/AddCustomDockerMutation';
 // store
 import store from 'JS/redux/store';
 import { setContainerMenuWarningMessage } from 'JS/redux/actions/labbook/environment/environment';

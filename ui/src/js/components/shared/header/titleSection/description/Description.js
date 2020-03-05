@@ -6,8 +6,8 @@ import { setErrorMessage } from 'JS/redux/actions/footer';
 // components
 import Tooltip from 'Components/common/Tooltip';
 // mutations
-import SetLabbookDescriptionMutation from 'Mutations/SetLabbookDescriptionMutation';
-import SetDatasetDescriptionMutation from 'Mutations/SetDatasetDescriptionMutation';
+import SetLabbookDescriptionMutation from 'Mutations/repository/description/SetLabbookDescriptionMutation';
+import SetDatasetDescriptionMutation from 'Mutations/repository/description/SetDatasetDescriptionMutation';
 // assets
 import './Description.scss';
 

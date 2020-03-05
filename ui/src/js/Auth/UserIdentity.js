@@ -1,7 +1,7 @@
 // vendor
 import { graphql } from 'react-relay';
 // mutations
-import RemoveUserIdentityMutation from 'Mutations/RemoveUserIdentityMutation';
+import RemoveUserIdentityMutation from 'Mutations/user/RemoveUserIdentityMutation';
 // environment
 import { fetchQuery } from 'JS/createRelayEnvironment';
 

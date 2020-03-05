@@ -1,8 +1,8 @@
 // Mutations
-import AddCollaboratorMutation from 'Mutations/AddCollaboratorMutation';
-import AddDatasetCollaboratorMutation from 'Mutations/AddDatasetCollaboratorMutation';
-import DeleteCollaboratorMutation from 'Mutations/DeleteCollaboratorMutation';
-import DeleteDatasetCollaboratorMutation from 'Mutations/DeleteDatasetCollaboratorMutation';
+import AddCollaboratorMutation from 'Mutations/collaborators/AddCollaboratorMutation';
+import AddDatasetCollaboratorMutation from 'Mutations/collaborators/AddDatasetCollaboratorMutation';
+import DeleteCollaboratorMutation from 'Mutations/collaborators/DeleteCollaboratorMutation';
+import DeleteDatasetCollaboratorMutation from 'Mutations/collaborators/DeleteDatasetCollaboratorMutation';
 
 
 class CollboratorsMutations {

@@ -1,6 +1,6 @@
 import history from 'JS/history';
 import auth0 from 'auth0-js';
-import RemoveUserIdentityMutation from 'Mutations/RemoveUserIdentityMutation';
+import RemoveUserIdentityMutation from 'Mutations/user/RemoveUserIdentityMutation';
 // queries
 import SessionCheck from 'JS/Auth/sessionCheck';
 // store

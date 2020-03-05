@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // store
 import { setErrorMessage, setInfoMessage } from 'JS/redux/actions/footer';
 // mutations
-import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
+import ModifyDatasetLinkMutation from 'Mutations/repository/datasets/ModifyDatasetLinkMutation';
 // config
 import config from 'JS/config';
 // components

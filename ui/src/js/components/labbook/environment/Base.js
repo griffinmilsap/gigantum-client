@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { createFragmentContainer, graphql } from 'react-relay';
 // mutations
-import ChangeLabbookBaseMutation from 'Mutations/ChangeLabbookBaseMutation';
+import ChangeLabbookBaseMutation from 'Mutations/environment/ChangeLabbookBaseMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 // store
 import { setErrorMessage, setInfoMessage } from 'JS/redux/actions/footer';

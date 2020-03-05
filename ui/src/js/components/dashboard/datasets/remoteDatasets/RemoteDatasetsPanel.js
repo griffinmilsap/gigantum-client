@@ -5,7 +5,7 @@ import Highlighter from 'react-highlight-words';
 import classNames from 'classnames';
 import Moment from 'moment';
 // muations
-import ImportRemoteDatasetMutation from 'Mutations/ImportRemoteDatasetMutation';
+import ImportRemoteDatasetMutation from 'Mutations/repository/import/ImportRemoteDatasetMutation';
 // store
 import store from 'JS/redux/store';
 import { setWarningMessage, setMultiInfoMessage } from 'JS/redux/actions/footer';

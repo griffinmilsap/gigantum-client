@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import uuidv4 from 'uuid/v4';
 // mutations
-import SetVisibilityMutation from 'Mutations/SetVisibilityMutation';
-import SetDatasetVisibilityMutation from 'Mutations/SetDatasetVisibilityMutation';
+import SetVisibilityMutation from 'Mutations/repository/visibility/SetVisibilityMutation';
+import SetDatasetVisibilityMutation from 'Mutations/repository/visibility/SetDatasetVisibilityMutation';
 import PublishLabbookMutation from 'Mutations/branches/PublishLabbookMutation';
 import PublishDatasetMutation from 'Mutations/branches/PublishDatasetMutation';
 // component

@@ -1,7 +1,7 @@
 // mutations
 import PublishLabbookMutation from 'Mutations/branches/PublishLabbookMutation';
 import PublishDatasetMutation from 'Mutations/branches/PublishDatasetMutation';
-import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
+import ModifyDatasetLinkMutation from 'Mutations/repository/datasets/ModifyDatasetLinkMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 
 class PublishMutations {

@@ -5,10 +5,10 @@ import MakeLabbookDirectoryMutation from 'Mutations/fileBrowser/MakeLabbookDirec
 import MakeDatasetDirectoryMutation from 'Mutations/fileBrowser/MakeDatasetDirectoryMutation';
 import MoveLabbookFileMutation from 'Mutations/fileBrowser/MoveLabbookFileMutation';
 import MoveDatasetFileMutation from 'Mutations/fileBrowser/MoveDatasetFileMutation';
-import DownloadDatasetFilesMutation from 'Mutations/DownloadDatasetFilesMutation';
+import DownloadDatasetFilesMutation from 'Mutations/fileBrowser/DownloadDatasetFilesMutation';
 import CompleteBatchUploadTransactionMutation from 'Mutations/fileBrowser/CompleteBatchUploadTransactionMutation';
-import UpdateUnmanagedDatasetMutation from 'Mutations/UpdateUnmanagedDatasetMutation';
-import VerifyDatasetMutation from 'Mutations/VerifyDatasetMutation';
+import UpdateUnmanagedDatasetMutation from 'Mutations/fileBrowser/UpdateUnmanagedDatasetMutation';
+import VerifyDatasetMutation from 'Mutations/fileBrowser/VerifyDatasetMutation';
 // store
 import store from 'JS/redux/store';
 import { setErrorMessage } from 'JS/redux/actions/footer';

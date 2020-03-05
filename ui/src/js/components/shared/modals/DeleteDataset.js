@@ -8,7 +8,7 @@ import {
   setInfoMessage,
 } from 'JS/redux/actions/footer';
 // Mutations
-import DeleteDatasetMutation from 'Mutations/DeleteDatasetMutation';
+import DeleteDatasetMutation from 'Mutations/repository/delete/DeleteDatasetMutation';
 // components
 import ButtonLoader from 'Components/common/ButtonLoader';
 import Modal from 'Components/common/Modal';

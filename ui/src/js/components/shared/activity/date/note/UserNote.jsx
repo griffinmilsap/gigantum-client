@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 import classNames from 'classnames';
 // mutations
-import CreateUserNoteMutation from 'Mutations/CreateUserNoteMutation';
+import CreateUserNoteMutation from 'Mutations/activity/CreateUserNoteMutation';
 import { setErrorMessage } from 'JS/redux/actions/footer';
 // assets
 import './UserNote.scss';

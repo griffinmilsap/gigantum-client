@@ -2,7 +2,7 @@
 // vendor
 import React, { Component } from 'react';
 // mutations
-import ConfigureDatasetMutation from 'Mutations/ConfigureDatasetMutation';
+import ConfigureDatasetMutation from 'Mutations/repository/datasets/ConfigureDatasetMutation';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';
 // components

@@ -2,7 +2,7 @@
 // vendor
 import React, { Component } from 'react';
 // mutations
-import ChangeLabbookBaseMutation from 'Mutations/ChangeLabbookBaseMutation';
+import ChangeLabbookBaseMutation from 'Mutations/environment/ChangeLabbookBaseMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';

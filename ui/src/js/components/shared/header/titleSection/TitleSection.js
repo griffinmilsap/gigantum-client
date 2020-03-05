@@ -1,12 +1,7 @@
 // vendor
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-// store
-import store from 'JS/redux/store';
-// mutations
-import SetLabbookDescriptionMutation from 'Mutations/SetLabbookDescriptionMutation';
 // components
-import Tooltip from 'Components/common/Tooltip';
 import Description from './description/Description';
 // assets
 import './TitleSection.scss';

@@ -7,7 +7,7 @@ import environment from 'JS/createRelayEnvironment';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';
 // mutations
-import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
+import ModifyDatasetLinkMutation from 'Mutations/repository/datasets/ModifyDatasetLinkMutation';
 // component
 import Modal from 'Components/common/Modal';
 import Loader from 'Components/common/Loader';

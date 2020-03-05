@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 // utilities
 import JobStatus from 'JS/utils/JobStatus';
 // mutations
-import ExportLabbookMutation from 'Mutations/ExportLabbookMutation';
-import ExportDatasetMutation from 'Mutations/ExportDatasetMutation';
+import ExportLabbookMutation from 'Mutations/repository/export/ExportLabbookMutation';
+import ExportDatasetMutation from 'Mutations/repository/export/ExportDatasetMutation';
 import SyncLabbookMutation from 'Mutations/branches/SyncLabbookMutation';
 import SyncDatasetMutation from 'Mutations/branches/SyncDatasetMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';

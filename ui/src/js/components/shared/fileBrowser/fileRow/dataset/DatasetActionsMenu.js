@@ -4,7 +4,7 @@ import classNames from 'classnames';
 // queries
 import UserIdentity from 'JS/Auth/UserIdentity';
 // mutations
-import ModifyDatasetLinkMutation from 'Mutations/ModifyDatasetLinkMutation';
+import ModifyDatasetLinkMutation from 'Mutations/repository/datasets/ModifyDatasetLinkMutation';
 // store
 import { setErrorMessage } from 'JS/redux/actions/footer';
 // assets

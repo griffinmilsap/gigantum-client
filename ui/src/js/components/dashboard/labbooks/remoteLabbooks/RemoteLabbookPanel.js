@@ -5,7 +5,7 @@ import Highlighter from 'react-highlight-words';
 import classNames from 'classnames';
 import Moment from 'moment';
 // muations
-import ImportRemoteLabbookMutation from 'Mutations/ImportRemoteLabbookMutation';
+import ImportRemoteLabbookMutation from 'Mutations/repository/import/ImportRemoteLabbookMutation';
 import BuildImageMutation from 'Mutations/container/BuildImageMutation';
 // store
 import store from 'JS/redux/store';
