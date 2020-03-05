@@ -2,54 +2,89 @@
 import React, { PureComponent } from 'react';
 // compontnents
 import Modal from 'Components/common/Modal';
+// assets
+import './FileSizePromptModal.scss';
 
+/**
+*   @param {}
+*  get warning and limit sizes
+*/
+const getSizes = (section) => {
+  return {
+    warning: (section === 'code') ? 'Warning: 10MB' : 'Warning: 100MB',
+    limit: (section === 'code') ? 'Limit: 100MB' : 'Limit: 500MB',
+  }
+};
 
 class FileSizePromptModal extends PureComponent {
   render() {
-    const { props } = this;
     const {
       cancelUpload,
       userRejectsUpload,
       userAcceptsUpload,
       uploadPromptText,
-    } = props;
+      filePrompted,
+      fileTooLarge,
+      section,
+    } = this.props;
+    const { warning, limit } = getSizes(section);
 
     return (
       <Modal
-        header="Large File Warning"
         handleClose={() => cancelUpload()}
-        size="medium"
+        size="large"
+        noPadding
+        noPaddingModal
         renderContent={() => (
-          <div className="FileBrowser__modal-body flex justify--space-between flex--column">
+          <div className="FileSizePromptModal">
+            <div className="FileSizePromptModal__header">
+              <h4 className="FileSizePromptModal__header-text">Large File Warning</h4>
+            </div>
+            <div className="FileSizePromptModal__subheader flex justify--space-between">
+              <div className="flex flex--column align-items--center justify--center">
+                <div className="FileSizePromptModal__subheader-title">Code File Size Limits</div>
+                <ul>
+                  <li>{warning}</li>
+                  <li>{limit}</li>
+                </ul>
+              </div>
+              <div className="FileSizePromptModal__subheader-text">
+                File size limits are in place to maintain Project performance and
+                stability, due to the limitations of Git and Git-lfs,
+                which are used to version files in a Project.
+              </div>
+            </div>
+            <div className="FileSizePromptModal__flex flex justify--center flex--column">
 
-            <p>{ uploadPromptText }</p>
+              <p className="FileSizePromptModal__upload-text align-self--center">{ uploadPromptText }</p>
+              {
+                (section !== 'code')
+                && (
+                  <p className="FileSizePromptModal__tip-text align-self--center">
+                    Tip: Try using a Dataset to manage large input files. Datasets support individual files up to 15GB without a large performance penalty, support downloading individual files, provide deduplication, and more.
+                  </p>
+                )
+              }
 
-            <div className="FileBrowser__button-container flex justify--space-around">
+            </div>
+
+            <div className="FileSizePromptModal__buttonContainer flex justify--space-around">
 
               <button
                 className="Btn--flat"
                 onClick={() => cancelUpload()}
                 type="button"
               >
-              Cancel Upload
+                Cancel
               </button>
-
-              <button
-                onClick={() => userRejectsUpload()}
-                type="button"
-              >
-               Skip Large Files
-              </button>
-
               <button
                 onClick={() => userAcceptsUpload()}
                 type="button"
+                disabled={!filePrompted}
               >
-               Continue Upload
+                Continue
               </button>
-
             </div>
-
           </div>
         )
       }

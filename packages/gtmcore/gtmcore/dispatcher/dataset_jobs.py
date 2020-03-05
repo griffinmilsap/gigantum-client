@@ -1,10 +1,7 @@
-import sys
 import copy
 import os
 import time
-from typing import Optional, List, Callable
-from urllib.parse import urlsplit
-import glob
+from typing import Optional, List
 
 from humanfriendly import format_size
 from rq import get_current_job
@@ -13,13 +10,13 @@ from gtmcore.configuration import Configuration
 from gtmcore.dataset import Manifest
 from gtmcore.dataset.manifest.job import generate_bg_hash_job_list
 from gtmcore.dispatcher import Dispatcher
-from gtmcore.gitlib import GitAuthor
+from gtmcore.gitlib import GitAuthor, RepoLocation
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
 from gtmcore.logging import LMLogger
 from gtmcore.workflows import gitworkflows_utils
 from gtmcore.workflows.gitlab import GitLabManager
 from gtmcore.dataset.io.manager import IOManager
-from gtmcore.dataset.io.job import BackgroundDownloadJob, BackgroundUploadJob
+from gtmcore.dataset.io.job import BackgroundDownloadJob
 from gtmcore.dataset.io import PushObject
 
 
@@ -240,12 +237,12 @@ def check_and_import_dataset(logged_in_username: str, dataset_owner: str, datase
         None
     """
     logger = LMLogger.get_logger()
-
     p = os.getpid()
-    try:
-        logger.info(f"(Job {p}) Starting check_and_import_dataset(logged_in_username={logged_in_username},"
-                    f"dataset_owner={dataset_owner}, dataset_name={dataset_name}")
+    logger.info(f"(Job {p}) Starting check_and_import_dataset(logged_in_username={logged_in_username},"
+                f"dataset_owner={dataset_owner}, dataset_name={dataset_name}")
 
+    remote = RepoLocation(remote_url, logged_in_username)
+    try:
         im = InventoryManager(config_file=config_file)
 
         try:
@@ -259,31 +256,25 @@ def check_and_import_dataset(logged_in_username: str, dataset_owner: str, datase
                         f"Auto-importing remote dataset from {remote_url}")
             config_obj = Configuration(config_file=config_file)
 
+            # TODO gigantum/ideas#11: this token logic is NOT duplicated in the standard dataset or labbook flows. It
+            #  could be handled in gitworkflows_utils.clone_repo below, or somewhere in a git auth logic module/object.
+            #  Note that some complexity derives from the fact that we don't have access to the Flask session here.
             if access_token:
                 if not id_token:
                     raise ValueError("Access and ID tokens are required to initialize git credentials")
 
                 # If the access token is set, git creds should be configured
-                remote_parts = urlsplit(remote_url)
-                if remote_parts.netloc:
-                    remote_target = f"{remote_parts.scheme}://{remote_parts.netloc}/"
-                else:
-                    remote_target = remote_parts.path
 
-                hub_api = None
-                for remote in config_obj.config['git']['remotes']:
-                    if remote == remote_target:
-                        hub_api = config_obj.config['git']['remotes'][remote]['hub_api']
-                        break
+                try:
+                    hub_api = config_obj.config['git']['remotes'][remote.host]['hub_api']
+                except KeyError:
+                    raise ValueError(f"Failed to configure git service URL based on target remote: {remote.host}")
 
-                if not hub_api:
-                    raise ValueError(f"Failed to configure git service URL based on target remote: {remote_target}")
-
-                gl_mgr = GitLabManager(remote_target, hub_api=hub_api,
+                gl_mgr = GitLabManager(remote.host, hub_api=hub_api,
                                        access_token=access_token, id_token=id_token)
-                gl_mgr.configure_git_credentials(remote_target, logged_in_username)
+                gl_mgr.configure_git_credentials(remote.host, logged_in_username)
 
-            gitworkflows_utils.clone_repo(remote_url=remote_url, username=logged_in_username, owner=dataset_owner,
+            gitworkflows_utils.clone_repo(remote_url=remote.remote_location, username=logged_in_username, owner=dataset_owner,
                                           load_repository=im.load_dataset_from_directory,
                                           put_repository=im.put_dataset)
             logger.info(f"{logged_in_username}/{dataset_owner}/{dataset_name} auto-imported successfully")

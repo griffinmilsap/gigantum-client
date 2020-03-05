@@ -6,6 +6,7 @@ from gtmcore.labbook import LabBook
 from gtmcore.logging import LMLogger
 from gtmcore.activity import (ActivityDetailRecord, ActivityRecord,
                                ActivityStore, ActivityAction)
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 from gtmcore.configuration.utils import call_subprocess
 
 logger = LMLogger.get_logger()
@@ -127,14 +128,20 @@ class FileOperations(object):
 
         # Create Activity record and detail
         _, ext = os.path.splitext(rel_path) or 'file'
-        adr = ActivityDetailRecord(activity_detail_type, show=False,
+        adr = ActivityDetailRecord(activity_detail_type,
+                                   show=False,
                                    importance=0,
-                                   action=ActivityAction.CREATE)
-        adr.add_value('text/plain', commit_msg)
-        ar = ActivityRecord(activity_type, message=commit_msg, show=True,
-                            importance=255, linked_commit=commit.hexsha,
-                            tags=[ext])
-        ar.add_detail_object(adr)
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('plain', commit_msg))
+
+        ar = ActivityRecord(activity_type,
+                            message=commit_msg,
+                            show=True,
+                            importance=255,
+                            linked_commit=commit.hexsha,
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList([ext]))
+
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
@@ -211,16 +218,20 @@ class FileOperations(object):
 
         commit = labbook.git.commit(commit_msg)
         activity_type, activity_detail_type, section_str = labbook.get_activity_type_from_section(section)
-        adr = ActivityDetailRecord(activity_detail_type, show=False, importance=0,
-                                   action=ActivityAction.EDIT)
-        adr.add_value('text/markdown', commit_msg)
+        adr = ActivityDetailRecord(activity_detail_type,
+                                   show=False,
+                                   importance=0,
+                                   action=ActivityAction.EDIT,
+                                   data=TextData('markdown', commit_msg))
+
         ar = ActivityRecord(activity_type,
                             message=commit_msg,
                             linked_commit=commit.hexsha,
                             show=True,
                             importance=255,
-                            tags=['file-move'])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(['file-move']))
+
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
@@ -328,12 +339,14 @@ class FileOperations(object):
                 # Create detail record
                 activity_type, activity_detail_type, section_str = labbook.infer_section_from_relative_path(
                     relative_path)
-                adr = ActivityDetailRecord(activity_detail_type, show=False, importance=0,
-                                           action=ActivityAction.CREATE)
-
                 msg = f"Created new {section_str} directory `{relative_path}`"
+                adr = ActivityDetailRecord(activity_detail_type,
+                                           show=False,
+                                           importance=0,
+                                           action=ActivityAction.CREATE,
+                                           data=TextData('markdown', msg))
+
                 commit = labbook.git.commit(msg)
-                adr.add_value('text/markdown', msg)
 
                 # Create activity record
                 ar = ActivityRecord(activity_type,
@@ -341,8 +354,8 @@ class FileOperations(object):
                                     linked_commit=commit.hexsha,
                                     show=True,
                                     importance=255,
-                                    tags=['directory-create'])
-                ar.add_detail_object(adr)
+                                    detail_objects=DetailRecordList([adr]),
+                                    tags=ImmutableList(['directory-create']))
 
                 # Store
                 ars = ActivityStore(labbook)

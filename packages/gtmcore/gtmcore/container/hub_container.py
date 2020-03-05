@@ -10,6 +10,7 @@ from gtmcore.container.exceptions import ContainerBuildException, ContainerExcep
 from gtmcore.dataset.cache import get_cache_manager_class
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
 from gtmcore.labbook import LabBook
+from gtmcore.gitlib.git import GitAuthor
 
 
 class HubProjectContainer(ContainerOperations):
@@ -62,9 +63,8 @@ class HubProjectContainer(ContainerOperations):
                 feedback_callback(f"No environment changes detected. Reusing existing image.\n")
                 return
 
-        feedback_callback(f"Starting Project container build. Please wait.\n\n Note, build output is not yet available "
-                          f"when running in Gigantum Hub. If you need to debug an environment configuration and "
-                          f"require the build output, you must run the Client locally.\n")
+        build_feedback = f"Starting Project container build. Please wait.\n\n"
+        feedback_callback(build_feedback)
 
         url = f"{self._launch_service}/v1/projectbuild"
         data = {"client_id": self._client_id,
@@ -80,6 +80,7 @@ class HubProjectContainer(ContainerOperations):
         # Wait for build completion
         start_time = time.time()
         build_timeout_seconds = self.labbook.client_config.config['container']['build_timeout']
+        build_output = ""
         while True:
             time_elapsed = time.time() - start_time
             if time_elapsed > int(build_timeout_seconds):
@@ -101,6 +102,16 @@ class HubProjectContainer(ContainerOperations):
                                       f" the build output and fix any issues.\n")
                     raise ContainerException(f"Failed to build the Project image, most likely due to the Project's"
                                              f" environment configuration.")
+                else:
+                    # Request build output from the launch service
+                    feedback_pos = len(build_output)
+                    build_output_resp = requests.get(f"{self._launch_service}/v1/client/{self._client_id}/namespace/{self.labbook.owner}/"
+                                                     f"project/{self.labbook.name}/buildoutput")
+                    if build_output_resp.status_code == 200:
+                        build_output = build_output_resp.json().get("output", "")
+                        feedback_callback(build_output[feedback_pos:])
+                    else:
+                        logger.info(f"failed to get build output")
             elif resp.status_code != 304:
                 # back off if the server is throwing errors
                 time.sleep(5)
@@ -133,7 +144,7 @@ class HubProjectContainer(ContainerOperations):
             logger.error(f"Couldn't connect to {url}.")
             return False
         if response.status_code != 200:
-            logger.error(f"Couldn't determine if image exists: {response.content}.")
+            logger.error("Couldn't determine if image exists: {!r}.".format(response.content))
             return False
         existsRaw = response.json()["exists"]
         return True if existsRaw == "true" else False
@@ -179,7 +190,7 @@ class HubProjectContainer(ContainerOperations):
             raise ContainerException(f"Failed to start container in launch service:"
                                      f" {response.status_code} : {response.json()}")
 
-        for _ in range(15):
+        for _ in range(150):
             # Query for the container status, setting "container_name" if running a non-project container (image_name
             # has been explicitly set. Otherwise, if image_name is none default project container will be checked.
             if self.query_container(container_name=image_name) == "running":
@@ -287,7 +298,8 @@ class HubProjectContainer(ContainerOperations):
                 elif response.status_code == 404:
                     return None
                 else:
-                    logger.info(f"Fetching Project state not yet ready: {response.status_code} : {response.content}")
+                    logger.info("Fetching Project state not yet ready: {} : {!r}".format(response.status_code,
+                                                                                         response.content))
             except requests.exceptions.ConnectionError:
                 pass
 
@@ -414,10 +426,11 @@ class HubProjectContainer(ContainerOperations):
         logger.info(f"HubProjectContainer.get_gigantum_client_ip() found: {hostname}")
         return hostname
 
-    def start_project_container(self):
+    def start_project_container(self, author: Optional[GitAuthor] = None) -> None:
         """Start the Docker container for the Project connected to this instance.
 
-        Expects the Hub API to set the Client hostname to the environment variable `GIGANTUM_CLIENT_IP`
+        Expects the Hub API to set the Client hostname to the environment variable `GIGANTUM_CLIENT_IP`,
+        `GIGANTUM_USERNAME` and `GIGANTUM_EMAIL` (based on the JWT)
 
         All relevant configuration for a fully functional Project is set up here, then passed off to self.run_container()
         """

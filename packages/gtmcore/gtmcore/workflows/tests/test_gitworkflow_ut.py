@@ -13,8 +13,9 @@ from mock import patch
 from collections import namedtuple
 
 from gtmcore.configuration.utils import call_subprocess
+from gtmcore.gitlib import RepoLocation
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
-from gtmcore.workflows import GitWorkflowException, LabbookWorkflow, DatasetWorkflow, MergeError, MergeOverride
+from gtmcore.workflows import GitWorkflowException, LabbookWorkflow, DatasetWorkflow, MergeOverride
 from gtmcore.workflows.gitworkflows_utils import create_remote_gitlab_repo
 from gtmcore.fixtures import (_MOCK_create_remote_repo2 as _MOCK_create_remote_repo, mock_labbook_lfs_disabled,
                               mock_config_file)
@@ -78,7 +79,9 @@ class TestGitWorkflowsMethods(object):
         wf.publish(username=username)
 
         other_user = 'other-test-user'
-        wf_other = LabbookWorkflow.import_from_remote(remote_url=wf.remote, username=other_user,
+
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         lb_other = wf_other.repository
         assert lb_other.root_dir != lb.root_dir
@@ -92,7 +95,8 @@ class TestGitWorkflowsMethods(object):
         wf.publish(username=username)
 
         other_user = 'other-test-user'
-        wf_other = LabbookWorkflow.import_from_remote(remote_url=wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         with open(os.path.join(wf_other.repository.root_dir, 'testfile'), 'w') as f: f.write('filedata')
         wf_other.repository.sweep_uncommitted_changes()
@@ -114,10 +118,11 @@ class TestGitWorkflowsMethods(object):
         wf.publish(username=username)
 
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         # The remotes must be the same, cause it's the same remote repo
-        assert wf_other.remote == wf.remote
+        assert wf_other.remote == remote.remote_location
         # The actual path on disk will be different, though
         assert wf_other.repository != wf.repository
         # Check imported into namespace of original owner (testuser)
@@ -135,11 +140,12 @@ class TestGitWorkflowsMethods(object):
         wf.publish(username=username)
 
         other_user = 'other-test-user2'
-        wf_other = DatasetWorkflow.import_from_remote(wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = DatasetWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
 
         # The remotes must be the same, cause it's the same remote repo
-        assert wf_other.remote == wf.remote
+        assert wf_other.remote == remote.remote_location
         # The actual path on disk will be different, though
         assert wf_other.repository != wf.repository
         # Check imported into namespace of original owner (testuser)
@@ -176,7 +182,7 @@ class TestGitWorkflowsMethods(object):
         dataset_wf.publish(username=username)
 
         # Link to project
-        im.link_dataset_to_labbook(dataset_wf.remote, username, username, lb)
+        im.link_dataset_to_labbook(dataset_wf.remote, username, username, lb, username)
 
         # Publish project
         labbook_wf = LabbookWorkflow(lb)
@@ -188,11 +194,12 @@ class TestGitWorkflowsMethods(object):
 
         # Import project, triggering an auto-import of the dataset
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(labbook_wf.remote, username=other_user,
+        remote = RepoLocation(labbook_wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
 
         # The remotes must be the same, cause it's the same remote repo
-        assert wf_other.remote == labbook_wf.remote
+        assert wf_other.remote == remote.remote_location
         # The actual path on disk will be different, though
         assert wf_other.repository != labbook_wf.repository
         # Check imported into namespace of original owner (testuser)
@@ -249,11 +256,12 @@ class TestGitWorkflowsMethods(object):
 
         # Import project
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(labbook_wf.remote, username=other_user,
+        remote = RepoLocation(labbook_wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
 
         # The remotes must be the same, cause it's the same remote repo
-        assert wf_other.remote == labbook_wf.remote
+        assert wf_other.remote == remote.remote_location
         assert wf_other.repository != labbook_wf.repository
         assert f'{other_user}/{username}/labbooks/labbook1' in wf_other.repository.root_dir
 
@@ -262,7 +270,7 @@ class TestGitWorkflowsMethods(object):
             ds = im_other_user.load_dataset(other_user, username, 'test-ds')
 
         # Link to project
-        im.link_dataset_to_labbook(dataset_wf.remote, username, username, lb)
+        im.link_dataset_to_labbook(dataset_wf.remote, username, username, lb, username)
 
         # Sync project with linked dataset
         labbook_wf.sync(username=username)
@@ -327,18 +335,19 @@ class TestGitWorkflowsMethods(object):
         labbook_wf.labbook.checkout_branch(branch_name="dataset-branch", new=True)
 
         # Link to project
-        im.link_dataset_to_labbook(dataset_wf.remote, username, username, labbook_wf.labbook)
+        im.link_dataset_to_labbook(dataset_wf.remote, username, username, labbook_wf.labbook, username)
 
         # Publish branch
         labbook_wf.sync(username=username)
 
         # Import project
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(labbook_wf.remote, username=other_user,
+        remote = RepoLocation(labbook_wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
 
         # The remotes must be the same, cause it's the same remote repo
-        assert wf_other.remote == labbook_wf.remote
+        assert wf_other.remote == remote.remote_location
         assert wf_other.repository != labbook_wf.repository
         assert f'{other_user}/{username}/labbooks/labbook1' in wf_other.repository.root_dir
 
@@ -431,7 +440,8 @@ class TestGitWorkflowsMethods(object):
         wf.sync('test')
 
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         bm_other = BranchManager(wf_other.labbook, username=other_user)
         bm_other.workon_branch('test-conflict-branch')
@@ -463,7 +473,8 @@ class TestGitWorkflowsMethods(object):
         wf.sync('test')
 
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         bm_other = BranchManager(wf_other.labbook, username=other_user)
         bm_other.workon_branch('test-conflict-branch')
@@ -499,7 +510,8 @@ class TestGitWorkflowsMethods(object):
         wf.sync('test')
 
         other_user = 'other-test-user2'
-        wf_other = LabbookWorkflow.import_from_remote(wf.remote, username=other_user,
+        remote = RepoLocation(wf.remote, other_user)
+        wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                       config_file=mock_config_file[0])
         bm_other = BranchManager(wf_other.labbook, username=other_user)
         bm_other.workon_branch('test-conflict-branch')
@@ -706,5 +718,5 @@ class TestGitWorkflowsMethods(object):
 
         create_remote_gitlab_repo(lb, username, 'private', 'afakeaccesstoken', "afakeidtoken")
 
-        assert lb.remote == 'https://repo.gigantum.io/test/labbook-1.git'
+        assert lb.remote == 'https://test@repo.gigantum.io/test/labbook-1.git/'
 

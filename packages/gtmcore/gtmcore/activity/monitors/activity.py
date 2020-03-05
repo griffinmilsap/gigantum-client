@@ -85,7 +85,7 @@ class ActivityMonitor(metaclass=abc.ABCMeta):
         commit = self.labbook.git.commit("Auto-commit from activity monitoring")
         return commit.hexsha
 
-    def store_activity_record(self, linked_commit: str, activity_record: ActivityRecord) -> Optional[str]:
+    def store_activity_record(self, linked_commit: str, activity_record: ActivityRecord) -> ActivityRecord:
         """Method to commit changes to a file
 
         Args:
@@ -95,12 +95,12 @@ class ActivityMonitor(metaclass=abc.ABCMeta):
         Returns:
             str
         """
-        activity_record.linked_commit = linked_commit
+        activity_record = activity_record.update(linked_commit = linked_commit)
 
         # Create a activity record
         record = self.activity_store.create_activity_record(activity_record)
 
-        return record.commit
+        return record
 
     def process(self, activity_type: ActivityType, data: List[ExecutionData],
                 metadata: Dict[str, Any]) -> ActivityRecord:
@@ -122,7 +122,11 @@ class ActivityMonitor(metaclass=abc.ABCMeta):
 
         # Run processors to populate the record
         for p in self.processors:
-            activity_record = p.process(activity_record, data, status, metadata)
+            try:
+                activity_record = p.process(activity_record, data, status, metadata)
+            except:
+                msg = f"{type(self).__qualname__} had a problem executing processor {type(p).__qualname__}, the processor will be skipped for this record"
+                logger.warning(msg, exc_info=True)
 
         return activity_record
 

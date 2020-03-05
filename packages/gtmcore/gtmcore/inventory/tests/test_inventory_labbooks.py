@@ -255,7 +255,7 @@ class TestInventoryLabbooks(object):
                                         description="my first dataset",
                                         author=auth)
 
-        inv_manager.link_dataset_to_labbook(f"{ds.root_dir}/.git", "test", "dataset1", lb)
+        inv_manager.link_dataset_to_labbook(f"{ds.root_dir}/.git", "test", "dataset1", lb, 'test')
 
         dataset_delete_jobs = inv_manager.delete_labbook("test", "test", "labbook1")
         assert len(dataset_delete_jobs) == 1

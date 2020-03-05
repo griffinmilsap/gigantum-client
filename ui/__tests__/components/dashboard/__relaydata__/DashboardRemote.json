@@ -1,31 +1,23 @@
 {
+ "errors": [
+  {
+   "message": "Failed to retrieve Project listing from remote server: [{'message': 'HTTPFetchException :: GET http://metadata.gigantum.svc.cluster.local:8080/repository?page=1&per_page=20&order_by=name&sort=desc&public_only=false :: 500 :: {\\n  \"message\": \"Failed to list repositories: This event loop is already running\"\\n}', 'locations': [[3, 3]], 'path': ['repositories']}]",
+   "locations": [
+    {
+     "line": 18,
+     "column": 3
+    }
+   ],
+   "path": [
+    "labbookList",
+    "remoteLabbooks"
+   ]
+  }
+ ],
  "data": {
   "labbookList": {
    "id": "TGFiYm9va0xpc3Q6",
-   "remoteLabbooks": {
-    "edges": [
-     {
-      "node": {
-       "name": "ui-test-remote",
-       "description": "No Description",
-       "visibility": "private",
-       "owner": "uitest",
-       "id": "UmVtb3RlTGFiYm9vazp1aXRlc3QmdWktdGVzdC1yZW1vdGU=",
-       "isLocal": true,
-       "creationDateUtc": "2019-01-18T15:01:55.468Z",
-       "modifiedDateUtc": "2019-01-18T15:01:55.468Z",
-       "__typename": "RemoteLabbook"
-      },
-      "cursor": "MQ=="
-     }
-    ],
-    "pageInfo": {
-     "endCursor": "MQ==",
-     "hasNextPage": true,
-     "hasPreviousPage": false,
-     "startCursor": "MQ=="
-    }
-   }
+   "remoteLabbooks": null
   }
  }
 }

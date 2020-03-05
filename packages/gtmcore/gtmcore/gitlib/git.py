@@ -1,6 +1,8 @@
 import abc
 import importlib
 from typing import Dict, List, Optional, Tuple
+from urllib import parse
+import re
 
 # Dictionary of supported implementations.
 # Key is the value to put in the config_dict["backend"].
@@ -10,32 +12,32 @@ SUPPORTED_GIT_INTERFACES = {'filesystem': ["gtmcore.gitlib.git_fs", "GitFilesyst
 
 
 def get_git_interface(config_dict):
-        """Factory method that instantiates a GitInterface implementation based on provided configuration information
+    """Factory method that instantiates a GitInterface implementation based on provided configuration information
 
-        Note: `backend` is a required key in config_dict that specifies the gitlib backend implementation to use.
+    Note: `backend` is a required key in config_dict that specifies the gitlib backend implementation to use.
 
-            Supported Implementations:
-                - "filesystem" - Provides an interface that works on any repo on the filesystem
+        Supported Implementations:
+            - "filesystem" - Provides an interface that works on any repo on the filesystem
 
-        Args:
-            config_dict(dict): Dictionary of configuration information
+    Args:
+        config_dict(dict): Dictionary of configuration information
 
-        Returns:
-            GitRepoInterface
-        """
+    Returns:
+        GitRepoInterface
+    """
 
-        if "backend" not in config_dict:
-            raise ValueError("You must specify the `backend` parameter to instantiate a GitInterface implementation")
+    if "backend" not in config_dict:
+        raise ValueError("You must specify the `backend` parameter to instantiate a GitInterface implementation")
 
-        if config_dict["backend"] not in SUPPORTED_GIT_INTERFACES:
-            raise ValueError("Unsupported `backend` parameter {}. Valid backends: {}".format(config_dict["backend"],
-                                                                                             ",".join(SUPPORTED_GIT_INTERFACES.keys())))
-        # If you are here OK to import class
-        backend_class = getattr(importlib.import_module(SUPPORTED_GIT_INTERFACES[config_dict["backend"]][0]),
-                                                        SUPPORTED_GIT_INTERFACES[config_dict["backend"]][1])
+    if config_dict["backend"] not in SUPPORTED_GIT_INTERFACES:
+        raise ValueError("Unsupported `backend` parameter {}. Valid backends: {}".format(config_dict["backend"],
+                                                                                         ",".join(SUPPORTED_GIT_INTERFACES.keys())))
+    # If you are here OK to import class
+    module_name, class_name = SUPPORTED_GIT_INTERFACES[config_dict["backend"]][0:2]
+    backend_class = getattr(importlib.import_module(module_name), class_name)
 
-        # Instantiate with the config dict and return to the user
-        return backend_class(config_dict)
+    # Instantiate with the config dict and return to the user
+    return backend_class(config_dict)
 
 
 class GitAuthor(object):
@@ -53,6 +55,77 @@ class GitAuthor(object):
 
     def __str__(self):
         return "{} - {}".format(self.name, self.email)
+
+
+class RepoLocation:
+    """A class that maintains a URL to "real" network locations, with easy access to metadata"""
+
+    def __init__(self, requested_url: str, current_username: Optional[str]) -> None:
+        """Accept as broad a range of requested URLs as possible, convert to "real" location
+
+        Args:
+            requested_url: A URL we know how to deal with, can also be a local filesystem path. Because we tolerate this
+              ambiguity, we require an explicit schema (e.g., `https://`)
+            current_username: This will be encoded into the remote URL so git knows what token to use
+        """
+        # If given something like a filesystem path, that's what ends up in path (other elements are '')
+        parsed_url = parse.urlparse(requested_url)
+
+        # We currently always remove any existing username from the URL
+        if parsed_url.username:
+            username, domain = parsed_url.netloc.split('@')
+        else:
+            domain = parsed_url.netloc
+
+        if parsed_url.netloc:
+            if current_username:
+                if current_username == 'anonymous':
+                    # If the user is anonymous, don't include the username in the git URL.
+                    self.netloc = domain
+                else:
+                    self.netloc = f'{current_username}@{domain}'
+            else:
+                self.netloc = domain
+            # We strip this off so we can reliably add `.git/` below
+            self.base_path = re.sub('[.]git/?$', '', parsed_url.path)
+            self.host = domain
+        else:
+            self.netloc = ''
+            # If it's a filesystem path, we don't mess with it, except to remove final '/' and convert '\' to '/'
+            self.base_path = parsed_url.path.replace('\\', '/').rstrip('/')
+            # While this equivalence may seem odd, we do this so we can get info out of git config, determine Hub APIs,
+            #  and provide error messages
+            self.host = self.base_path
+
+        path_toks = self.base_path.split("/")
+        self.repo_name = path_toks[-1]
+        if len(path_toks) > 1:
+            self.owner = path_toks[-2]
+        else:
+            self.owner = ''
+
+        # We don't currently use these three final fields, but we avoid disrupting them just in case
+        self.params = parsed_url.params
+        self.query = parsed_url.query
+        self.fragment = parsed_url.fragment
+
+    @property
+    def remote_location(self) -> str:
+        """The final endpoint for our git remote (avoids redirects, etc.)"""
+        if self.netloc:
+            return parse.urlunparse(('https', self.netloc, self.base_path + '.git/',
+                                     self.params, self.query, self.fragment))
+        else:
+            # We assume this is a filesystem path
+            return self.base_path
+
+    @property
+    def owner_repo(self) -> str:
+        """For communicating with the user"""
+        if self.owner:
+            return f'{self.owner}/{self.repo_name}'
+        else:
+            return self.repo_name
 
 
 class GitRepoInterface(metaclass=abc.ABCMeta):
@@ -169,14 +242,14 @@ class GitRepoInterface(metaclass=abc.ABCMeta):
         raise NotImplemented
 
     @abc.abstractmethod
-    def clone(self, source, directory: Optional[str] = None):
+    def clone(self, source, directory: str, branch: Optional[str] = None, single_branch=False):
         """Clone a repo
 
         Args:
-            source (str): Git ssh or https string to clone
-
-        Returns:
-            None
+            source: Git ssh or https string to clone - should be a bare path, or include '/' as a final delimiter
+            directory: Directory to clone into
+            branch: The name of the desired branch to be checked out (defaults to master)
+            single_branch: Fetch ONLY the contents of the specified branch
         """
         raise NotImplemented
 

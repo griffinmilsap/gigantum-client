@@ -222,17 +222,13 @@ class Configuration(object):
         if not remote_name:
             remote_name = self.config['git']['default_remote']
 
-        result = None
-        for remote in self.config['git']['remotes']:
-            if remote_name == remote:
-                result = self.config['git']['remotes'][remote]
-                result['git_remote'] = remote
-                break
+        try:
+            result = self.config['git']['remotes'][remote_name].copy()
+            result['git_remote'] = remote_name
+            return result
 
-        if not result:
+        except KeyError:
             raise ValueError(f'Configuration for {remote_name} could not be found')
-
-        return result
 
     def get_hub_api_url(self, remote_name: Optional[str] = None) -> str:
         """Method to return the url for the desired Gigantum Hub API

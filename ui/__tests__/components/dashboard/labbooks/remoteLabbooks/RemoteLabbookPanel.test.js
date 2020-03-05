@@ -29,11 +29,9 @@ const fixtures = {
 
 test('Test RemoteLabbooks rendering', () => {
   const localLabbooks = renderer.create(
-
-     relayTestingUtils.relayWrap(
-       <RemoteLabbookPanel {...fixtures} />, {}, json.data,
-     ),
-
+    relayTestingUtils.relayWrap(
+      <RemoteLabbookPanel {...fixtures} />, {}, json.data,
+    ),
   );
 
   const tree = localLabbooks.toJSON();

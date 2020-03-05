@@ -1,0 +1,60 @@
+@import '~Styles/_imports.scss';
+.FileSizePromptModal{
+  height: 100%;
+
+  &__header {
+    text-align: center;
+    border-bottom: 1px solid $grey-border;
+    height: 60px;
+    background-size: 30px;
+  }
+  &__header-text {
+    line-height: 60px;
+  }
+
+
+  &__subheader {
+    padding: 0 80px;
+    height: 109px;
+    border-bottom: 1px solid $grey-border;
+    background: $lightGrey;
+    color: $mineShaft;
+  }
+  &__subheader-text {
+    width: 500px;
+    align-self: center;
+    font-size: 18px;
+  }
+  &__subheader-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+  }
+
+  &__flex {
+    height: calc(100% - 277px);
+    margin: 0 70px;
+    border-bottom: 1px solid $grey-border;
+    align-items: center;
+    p {
+      font-size: 18px;
+    }
+  }
+  &__buttonContainer {
+    padding: 0 80px;
+    height: 100px;
+    @include flex(flex-end, row);
+  }
+
+  &__tip-text {
+    font-size: 18px;
+    color: $mineShaft;
+    text-align: center;
+  }
+
+  &__upload-text {
+    font-size: 19px;
+    color: $mineShaft;
+    margin: 20px 0;
+  }
+}

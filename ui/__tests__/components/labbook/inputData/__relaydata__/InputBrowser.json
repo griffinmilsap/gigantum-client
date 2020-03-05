@@ -3,54 +3,17 @@
   "labbook": {
    "input": {
     "allFiles": {
-     "edges": [
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZpbnB1dCZSRUFETUUubWQ=",
-        "isDir": false,
-        "isFavorite": false,
-        "modifiedAt": 1547823401,
-        "key": "README.md",
-        "size": "3303",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "MA=="
-      },
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZpbnB1dCZyZXF1aXJlbWVudHMudHh0",
-        "isDir": false,
-        "isFavorite": false,
-        "modifiedAt": 1547823401,
-        "key": "requirements.txt",
-        "size": "45",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "MQ=="
-      },
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZpbnB1dCZzZXR1cC5weQ==",
-        "isDir": false,
-        "isFavorite": false,
-        "modifiedAt": 1547823401,
-        "key": "setup.py",
-        "size": "1168",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "Mg=="
-      }
-     ],
+     "edges": [],
      "pageInfo": {
       "hasNextPage": false,
       "hasPreviousPage": false,
-      "startCursor": "MA==",
-      "endCursor": "Mg=="
+      "startCursor": null,
+      "endCursor": null
      }
     },
-    "id": "TGFiYm9va1NlY3Rpb246dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZpbnB1dA=="
+    "id": "TGFiYm9va1NlY3Rpb246Y2J1dGxlciZ1aS10ZXN0LXByb2plY3QmaW5wdXQ="
    },
-   "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0"
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA=="
   }
  }
 }

@@ -1,19 +1,31 @@
 {
  "data": {
   "labbook": {
-   "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0",
-   "description": "This is a ui test project\n",
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+   "description": "",
    "output": {
     "allFiles": {
-     "edges": [],
+     "edges": [
+      {
+       "node": {
+        "id": "TGFiYm9va0ZpbGU6Y2J1dGxlciZ1aS10ZXN0LXByb2plY3Qmb3V0cHV0JnVudHJhY2tlZC8=",
+        "isDir": true,
+        "modifiedAt": 1580399581,
+        "key": "untracked/",
+        "size": "0",
+        "__typename": "LabbookFile"
+       },
+       "cursor": "MA=="
+      }
+     ],
      "pageInfo": {
       "hasNextPage": false,
       "hasPreviousPage": false,
-      "startCursor": null,
-      "endCursor": null
+      "startCursor": "MA==",
+      "endCursor": "MA=="
      }
     },
-    "id": "TGFiYm9va1NlY3Rpb246dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZvdXRwdXQ="
+    "id": "TGFiYm9va1NlY3Rpb246Y2J1dGxlciZ1aS10ZXN0LXByb2plY3Qmb3V0cHV0"
    }
   }
  }

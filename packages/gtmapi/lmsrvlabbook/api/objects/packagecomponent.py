@@ -19,9 +19,12 @@ class PackageComponentInput(graphene.InputObjectType):
     version = graphene.String()
 
 
-class PackageComponent(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class PackageComponent(graphene.ObjectType):
     """A type that represents a Package Manager based Environment Component"""
     # The dataloader used to get package metadata
+    class Meta:
+        interfaces = (graphene.relay.Node,)
+
     _dataloader: Optional[PackageDataloader] = None
 
     # The Component schema version

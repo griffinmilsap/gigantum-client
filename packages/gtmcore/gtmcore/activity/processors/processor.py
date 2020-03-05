@@ -43,4 +43,4 @@ class ActivityProcessor(metaclass=abc.ABCMeta):
         Returns:
             ActivityRecord
         """
-        raise NotImplemented
+        raise NotImplementedError

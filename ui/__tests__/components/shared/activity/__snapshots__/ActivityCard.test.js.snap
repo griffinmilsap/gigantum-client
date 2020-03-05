@@ -3,15 +3,15 @@
 exports[`Activity renders a snapshot 1`] = `
 <div
   className="ActivityCard__container column-1-span-9"
-  data-selenium-id="ActivityCard"
+  data-selenium-id="ActivityCardx"
 >
   <div
     className="ActivityCard ActivityCard--collapsed card ActivityCard--faded ActivityCard__expanded"
     style={Object {}}
   >
     <div
-      className="ActivityCard__badge ActivityCard__badge--environment"
-      title="environment"
+      className="ActivityCard__badge ActivityCard__badge--code"
+      title="code"
     />
     <div
       className="ActivityCard__content"
@@ -19,6 +19,7 @@ exports[`Activity renders a snapshot 1`] = `
       <div
         className="ActivityCard__title flex flex--row justify--space-between closed"
         onClick={[Function]}
+        role="presentation"
       >
         <div
           className="ActivityCard__stack"
@@ -26,19 +27,21 @@ exports[`Activity renders a snapshot 1`] = `
           <p
             className="ActivityCard__time"
           >
-            9:59am
+            3:10pm
           </p>
           <div
             className="ActivityCard__user"
-          />
+          >
+            C
+          </div>
         </div>
         <h6
           className="ActivityCard__commit-message"
         >
           <b>
-            uitest - 
+            cbutler - 
           </b>
-          Added 1 conda2 package(s). 
+          Created new Code directory \`code/folder\`
         </h6>
       </div>
     </div>

@@ -13,6 +13,10 @@ from gtmcore.logging import LMLogger
 logger = LMLogger.get_logger()
 
 
+class GitFsException(Exception):
+    pass
+
+
 class GitFilesystem(GitRepoInterface):
 
     def __init__(self, config_dict, author=None, committer=None):
@@ -140,12 +144,14 @@ class GitFilesystem(GitRepoInterface):
         logger.info("Initializing Git repository in {}".format(self.working_directory))
         self.repo = Repo.init(self.working_directory, bare=bare)
 
-    def clone(self, source, directory: Optional[str] = None):
+    def clone(self, source: str, directory: str, branch: Optional[str] = None, single_branch=False):
         """Clone a repo
 
         Args:
-            source (str): Git ssh or https string to clone
-            directory(str): Directory to clone into (optional argument)
+            source: Git ssh or https string to clone - should be a bare path, or include '/' as a final delimiter
+            directory: Directory to clone into
+            branch: The name of the desired branch to be checked out (defaults to master)
+            single_branch: Fetch ONLY the contents of the specified branch
 
         Returns:
             None
@@ -153,8 +159,20 @@ class GitFilesystem(GitRepoInterface):
         if self.repo:
             raise ValueError("Cannot init an existing git repository. Choose a different working directory")
 
-        logger.info("Cloning Git repository from {} into {}".format(source, directory or self.working_directory))
-        self.repo = Repo.clone_from(source, directory or self.working_directory)
+        logger.info("Cloning Git repository from {} into {}".format(source, directory))
+        args = []
+        if branch is not None:
+            args.extend(['--branch', branch])
+        if single_branch:
+            args.append('--single-branch')
+
+        command_string = ['git', 'clone'] + args + [source, directory]
+
+        clone_process = subprocess.run(command_string, stderr=subprocess.PIPE, cwd=directory)
+        if clone_process.returncode == 0:
+            self.set_working_directory(directory)
+        else:
+            raise GitFsException(clone_process.stderr)
 
     # LOCAL CHANGE METHODS
     def status(self) -> Dict[str, List[Tuple[str, str]]]:
@@ -224,7 +242,7 @@ class GitFilesystem(GitRepoInterface):
             None
         """
         logger.info("Adding file {} to Git repository in {}".format(filename, self.working_directory))
-        x = self.repo.index.add([filename])
+        self.repo.index.add([filename])
 
     def add_all(self, relative_directory=None):
         """Add all changes/files using the `git add -A` command
@@ -664,14 +682,21 @@ class GitFilesystem(GitRepoInterface):
         Returns:
             None
         """
-        if branch_name not in self.repo.heads:
+        # Doing a fetch then working with the FETCH_HEAD is a way to robustly and directly get whatever is on the
+        #  upstream repo, and we don't need to worry about tracking branches.
+        if branch_name == 'FETCH_HEAD':
+            # This will leave the repository in a "detached" state, which is fine for the base-images repo
+            clone_process = subprocess.run(['git', 'checkout', branch_name],
+                                           stderr=subprocess.PIPE, cwd=self.working_directory)
+            if clone_process.returncode != 0:
+                raise GitFsException(clone_process.stderr)
+        elif branch_name not in self.repo.heads:
             # Check if the branch exists in the remote and just hasn't been pulled yet
             if "{}/{}".format(remote, branch_name) not in self.repo.refs:
                 raise ValueError("Branch `{}` not found.".format(branch_name))
             else:
                 # Need to checkout the branch from the remote
-                new_branch = self.repo.create_head(branch_name,
-                                                   self.repo.remotes["origin"].refs[branch_name])
+                self.repo.create_head(branch_name, self.repo.remotes["origin"].refs[branch_name])
                 self.repo.heads[branch_name].set_tracking_branch(self.repo.remotes["origin"].refs[branch_name])
                 self.repo.heads[branch_name].checkout()
         else:
@@ -765,8 +790,10 @@ class GitFilesystem(GitRepoInterface):
         Returns:
             None
         """
-        if len(self.repo.remotes) > 0:
+        try:
             self.repo.remotes[remote].fetch(refspec)
+        except KeyError:
+            raise ValueError(f'{remote} is not a remote in the repository')
 
     def pull(self, refspec=None, remote="origin"):
         """Method fetch and integrate a remote
@@ -785,7 +812,7 @@ class GitFilesystem(GitRepoInterface):
 
         Args:
             remote_name(str): Name of the remote repository
-            refspec: ?
+            refspec: NOT CURRENTLY SUPPORTED (refspec is ordinarily a hash, branch, or tag)
             tags(bool): If true, push tags
 
         Returns:

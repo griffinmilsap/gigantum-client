@@ -7,6 +7,7 @@ from collections import OrderedDict
 from gtmcore.labbook.labbook import LabBook
 from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord, ActivityDetailType, ActivityDetailRecord, \
     ActivityAction
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 
 
 class BundledAppManager:
@@ -92,14 +93,18 @@ class BundledAppManager:
         self.labbook.git.add(self.bundled_app_file)
         commit = self.labbook.git.commit(f"Committing bundled app")
 
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.CREATE)
-        adr.add_value('text/plain', f"Added bundled application: {json.dumps(data[name])}")
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('plain', f"Added bundled application: {json.dumps(data[name])}"))
+
         ar = ActivityRecord(ActivityType.ENVIRONMENT,
                             message=f"Added bundled app '{name}'",
                             show=True,
                             linked_commit=commit.hexsha,
-                            tags=["environment", "docker", "bundled_app"])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(["environment", "docker", "bundled_app"]))
+
         ars = ActivityStore(self.labbook)
         ars.create_activity_record(ar)
 
@@ -127,14 +132,18 @@ class BundledAppManager:
         self.labbook.git.add(self.bundled_app_file)
         commit = self.labbook.git.commit(f"Committing bundled app")
 
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.CREATE)
-        adr.add_value('text/plain', f"Removed bundled application: {name}")
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('plain', f"Removed bundled application: {name}"))
+
         ar = ActivityRecord(ActivityType.ENVIRONMENT,
                             message=f"Removed bundled application: {name}",
                             show=True,
                             linked_commit=commit.hexsha,
-                            tags=["environment", "docker", "bundled_app"])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(["environment", "docker", "bundled_app"]))
+
         ars = ActivityStore(self.labbook)
         ars.create_activity_record(ar)
 

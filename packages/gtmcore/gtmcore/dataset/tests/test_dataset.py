@@ -76,7 +76,7 @@ class TestDataset(object):
 
         assert ds.linked_to() is None
 
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "test", "dataset1", lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "test", "dataset1", lb, "test")
 
         assert ds.linked_to() is None
 

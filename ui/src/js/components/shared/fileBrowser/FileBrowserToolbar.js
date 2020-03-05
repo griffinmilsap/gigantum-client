@@ -47,7 +47,6 @@ class FileBrowserToolbar extends PureComponent {
             type="button"
             className="Btn align-self--end Btn__delete-white Btn--background-left Btn--action Btn--padding-left"
             onClick={() => togglePopup(true)}
-            disabled={isLocked}
           >
             Delete
           </button>

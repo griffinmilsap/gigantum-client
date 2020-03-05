@@ -104,7 +104,8 @@ const FooterUtils = {
         JobStatus.updateFooterStatus(result[type][key]).then((response) => {
           if (response.data
               && response.data.jobStatus
-              && response.data.jobStatus.jobMetadata) {
+              && response.data.jobStatus.jobMetadata
+          ) {
 
             const responseId = id || response.data.jobStatus.id;
             const { html, message } = messageParser(response);

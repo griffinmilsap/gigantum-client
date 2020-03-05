@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import relayTestingUtils from '@gigantum/relay-testing-utils';
 import { Provider } from 'react-redux';
 // components
-import ActivityCard from 'Components/shared/activity/ActivityCard';
+import ActivityCard from 'Components/shared/activity/wrappers/card/ActivityCard';
 // Data
 import json from 'Tests/components/labbook/__relaydata__/LabbookContainerQuery.json';
 // store

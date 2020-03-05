@@ -22,7 +22,7 @@ snapshots['TestDatasetRemoteOperations.test_list_remote_datasets_az 1'] = {
                             'modifiedDateUtc': '2019-09-12T15:35:11.664Z',
                             'name': 'test-publish-may-4',
                             'owner': 'demo-user',
-                            "importUrl": "https://repo.gigantum.io/demo-user/test-publish-may-4.git"
+                            "importUrl": "https://repo.gigantum.io/demo-user/test-publish-may-4.git/"
                         }
                     },
                     {
@@ -35,7 +35,7 @@ snapshots['TestDatasetRemoteOperations.test_list_remote_datasets_az 1'] = {
                             'modifiedDateUtc': '2019-09-12T15:17:23.414Z',
                             'name': 'test-public-project',
                             'owner': 'demo-user',
-                            "importUrl": "https://repo.gigantum.io/demo-user/test-public-project.git"
+                            "importUrl": "https://repo.gigantum.io/demo-user/test-public-project.git/"
                         }
                     }
                 ],

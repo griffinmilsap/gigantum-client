@@ -3,11 +3,12 @@
 exports[`UserNote Renders a snapshot 1`] = `
 <div
   className="UserNote flex flex--column"
-  data-selenium-id="UserNote"
+  data-selenium-id="UserNotex"
 >
   <div
     className="UserNote__close close"
     onClick={[Function]}
+    role="presentation"
   />
   <input
     className="UserNote__title"
@@ -15,10 +16,13 @@ exports[`UserNote Renders a snapshot 1`] = `
     placeholder="Add a summary title"
     type="text"
   />
-  <textarea
+  <div
     className="UserNote__summary"
-    id="markDown"
-  />
+  >
+    <textarea
+      id="markDown"
+    />
+  </div>
   <div
     className="ReactTags__tags react-tags-wrapper"
   >

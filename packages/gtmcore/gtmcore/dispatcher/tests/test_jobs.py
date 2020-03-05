@@ -99,9 +99,9 @@ class TestJobs(object):
                 raise
 
     def test_import_labbook_from_remote(self, mock_config_with_repo, monkeypatch):
-        def _mock_import_labbook_from_remote(remote_url, username, config_file):
+        def _mock_import_labbook_from_remote(remote, username, config_file):
             print('X' * 200)
-            lb = InventoryManager(config_file).create_labbook(username, username, remote_url.split('/')[-1])
+            lb = InventoryManager(config_file).create_labbook(username, username, remote.repo_name)
             return LabbookWorkflow(lb)
 
         monkeypatch.setattr(LabbookWorkflow, 'import_from_remote', _mock_import_labbook_from_remote)

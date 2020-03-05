@@ -4,6 +4,7 @@ from gtmcore.logging import LMLogger
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.inventory.branching import BranchManager
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType
+from gtmcore.activity.utils import ImmutableDict, TextData, DetailRecordList, ImmutableList
 from gtmcore.workflows import LabbookWorkflow, MergeOverride
 from gtmcore.labbook import LabBook
 
@@ -32,14 +33,17 @@ class CreateExperimentalBranch(graphene.relay.ClientIDMutation):
         lb.git.add(lb.config_path)
         commit = lb.git.commit('Updating description')
 
-        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=False)
-        adr.add_value('text/plain', description)
+        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                   show=False,
+                                   data=TextData('plain', description))
+
         ar = ActivityRecord(ActivityType.LABBOOK,
                             message="Updated description of Project",
                             linked_commit=commit.hexsha,
-                            tags=["labbook"],
-                            show=False)
-        ar.add_detail_object(adr)
+                            tags=ImmutableList(["labbook"]),
+                            show=False,
+                            detail_objects=DetailRecordList([adr]))
+
         ars = ActivityStore(lb)
         ars.create_activity_record(ar)
 

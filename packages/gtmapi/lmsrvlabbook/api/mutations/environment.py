@@ -115,7 +115,7 @@ class StartContainer(graphene.relay.ClientIDMutation):
         lb = InventoryManager().load_labbook(username, owner, labbook_name,
                                              author=get_logged_in_author())
         with lb.lock():
-            container_name = ContainerWorkflows.start_labbook(lb, username)
+            container_name = ContainerWorkflows.start_labbook(lb, username, author=get_logged_in_author())
         logger.info(f'Started new {lb} container ({container_name})')
         return StartContainer(environment=Environment(owner=owner, name=labbook_name))
 

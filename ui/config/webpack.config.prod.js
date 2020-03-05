@@ -150,6 +150,9 @@ module.exports = {
           sourceMap: true,
         },
         include: paths.appSrc,
+        exclude: [
+          /\__tests__/
+        ]
       },
       // ** ADDING/UPDATING LOADERS **
       // The "file" loader handles all assets unless explicitly excluded.
@@ -161,6 +164,7 @@ module.exports = {
       // When you `import` an asset, you get its filename.
       {
         exclude: [
+           /\__tests__/,
           /\.html$/,
           /\.(js|jsx)$/,
           /\.css$/,
@@ -189,6 +193,9 @@ module.exports = {
       },
       // Process JS with Babel.
       {
+        exclude: [
+          /\__tests__/
+        ],
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: require.resolve('babel-loader'),
@@ -397,7 +404,7 @@ module.exports = {
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/, /api\/jupyter/],
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/, /api\/jupyter/, /__tests__/],
       // Work around Windows path issue in SWPrecacheWebpackPlugin:
       // https://github.com/facebookincubator/create-react-app/issues/2235
       stripPrefix: paths.appBuild.replace(/\\/g, '/') + '/',

@@ -58,8 +58,11 @@ class ContainerStatus(graphene.Enum):
     RUNNING = 2
 
 
-class Environment(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class Environment(graphene.ObjectType):
     """A type that represents the Environment for a LabBook"""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     _base_component_data = None
 
     # The name of the current branch

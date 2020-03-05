@@ -392,7 +392,7 @@ class TestDatasetQueries(object):
 
         lb = im.create_labbook("default", "default", "test-lb")
 
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", 'default', 'test-ds', lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", 'default', 'test-ds', lb, 'default')
 
         query = """
                 {

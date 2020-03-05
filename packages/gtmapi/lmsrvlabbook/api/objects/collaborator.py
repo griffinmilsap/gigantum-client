@@ -3,7 +3,9 @@ import graphene
 from lmsrvcore.api.interfaces import GitRepository
 
 
-class Collaborator(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class Collaborator(graphene.ObjectType):
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
 
     # Collaborator username, using prefix to avoid potential conflict with "username"
     collaborator_username = graphene.String(required=True)

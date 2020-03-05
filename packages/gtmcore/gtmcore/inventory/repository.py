@@ -16,6 +16,7 @@ from gtmcore.gitlib import get_git_interface, GitAuthor, GitRepoInterface
 from gtmcore.logging import LMLogger
 from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord, ActivityDetailType, ActivityDetailRecord, \
     ActivityAction
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 
 logger = LMLogger.get_logger()
 
@@ -63,7 +64,7 @@ class Repository(object):
             self.author = author
 
         # Repository Properties
-        self._root_dir: Optional[str] = None  # The root dir is the location of the labbook this instance represents
+        self._root_dir: Optional[str] = None  # The root dir is the location of the labbook or dataset this instance represents
         self._data: Dict[str, Any] = {}
         self._checkout_id: Optional[str] = None
 
@@ -388,14 +389,17 @@ class Repository(object):
             self.git.add_all()
             self.git.commit("Sweep of uncommitted changes")
 
+            tags = ['save']
+            if upload:
+                tags.append('upload')
+
             ar = ActivityRecord(self._default_activity_type,
                                 message="--overwritten--",
                                 show=show,
                                 importance=255,
                                 linked_commit=self.git.commit_hash,
-                                tags=['save'])
-            if upload:
-                ar.tags.append('upload')
+                                tags=ImmutableList(tags))
+
             ar, newcnt, modcnt, delcnt = self.process_sweep_status(ar, result_status)
             nmsg = f"{newcnt} new file(s). " if newcnt > 0 else ""
             mmsg = f"{modcnt} modified file(s). " if modcnt > 0 else ""
@@ -407,7 +411,7 @@ class Repository(object):
 
             # This is used to handle if you try to delete an empty directory. This shouldn't technically happen, but if
             # a user manages to create an empty dir outside the client, we should handle it gracefully
-            ar.message = "No detected changes" if not message else message
+            ar = ar.update(message = "No detected changes" if not message else message)
             ars = ActivityStore(self)
             ars.create_activity_record(ar)
         else:
@@ -466,6 +470,14 @@ class Repository(object):
 
     def process_sweep_status(self, result_obj: ActivityRecord,
                              status: Dict[str, Any]) -> Tuple[ActivityRecord, int, int, int]:
+
+        detail_type: Dict[ActivityAction, ActivityDetailType] = {}
+        detail_msgs: Dict[ActivityAction, List[str]] = {
+            ActivityAction.CREATE: [],
+            ActivityAction.DELETE: [],
+            ActivityAction.EDIT: [],
+            ActivityAction.NOACTION: [],
+        }
         sections = []
         ncnt = 0
         for filename in status['untracked']:
@@ -473,27 +485,30 @@ class Repository(object):
             if ".git" in filename or ".gigantum" in filename:
                 continue
             activity_type, activity_detail_type, section = self.infer_section_from_relative_path(filename)
-            adr = ActivityDetailRecord(activity_detail_type, show=False, importance=max(255 - ncnt, 0),
-                                       action=ActivityAction.CREATE)
+
             sections.append(section)
             if section == self._default_activity_section:
                 msg = f"Created new file `{filename}` in the {self._default_activity_section}."
                 msg = f"{msg}Note, it is best practice to use the Code, Input, and Output sections exclusively."
             else:
                 msg = f"Created new {section} file `{filename}`"
-            adr.add_value('text/markdown', msg)
-            result_obj.add_detail_object(adr)
+
+            action = ActivityAction.CREATE
+            detail_type[action] = activity_detail_type
+            detail_msgs[action].append(msg)
+
             ncnt += 1
 
         # If all modifications were of same section
         new_section_set = set(sections)
+        new_type = self._default_activity_type
         if ncnt > 0 and len(new_section_set) == 1:
             if "Code" in new_section_set:
-                result_obj.type = ActivityType.CODE
+                new_type = ActivityType.CODE
             elif "Input Data" in new_section_set:
-                result_obj.type = ActivityType.INPUT_DATA
+                new_type = ActivityType.INPUT_DATA
             elif "Output Data" in new_section_set:
-                result_obj.type = ActivityType.OUTPUT_DATA
+                new_type = ActivityType.OUTPUT_DATA
 
         mcnt = 0
         dcnt = 0
@@ -524,16 +539,17 @@ class Repository(object):
                 action = ActivityAction.NOACTION
                 mcnt += 1
 
-            adr = ActivityDetailRecord(activity_detail_type, show=False, importance=max(255 - mcnt, 0), action=action)
             if ".gitkeep" in filename:
                 directory_name, _ = filename.split('.gitkeep')
-                adr.add_value('text/markdown', f"{change[0].upper() + change[1:]} {section} directory `{directory_name}`")
+                msg = f"{change[0].upper() + change[1:]} {section} directory `{directory_name}`"
             else:
-                adr.add_value('text/markdown', f"{change[0].upper() + change[1:]} {section} file `{filename}`")
-            result_obj.add_detail_object(adr)
+                msg = f"{change[0].upper() + change[1:]} {section} file `{filename}`"
+
+            detail_type[action] = activity_detail_type
+            detail_msgs[action].append(msg)
 
         modified_section_set = set(msections)
-        if result_obj.type == self._default_activity_type:
+        if new_type == self._default_activity_type:
             # If new files are from different sections or no new files, you'll still be LABBOOK or DATASET type
             if (mcnt+dcnt) > 0 and len(modified_section_set) == 1:
                 # If there have been modified files and they are all from the same section
@@ -541,15 +557,23 @@ class Repository(object):
                     # If there have been only modified files from a single section,
                     # or new files are from the same section
                     if "Code" in modified_section_set:
-                        result_obj.type = ActivityType.CODE
+                        new_type = ActivityType.CODE
                     elif "Input Data" in modified_section_set:
-                        result_obj.type = ActivityType.INPUT_DATA
+                        new_type = ActivityType.INPUT_DATA
                     elif "Output Data" in modified_section_set:
-                        result_obj.type = ActivityType.OUTPUT_DATA
+                        new_type = ActivityType.OUTPUT_DATA
         elif (mcnt+dcnt) > 0:
             if len(modified_section_set) > 1 or new_section_set != modified_section_set:
                 # Mismatch between new and modify or within modify, just use catchall LABBOOK or DATASET type
-                result_obj.type = self._default_activity_type
+                new_type = self._default_activity_type
+
+        adrs = [ActivityDetailRecord(detail_type[action],
+                                     show=False,
+                                     action=action,
+                                     data=TextData('markdown', '\n'.join(detail_msgs[action])))
+                for action in detail_type.keys() if len(detail_msgs[action]) > 0]
+        result_obj = result_obj.update(activity_type=new_type,
+                                       detail_objects=DetailRecordList(adrs))
 
         # Return additionally new file cnt (ncnt) and modified (mcnt)
         return result_obj, ncnt, mcnt, dcnt
@@ -710,8 +734,11 @@ class Repository(object):
         commit = self.git.commit(commit_msg)
 
         # Create detail record
-        adr = ActivityDetailRecord(self._default_activity_detail_type, show=False, importance=0, action=action)
-        adr.add_value('text/plain', commit_msg)
+        adr = ActivityDetailRecord(self._default_activity_detail_type,
+                                   show=False,
+                                   importance=0,
+                                   action=action,
+                                   data=TextData('plain', commit_msg))
 
         # Create activity record
         ar = ActivityRecord(self._default_activity_type,
@@ -719,8 +746,8 @@ class Repository(object):
                             show=False,
                             importance=255,
                             linked_commit=commit.hexsha,
-                            tags=['readme'])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(['readme']))
 
         # Store
         ars = ActivityStore(self)

@@ -104,7 +104,8 @@ def _MOCK_create_remote_repo2(repository, username: str, visibility, access_toke
     os.makedirs(working_dir, exist_ok=True)
     r = git.Repo.init(path=working_dir, bare=True)
     assert r.bare is True
-    repository.add_remote(remote_name="origin", url=working_dir)
+    # The repository URL should end with a '/' because that's how GitLab prefers it
+    repository.add_remote(remote_name="origin", url=working_dir + '/')
 
     # Push branches
     # TODO: @billvb - need to refactor this once new branch model is in effect.
@@ -295,6 +296,38 @@ def mock_config_file_with_auth_browser():
             'client_id': auth_data['client_id'],
             'audience': auth_data['audience'],
             'identity_manager': 'browser'
+        }
+    }
+
+    conf_file, working_dir = _create_temp_work_dir(override_dict=overrides)
+
+    # Go get a JWT for the test user from the dev auth client (real users are not in this DB)
+    response = requests.post("https://gigantum.auth0.com/oauth/token", json=auth_data)
+    token_data = response.json()
+
+    yield conf_file, working_dir, token_data
+    shutil.rmtree(working_dir)
+
+
+@pytest.fixture(scope="module")
+def mock_config_file_with_auth_anonymous():
+    """A pytest fixture that creates a temporary directory and a config file to match. Deletes directory after test"""
+    # Load auth config for testing
+    test_auth_file = os.path.join(resource_filename('gtmcore',
+                                                    'auth{}tests'.format(os.path.sep)), 'auth_config.json')
+    if not os.path.exists(test_auth_file):
+        test_auth_file = f"{test_auth_file}.example"
+
+    with open(test_auth_file, 'rt') as conf:
+        auth_data = json.load(conf)
+
+    overrides = {
+        'auth': {
+            'provider_domain': 'gigantum.auth0.com',
+            'signing_algorithm': 'RS256',
+            'client_id': auth_data['client_id'],
+            'audience': auth_data['audience'],
+            'identity_manager': 'anonymous'
         }
     }
 

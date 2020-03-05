@@ -83,28 +83,23 @@
   background: $primary;
 }
 
-.LocalDatasetPanel__private{
+.LocalDatasetPanel__visibility{
   align-self: center;
 
   width: 30px;
   height: 24px;
 
-  background: $lightGrey url(~Images/icons/lock-grey.svg) no-repeat center center;
-  background-size: 11px;
   left: 28px;
   border-radius: 25px;
-}
 
-.LocalDatasetPanel__public{
-  align-self: center;
-
-  width: 30px;
-  height: 24px;
-
-  background: $lightGrey url(~Images/icons/earth-grey.svg) no-repeat center center;
-  background-size: 14px;
-  left: 28px;
-  border-radius: 25px;
+  &--private {
+    background: $lightGrey url(~Images/icons/lock-grey.svg) no-repeat center center;
+    background-size: 11px;
+  }
+  &--public {
+    background: $lightGrey url(~Images/icons/earth-grey.svg) no-repeat center center;
+    background-size: 11px;
+  }
 }
 
 .LocalDatasetPanel__loading{

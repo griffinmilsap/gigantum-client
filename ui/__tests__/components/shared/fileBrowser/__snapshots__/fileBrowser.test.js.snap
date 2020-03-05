@@ -123,6 +123,7 @@ exports[`FileBrowser component Test FileBrowser Rendering 1`] = `
           <input
             className="AddSubfolder__input"
             data-click-id="addFolder"
+            maxLength="255"
             onKeyUp={[Function]}
             placeholder="Enter Folder Name"
             type="text"

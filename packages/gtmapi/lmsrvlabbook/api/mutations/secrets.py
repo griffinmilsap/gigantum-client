@@ -5,6 +5,7 @@ from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, \
     ActivityRecord, ActivityType, ActivityAction
+from gtmcore.activity.utils import ImmutableDict, TextData, DetailRecordList, ImmutableList
 
 from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 from lmsrvlabbook.api.objects.environment import Environment
@@ -58,17 +59,20 @@ class InsertSecretsEntry(graphene.relay.ClientIDMutation):
         lb.git.add(secret_store.secret_path)
         lb.git.commit("Updated secrets registry.")
         commit = lb.git.commit_hash
-        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=True,
-                                   action=ActivityAction.CREATE)
-        adr.add_value('text/markdown',
-                      f"Created new entry for secrets file {filename}"
-                      f"to map to {mount_path}")
+        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                   show=True,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('markdown',
+                                                 f"Created new entry for secrets file {filename}"
+                                                 f"to map to {mount_path}"))
+
         ar = ActivityRecord(ActivityType.LABBOOK,
                             message=f"Created entry for secrets file {filename}",
                             linked_commit=commit,
-                            tags=["labbook", "secrets"],
-                            show=True)
-        ar.add_detail_object(adr)
+                            tags=ImmutableList(["labbook", "secrets"]),
+                            show=True,
+                            detail_objects=DetailRecordList([adr]))
+
         ars = ActivityStore(lb)
         ars.create_activity_record(ar)
 
@@ -103,16 +107,19 @@ class RemoveSecretsEntry(graphene.relay.ClientIDMutation):
         lb.git.add(secret_store.secret_path)
         lb.git.commit("Removed entry from secrets registry.")
         commit = lb.git.commit_hash
-        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=True,
-                                   action=ActivityAction.DELETE)
-        adr.add_value('text/markdown',
-                      f"Removed entry for secrets file {filename}")
+        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                   show=True,
+                                   action=ActivityAction.DELETE,
+                                   data=TextData('markdown',
+                                                 f"Removed entry for secrets file {filename}"))
+
         ar = ActivityRecord(ActivityType.LABBOOK,
                             message=f"Removed entry for secrets file {filename}",
                             linked_commit=commit,
-                            tags=["labbook", "secrets"],
-                            show=True)
-        ar.add_detail_object(adr)
+                            tags=ImmutableList(["labbook", "secrets"]),
+                            show=True,
+                            detail_objects=DetailRecordList([adr]))
+
         ars = ActivityStore(lb)
         ars.create_activity_record(ar)
 

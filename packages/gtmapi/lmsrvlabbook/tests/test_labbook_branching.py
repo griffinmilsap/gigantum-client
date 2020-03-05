@@ -11,6 +11,7 @@ import responses
 
 from gtmcore.auth.identity import get_identity_manager
 from gtmcore.configuration import Configuration
+from gtmcore.gitlib import RepoLocation
 from gtmcore.inventory.branching import BranchManager
 from gtmcore.inventory.inventory import InventoryManager
 
@@ -595,7 +596,7 @@ class TestWorkflowsBranching(object):
         rollback_to = lb.git.commit_hash
 
         # Link dataset to project
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", UT_USERNAME, ds.name, lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", UT_USERNAME, ds.name, lb, UT_USERNAME)
         dataset_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', UT_USERNAME, 'test-ds')
         assert os.path.exists(dataset_dir) is True
 
@@ -679,7 +680,8 @@ class TestWorkflowsBranching(object):
             wf.publish(username=username)
 
             other_user = 'other-test-user'
-            wf_other = LabbookWorkflow.import_from_remote(remote_url=wf.remote, username=other_user,
+            remote = RepoLocation(wf.remote, other_user)
+            wf_other = LabbookWorkflow.import_from_remote(remote, username=other_user,
                                                           config_file=lb.client_config.config_file)
             with open(os.path.join(wf_other.repository.root_dir, 'testfile'), 'w') as f:
                 f.write('filedata')

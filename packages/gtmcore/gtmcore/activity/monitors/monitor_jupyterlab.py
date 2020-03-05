@@ -15,7 +15,7 @@ from gtmcore.activity.monitors.activity import ActivityMonitor
 from gtmcore.activity.processors.jupyterlab import JupyterLabCodeProcessor, \
     JupyterLabPlaintextProcessor, JupyterLabImageExtractorProcessor, JupyterLabCellVisibilityProcessor
 from gtmcore.activity.processors.core import ActivityShowBasicProcessor, GenericFileChangeProcessor, \
-    ActivityDetailLimitProcessor
+    ActivityDetailLimitProcessor, ActivityDetailProgressProcessor
 from gtmcore.activity import ActivityType
 from gtmcore.dispatcher import Dispatcher, jobs
 from gtmcore.logging import LMLogger
@@ -47,7 +47,12 @@ class JupyterLabMonitor(DevEnvMonitor):
         _, username, owner, labbook_name, _ = key.split(':')
         project_info = container_for_context(username)
         lb_key = project_info.default_image_tag(owner, labbook_name)
-        token = redis_conn.get(f"{lb_key}-jupyter-token").decode()
+        token_bytes = redis_conn.get(f"{lb_key}-jupyter-token")
+        if token_bytes:
+            token = token_bytes.decode()
+        else:
+            logger.warning(f"No token in cache when checking Jupyter sessions for {username}/{owner}/{labbook_name}")
+            token = ""
         url = redis_conn.hget(key, "url").decode()
 
         # Get List of active sessions
@@ -170,6 +175,7 @@ class JupyterLabNotebookMonitor(ActivityMonitor):
         self.add_processor(JupyterLabPlaintextProcessor())
         self.add_processor(JupyterLabImageExtractorProcessor())
         self.add_processor(JupyterLabCellVisibilityProcessor())
+        self.add_processor(ActivityDetailProgressProcessor())
         self.add_processor(ActivityDetailLimitProcessor())
         self.add_processor(ActivityShowBasicProcessor())
 
@@ -260,7 +266,8 @@ class JupyterLabNotebookMonitor(ActivityMonitor):
             commit = self.commit_labbook()
 
             # Create note record
-            activity_commit = self.store_activity_record(commit, activity_record)
+            activity_record = self.store_activity_record(commit, activity_record)
+            activity_commit = activity_record.commit
 
             logger.info(f"Created auto-generated activity record {activity_commit} in {time.time() - t_start} seconds")
 

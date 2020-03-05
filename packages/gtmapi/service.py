@@ -130,10 +130,10 @@ def post_save_hook(os_path, model, contents_manager, **kwargs):
         else:
             # Running locally
             service_route = "api/savehook"
-        
+
         tokens = open('/home/giguser/jupyter_token').read().strip()
         username, owner, lbname, jupyter_token = tokens.split(',')
-        url_args = "file={}&jupyter_token={}".format(os.path.basename(os_path), jupyter_token)
+        url_args = "file={}&jupyter_token={}&email={}".format(os.path.basename(os_path), jupyter_token, os.environ['GIGANTUM_EMAIL'])
         url = "http://{}:10001/{}/{}/{}/{}?{}".format(client_ip,service_route,username,owner,lbname,url_args)
         subprocess.run(['wget', '--spider', url], cwd='/tmp')
     except Exception as e:

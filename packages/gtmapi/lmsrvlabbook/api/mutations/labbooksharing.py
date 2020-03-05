@@ -2,8 +2,8 @@ import base64
 import graphene
 import os
 import flask
-import requests
 
+from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.dispatcher import Dispatcher, jobs
 from gtmcore.exceptions import GigantumException
@@ -186,15 +186,18 @@ class AddLabbookCollaborator(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(cls, root, info, owner, labbook_name, username, permissions,
                                client_mutation_id=None):
         logged_in_username = get_logged_in_username()
-        InventoryManager().load_labbook(logged_in_username, owner, labbook_name,
-                                        author=get_logged_in_author())
+        lb = InventoryManager().load_labbook(logged_in_username, owner, labbook_name,
+                                             author=get_logged_in_author())
 
         if permissions == 'readonly':
             perm = ProjectPermissions.READ_ONLY
+            perm_msg = "read-only"
         elif permissions == 'readwrite':
             perm = ProjectPermissions.READ_WRITE
+            perm_msg = "read & write"
         elif permissions == 'owner':
             perm = ProjectPermissions.OWNER
+            perm_msg = "administrator"
         else:
             raise ValueError(f"Unknown permission set: {permissions}")
 
@@ -202,16 +205,28 @@ class AddLabbookCollaborator(graphene.relay.ClientIDMutation):
         mgr = configure_git_credentials()
         existing_collabs = mgr.get_collaborators(owner, labbook_name)
 
+        # Add / Update collaborator
         if username not in [n[1] for n in existing_collabs]:
+            collaborator_msg = f"Adding collaborator {username} with {perm_msg} permissions"
             logger.info(f"Adding user {username} to {owner}/{labbook_name}"
                         f"with permission {perm}")
             mgr.add_collaborator(owner, labbook_name, username, perm)
         else:
+            collaborator_msg = f"Updating collaborator {username} to {perm_msg} permissions"
             logger.warning(f"Changing permission of {username} on"
                            f"{owner}/{labbook_name} to {perm}")
             mgr.delete_collaborator(owner, labbook_name, username)
             mgr.add_collaborator(owner, labbook_name, username, perm)
 
+        # Add to activity feed
+        store = ActivityStore(lb)
+        ar = ActivityRecord(ActivityType.LABBOOK,
+                            message=collaborator_msg,
+                            linked_commit="no-linked-commit",
+                            importance=255)
+        store.create_activity_record(ar)
+
+        # Return response
         create_data = {"owner": owner,
                        "name": labbook_name}
 
@@ -232,6 +247,18 @@ class DeleteLabbookCollaborator(graphene.relay.ClientIDMutation):
         mgr = configure_git_credentials()
         mgr.delete_collaborator(owner, labbook_name, username)
 
+        # Add to activity feed
+        logged_in_username = get_logged_in_username()
+        lb = InventoryManager().load_labbook(logged_in_username, owner, labbook_name,
+                                             author=get_logged_in_author())
+        store = ActivityStore(lb)
+        ar = ActivityRecord(ActivityType.LABBOOK,
+                            message=f"Removing collaborator {username}",
+                            linked_commit="no-linked-commit",
+                            importance=255)
+        store.create_activity_record(ar)
+
+        # Return response
         create_data = {"owner": owner,
                        "name": labbook_name}
 

@@ -578,6 +578,7 @@ export default class ImportModule extends Component {
         </button>
 
         <Tooltip section="createLabbook" />
+        <Tooltip section="importLabbook" />
         <div className={loadingMaskCSS} />
       </div>
     );

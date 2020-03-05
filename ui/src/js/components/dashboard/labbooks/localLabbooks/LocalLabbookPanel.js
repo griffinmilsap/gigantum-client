@@ -47,26 +47,29 @@ class LocalLabbookPanel extends Component<Props> {
   */
   static getDerivedStateFromProps(nextProps, state) {
     const { environment } = nextProps.node;
+    let status;
+    let textStatus;
     if (environment) {
       const { containerStatus, imageStatus } = environment;
-      let status = 'Running';
+      status = 'Running';
       status = (containerStatus === 'NOT_RUNNING') ? 'Stopped' : status;
       status = (imageStatus === 'BUILD_IN_PROGRESS' || imageStatus === 'BUILD_QUEUED') ? 'Building' : status;
       status = (imageStatus === 'BUILD_FAILED') ? 'Rebuild' : status;
-      status = (imageStatus === 'DOES_NOT_EXIST') ? 'Rebuild' : status;
+      status = ((imageStatus === 'DOES_NOT_EXIST') || (imageStatus === null)) ? 'Rebuild' : status;
 
       status = ((state.status === 'Starting') && (containerStatus !== 'RUNNING')) || (state.status === 'Stopping' && (containerStatus !== 'NOT_RUNNING')) ? state.status : status;
 
-      let textStatus = (status === 'Rebuild') ? 'Stopped' : status;
+      textStatus = (status === 'Rebuild') ? 'Stopped' : status;
       textStatus = (state.textStatus === 'Start') ? 'Start' : textStatus;
       textStatus = (state.textStatus === 'Stop') ? 'Stop' : textStatus;
-
-      state.status = status;
-      state.textStatus = textStatus;
-      state.cssClass = status;
     }
 
-    return { ...state };
+    return {
+      ...state,
+      status,
+      textStatus,
+      cssClass: status,
+    };
   }
 
   /** *

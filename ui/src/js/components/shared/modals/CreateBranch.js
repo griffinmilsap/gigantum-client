@@ -94,7 +94,6 @@ class CreateBranchModal extends Component<Props> {
       const { timestamp } = nextProps.selected.activityNode;
       const formattedTimestamp = Moment(Date.parse(timestamp)).format('MMDDYY-HHmmss').toLowerCase();
       branchName = `${nextProps.selected.activeBranch}-at-${formattedTimestamp}`;
-      this.setState({ branchName });
     } else if (state.branchName && (typeof state.branchName === 'string') && (state.branchName.indexOf('rollback') > -1)) {
       branchName = '';
     }

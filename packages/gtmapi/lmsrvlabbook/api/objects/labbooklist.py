@@ -12,6 +12,7 @@ from gtmcore.configuration import Configuration
 from lmsrvcore.caching import LabbookCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.connections import ListBasedConnection
+from lmsrvcore.auth.identity import tokens_from_request_context
 
 from lmsrvlabbook.api.connections.labbook import LabbookConnection, Labbook
 from lmsrvlabbook.api.connections.remotelabbook import RemoteLabbookConnection, RemoteLabbook
@@ -19,7 +20,7 @@ from lmsrvlabbook.api.connections.remotelabbook import RemoteLabbookConnection, 
 logger = LMLogger.get_logger()
 
 
-class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class LabbookList(graphene.ObjectType):
     """A type simply used as a container to group local and remote LabBooks for better relay support
 
     Labbook and RemoteLabbook objects are uniquely identified by both the "owner" and the "name" of the LabBook
@@ -27,6 +28,9 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
     NOTE: RemoteLabbooks require all fields to be explicitly set as there is no current way to asynchronously retrieve
           the data
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, )
+
     # List of specific local labbooks based on Node ID
     local_by_id = graphene.List(Labbook, ids=graphene.List(graphene.String))
 
@@ -183,11 +187,8 @@ class LabbookList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
         else:
             sort = "desc"
 
-        # Extract valid tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if access_token is None or id_token is None:
-            raise ValueError("Authorization headers not provided. Cannot list remote Projects.")
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
         query_template = Template("""
 {

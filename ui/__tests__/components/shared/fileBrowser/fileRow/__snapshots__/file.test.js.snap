@@ -26,16 +26,16 @@ exports[`Project File component File Snapshot 1`] = `
       className="File__cell File__cell--name"
     >
       <div
-        className="File__icon book-icon"
+        className="File__icon graph-icon"
       />
       <div
         className="File__text"
         data-for="Tooltip--file"
-        data-tip="README.md"
+        data-tip="NetflixViewingHistoryJ.csv"
         onClick={[Function]}
         role="presentation"
       >
-        README.md
+        NetflixViewingHistoryJ.csv
       </div>
       <div
         className="__react_component_tooltip place-bottom type-dark "
@@ -58,7 +58,7 @@ exports[`Project File component File Snapshot 1`] = `
           onDragStart={[Function]}
           onKeyDown={[Function]}
           type="text"
-          value="README.md"
+          value="NetflixViewingHistoryJ.csv"
         />
       </div>
       <div
@@ -80,12 +80,12 @@ exports[`Project File component File Snapshot 1`] = `
     <div
       className="File__cell File__cell--size"
     >
-      3.3 KB
+      65.2 KB
     </div>
     <div
       className="File__cell File__cell--date"
     >
-      Fri Jan 18 2019
+      Mon Feb 03 2020
     </div>
     <div
       className="File__cell File__cell--menu"
@@ -98,7 +98,6 @@ exports[`Project File component File Snapshot 1`] = `
           className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn__addFolder visibility-hidden"
           data-click-id="addFolder"
           data-tooltip="Add Subfolder"
-          disabled={false}
           onClick={[Function]}
           type="button"
         />

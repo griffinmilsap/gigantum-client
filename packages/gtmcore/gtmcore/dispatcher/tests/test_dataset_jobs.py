@@ -392,7 +392,7 @@ class TestDatasetBackgroundJobs(object):
             assert len(modified_items) == 0
 
             lb = im.create_labbook("tester", "tester", 'test-labbook')
-            im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "tester", ds.name, lb)
+            im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "tester", ds.name, lb, "tester")
 
             dataset_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', 'tester', ds.name)
             ds = im.load_dataset_from_directory(dataset_dir)

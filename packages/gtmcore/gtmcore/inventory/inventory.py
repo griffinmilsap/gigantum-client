@@ -13,7 +13,7 @@ from typing import Any, NamedTuple, Optional, Callable, List, Tuple, Dict
 from gtmcore.exceptions import GigantumException
 from gtmcore.labbook.schemas import CURRENT_SCHEMA as LABBOOK_CURRENT_SCHEMA
 from gtmcore.dataset.schemas import CURRENT_SCHEMA as DATASET_CURRENT_SCHEMA
-from gtmcore.gitlib import GitAuthor
+from gtmcore.gitlib import GitAuthor, RepoLocation
 from gtmcore.logging import LMLogger
 from gtmcore.configuration import Configuration
 from gtmcore.configuration.utils import call_subprocess
@@ -24,6 +24,7 @@ from gtmcore.inventory import Repository
 from gtmcore.dataset import storage
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType, \
     ActivityAction
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 from gtmcore.dataset import Manifest
 
 
@@ -108,8 +109,6 @@ class InventoryManager(object):
 
         p = os.path.join(self.inventory_root, username, owner, 'labbooks')
         dname = os.path.basename(path)
-        if os.path.exists(p) and dname in os.listdir(p):
-            raise InventoryException(f"Project directory {dname} already exists")
 
         if not os.path.exists(p):
             os.makedirs(p, exist_ok=True)
@@ -560,14 +559,18 @@ class InventoryManager(object):
             dataset.git.commit(f"Creating new empty Dataset: {dataset_name}")
 
             # Create Activity Record
-            adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=0)
-            adr.add_value('text/plain', f"Created new Dataset: {username}/{dataset_name}")
+            adr = ActivityDetailRecord(ActivityDetailType.DATASET,
+                                       show=False,
+                                       importance=0,
+                                       data=TextData('plain', f"Created new Dataset: {username}/{dataset_name}"))
+
             ar = ActivityRecord(ActivityType.DATASET,
                                 message=f"Created new Dataset: {username}/{dataset_name}",
                                 show=True,
                                 importance=255,
-                                linked_commit=dataset.git.commit_hash)
-            ar.add_detail_object(adr)
+                                linked_commit=dataset.git.commit_hash,
+                                detail_objects=DetailRecordList([adr]))
+
             store = ActivityStore(dataset)
             store.create_activity_record(ar)
 
@@ -719,7 +722,7 @@ class InventoryManager(object):
             raise InventoryException(f"Invalid sort mode {sort_mode}")
 
     def link_dataset_to_labbook(self, dataset_url: str, dataset_namespace: str, dataset_name: str,
-                                labbook: LabBook) -> Dataset:
+                                labbook: LabBook, username: str) -> Dataset:
         """
 
         Args:
@@ -761,9 +764,11 @@ class InventoryManager(object):
             # Seem to be trying to link a dataset after a reset removed the dataset. Clean up first.
             _clean_submodule()
 
+        # This URL will end up including the username in .gitmodules, we remove that below
+        remote = RepoLocation(dataset_url, current_username=username)
         try:
             # Link dataset via submodule reference
-            call_subprocess(['git', 'submodule', 'add', '--name', f"{dataset_namespace}&{dataset_name}", dataset_url,
+            call_subprocess(['git', 'submodule', 'add', '--name', f"{dataset_namespace}&{dataset_name}", remote.remote_location,
                             relative_submodule_dir], cwd=labbook.root_dir)
 
         except subprocess.CalledProcessError:
@@ -771,30 +776,37 @@ class InventoryManager(object):
             _clean_submodule()
 
             # Try to add again 1 more time, allowing a failure to raise an exception
-            call_subprocess(['git', 'submodule', 'add', '--name', f"{dataset_namespace}&{dataset_name}", dataset_url,
+            call_subprocess(['git', 'submodule', 'add', '--name', f"{dataset_namespace}&{dataset_name}", remote.remote_location,
                             relative_submodule_dir], cwd=labbook.root_dir)
 
             # If you got here, repair worked and link OK
             logger.info("Repository repair and linking retry successful.")
 
+        # Remove username from .gitmodules
+        anon_remote = RepoLocation(dataset_url, current_username=None)
+        call_subprocess(['git', 'config', '--file=.gitmodules', f"submodule.{dataset_namespace}&{dataset_name}.url",
+                         anon_remote.remote_location], cwd=labbook.root_dir)
+
         labbook.git.add_all()
         commit = labbook.git.commit(f"adding submodule ref to link dataset {dataset_namespace}/{dataset_name}")
-        call_subprocess(['git', 'submodule', 'update', '--init', '--', relative_submodule_dir], cwd=labbook.root_dir)
 
         ds = self.load_dataset_from_directory(absolute_submodule_dir)
         dataset_revision = ds.git.repo.head.commit.hexsha
 
         # Add Activity Record
-        adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, action=ActivityAction.CREATE)
-        adr.add_value('text/markdown',
-                      f"Linked Dataset `{dataset_namespace}/{dataset_name}` to "
-                      f"project at revision `{dataset_revision}`")
+        adr = ActivityDetailRecord(ActivityDetailType.DATASET,
+                                   show=False,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('markdown', f"Linked Dataset `{dataset_namespace}/{dataset_name}` to "
+                                                             f"project at revision `{dataset_revision}`"))
+
         ar = ActivityRecord(ActivityType.DATASET,
                             message=f"Linked Dataset {dataset_namespace}/{dataset_name} to project.",
                             linked_commit=commit.hexsha,
-                            tags=["dataset"],
-                            show=True)
-        ar.add_detail_object(adr)
+                            tags=ImmutableList(["dataset"]),
+                            show=True,
+                            detail_objects=DetailRecordList([adr]))
+
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
@@ -827,14 +839,18 @@ class InventoryManager(object):
         commit = labbook.git.commit("removing submodule ref")
 
         # Add Activity Record
-        adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, action=ActivityAction.DELETE)
-        adr.add_value('text/markdown', f"Unlinked Dataset `{dataset_namespace}/{dataset_name}` from project")
+        adr = ActivityDetailRecord(ActivityDetailType.DATASET,
+                                  show=False,
+                                  action=ActivityAction.DELETE,
+                                  data=TextData('markdown', f"Unlinked Dataset `{dataset_namespace}/{dataset_name}` from project"))
+
         ar = ActivityRecord(ActivityType.DATASET,
                             message=f"Unlinked Dataset {dataset_namespace}/{dataset_name} from project.",
                             linked_commit=commit.hexsha,
-                            tags=["dataset"],
-                            show=True)
-        ar.add_detail_object(adr)
+                            tags=ImmutableList(["dataset"]),
+                            show=True,
+                            detail_objects=DetailRecordList([adr]))
+
         ars = ActivityStore(labbook)
         ars.create_activity_record(ar)
 
@@ -858,7 +874,19 @@ class InventoryManager(object):
                 rel_submodule_dir = os.path.join('.gigantum', 'datasets', namespace, dataset_name)
                 submodule_dir = os.path.join(labbook.root_dir, rel_submodule_dir)
 
-                call_subprocess(['git', 'submodule', 'update', '--init', '--', rel_submodule_dir],
+                # The following three commands may be null-ops, but they're local operations that should be very fast
+                call_subprocess(['git', 'submodule', 'init', '--', rel_submodule_dir],
+                                cwd=labbook.root_dir, check=True)
+
+                # We update the URL in our .gitconfig to include the username
+                # This shouldn't have a username in it, but it's OK if it does
+                anon_url = call_subprocess(['git', 'config', f"submodule.{submodule}.url"],
+                                           cwd=labbook.root_dir, check=True)
+                user_remote = RepoLocation(anon_url.strip(), username)
+                call_subprocess(['git', 'config', f"submodule.{submodule}.url", user_remote.remote_location],
+                                cwd=labbook.root_dir, check=True)
+
+                call_subprocess(['git', 'submodule', 'update', '--', rel_submodule_dir],
                                 cwd=labbook.root_dir, check=True)
 
                 ds = InventoryManager().load_dataset_from_directory(submodule_dir)
@@ -918,16 +946,19 @@ class InventoryManager(object):
             commit = labbook.git.commit("Updating submodule ref")
 
             # Add Activity Record
-            adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, action=ActivityAction.DELETE)
-            adr.add_value('text/markdown',
-                          f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to {latest_revision}")
+            adr = ActivityDetailRecord(ActivityDetailType.DATASET,
+                                       show=False,
+                                       action=ActivityAction.DELETE,
+                                       data=TextData('markdown', f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to {latest_revision}"))
+
             msg = f"Updated Dataset `{dataset_namespace}/{dataset_name}` link to version {latest_revision[0:8]}"
             ar = ActivityRecord(ActivityType.DATASET,
                                 message=msg,
                                 linked_commit=commit.hexsha,
-                                tags=["dataset"],
-                                show=True)
-            ar.add_detail_object(adr)
+                                tags=ImmutableList(["dataset"]),
+                                show=True,
+                                detail_objects=DetailRecordList([adr]))
+
             ars = ActivityStore(labbook)
             ars.create_activity_record(ar)
 

@@ -61,7 +61,7 @@ def test_link_unpublished_dataset_then_publish_project(driver: selenium.webdrive
         logging.info(f"Navigating to {collaborator}'s cloud tab")
         driver.get(f"{os.environ['GIGANTUM_HOST']}/projects/cloud")
         cloud_project_elts.first_cloud_project.wait_to_appear(30)
-        # Temporary for dev cloud
+        # This was added for dev cloud, may no longer be needed
         driver.refresh()
         cloud_project_elts.first_cloud_project.wait_to_appear(30)
 

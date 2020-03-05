@@ -6,8 +6,11 @@ from lmsrvcore.api.interfaces import GitRepository
 from lmsrvcore.auth.user import get_logged_in_username
 
 
-class DatasetFile(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class DatasetFile(graphene.ObjectType):
     """A type representing a file or directory inside the dataset file system."""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # Loaded file info
     _file_info = None
 

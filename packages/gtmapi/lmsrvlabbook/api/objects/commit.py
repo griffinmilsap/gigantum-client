@@ -3,6 +3,7 @@ import graphene
 
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.inventory.branching import BranchManager
+from lmsrvcore.auth.identity import get_identity_manager_instance
 
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitCommit, GitRepository
@@ -10,8 +11,10 @@ from lmsrvcore.utilities import configure_git_credentials
 from lmsrvlabbook.dataloader.fetch import FetchLoader
 
 
-class LabbookCommit(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository, GitCommit)):
+class LabbookCommit(graphene.ObjectType):
     """An object representing a commit to a LabBook"""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository, GitCommit)
 
     @classmethod
     def get_node(cls, info, id):
@@ -39,8 +42,11 @@ class LabbookCommit(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRep
             lambda labbook: labbook.git.repo.commit(self.hash).committed_datetime.isoformat())
 
 
-class Branch(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class Branch(graphene.ObjectType):
     """ Represents a branch in the repo """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     _fetch_loader: Optional[FetchLoader] = None
 
     branch_name = graphene.String(required=True)
@@ -99,28 +105,34 @@ class Branch(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository
         return mergeable
 
     def resolve_commits_ahead(self, info):
-        logged_in_user = get_logged_in_username()
-        lb = InventoryManager().load_labbook(logged_in_user,
-                                             self.owner,
-                                             self.name)
-        configure_git_credentials()
-        bm = BranchManager(lb)
-        if self._fetch_loader:
-            return self._fetch_loader.load(f"labbook&{logged_in_user}&{self.owner}&{self.name}").then(
-                lambda _: bm.get_commits_ahead(branch_name=self.branch_name))
+        if not get_identity_manager_instance().allow_server_access:
+            return 0
         else:
-            return bm.get_commits_ahead(branch_name=self.branch_name)
+            logged_in_user = get_logged_in_username()
+            lb = InventoryManager().load_labbook(logged_in_user,
+                                                 self.owner,
+                                                 self.name)
+            configure_git_credentials()
+            bm = BranchManager(lb)
+            if self._fetch_loader:
+                return self._fetch_loader.load(f"labbook&{logged_in_user}&{self.owner}&{self.name}").then(
+                    lambda _: bm.get_commits_ahead(branch_name=self.branch_name))
+            else:
+                return bm.get_commits_ahead(branch_name=self.branch_name)
 
     def resolve_commits_behind(self, info):
-        logged_in_user = get_logged_in_username()
-        lb = InventoryManager().load_labbook(logged_in_user,
-                                             self.owner,
-                                             self.name)
-        configure_git_credentials()
-        bm = BranchManager(lb)
-        if self._fetch_loader:
-            return self._fetch_loader.load(f"labbook&{logged_in_user}&{self.owner}&{self.name}").then(
-                lambda _: bm.get_commits_behind(branch_name=self.branch_name))
+        if not get_identity_manager_instance().allow_server_access:
+            return 0
         else:
-            return bm.get_commits_behind(branch_name=self.branch_name)
+            logged_in_user = get_logged_in_username()
+            lb = InventoryManager().load_labbook(logged_in_user,
+                                                 self.owner,
+                                                 self.name)
+            configure_git_credentials()
+            bm = BranchManager(lb)
+            if self._fetch_loader:
+                return self._fetch_loader.load(f"labbook&{logged_in_user}&{self.owner}&{self.name}").then(
+                    lambda _: bm.get_commits_behind(branch_name=self.branch_name))
+            else:
+                return bm.get_commits_behind(branch_name=self.branch_name)
 

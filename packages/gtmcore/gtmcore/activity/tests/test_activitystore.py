@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 from gtmcore.activity.records import ActivityType, ActivityRecord, ActivityDetailRecord, ActivityDetailType,\
     ActivityAction
+from gtmcore.activity.utils import DetailRecordList, ImmutableList
 from gtmcore.activity import ActivityStore
 from gtmcore.fixtures import mock_config_with_activitystore
 
@@ -87,15 +88,15 @@ class TestActivityStore:
     def test_put_get_detail_record(self, mock_config_with_activitystore):
         """Test to test storing and retrieving data from the activity detail db"""
         # Create test values
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first")
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    data={'text/plain': 'first'})
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr2.show = True
-        adr2.importance = 0
-        adr2.add_value("text/plain", "second")
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=0,
+                                    data={'text/plain': 'second'})
 
         adr1 = mock_config_with_activitystore[0].put_detail_record(adr1)
         adr2 = mock_config_with_activitystore[0].put_detail_record(adr2)
@@ -124,17 +125,19 @@ class TestActivityStore:
     def test_put_get_detail_record_with_tags(self, mock_config_with_activitystore):
         """Test to test storing and retrieving data from the activity detail db"""
         # Create test values
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE, action=ActivityAction.CREATE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first")
-        adr1.tags = ['test1']
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    action=ActivityAction.CREATE,
+                                    show=True,
+                                    importance=100,
+                                    tags=ImmutableList(['test1']),
+                                    data={'text/plain': 'first'})
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, action=ActivityAction.EXECUTE)
-        adr2.show = True
-        adr2.importance = 0
-        adr2.add_value("text/plain", "second")
-        adr2.tags = ['test2', 'test:3']
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED,
+                                    action=ActivityAction.EXECUTE,
+                                    show=True,
+                                    importance=0,
+                                    tags=ImmutableList(['test2', 'test:3']),
+                                    data={'text/plain': 'second'})
 
         adr1 = mock_config_with_activitystore[0].put_detail_record(adr1)
         adr2 = mock_config_with_activitystore[0].put_detail_record(adr2)
@@ -167,15 +170,15 @@ class TestActivityStore:
     def test_put_get_detail_record_with_compression(self, mock_config_with_activitystore):
         """Test to test storing and retrieving data from the activity detail db w/ compression"""
         # Create test values
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first" * 1000)
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    data={'text/plain': 'first' * 1000})
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr2.show = True
-        adr2.importance = 0
-        adr2.add_value("text/plain", "second" * 1000)
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=0,
+                                    data={'text/plain': 'second' * 1000})
 
         adr1 = mock_config_with_activitystore[0].put_detail_record(adr1)
         adr2 = mock_config_with_activitystore[0].put_detail_record(adr2)
@@ -203,17 +206,17 @@ class TestActivityStore:
 
     def test_put_get_activity_record(self, mock_config_with_activitystore):
         """Method to test creating and getting an individual activity record"""
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "this is a thing" * 1000)
-        adr1.tags = ['tag1', 'tag2']
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    tags=ImmutableList(['tag1', 'tag2']),
+                                    data={'text/plain':  'this is a thing' * 1000})
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.RESULT)
-        adr2.show = False
-        adr2.importance = 0
-        adr2.add_value("text/plain", "another item")
-        adr2.tags = ['tag1', 'tag2']
+        adr2 = ActivityDetailRecord(ActivityDetailType.RESULT,
+                                    show=False,
+                                    importance=0,
+                                    tags=ImmutableList(['tag1', 'tag2']),
+                                    data={'text/plain':  'another item'})
 
         linked_commit = helper_create_labbook_change(mock_config_with_activitystore[1], 1)
 
@@ -221,52 +224,51 @@ class TestActivityStore:
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit=linked_commit.hexsha)
-
-        ar.add_detail_object(adr1)
-        ar.add_detail_object(adr2)
+                            linked_commit=linked_commit.hexsha,
+                            detail_objects=DetailRecordList([adr1, adr2]))
 
         assert ar.commit is None
 
         # Create Activity Record
         ar_written = mock_config_with_activitystore[0].create_activity_record(ar)
-        assert ar.commit is not None
-        assert ar.username == 'default'
-        assert ar.email == 'default@test.com'
+        assert ar.commit is None # The original object is not mutated
+        assert ar_written.commit is not None
+        assert ar_written.username == 'default'
+        assert ar_written.email == 'default@test.com'
 
         # Get Note and check
         stored_ar = mock_config_with_activitystore[0].get_activity_record(ar_written.commit)
 
-        assert ar.commit == stored_ar.commit
-        assert ar.importance == stored_ar.importance
-        assert ar.linked_commit == stored_ar.linked_commit
-        assert ar.log_str == stored_ar.log_str
-        assert ar.message == stored_ar.message
-        assert ar.show == stored_ar.show
-        assert ar.tags == stored_ar.tags
-        assert ar.type == stored_ar.type
-        assert len(ar._detail_objects) == len(stored_ar._detail_objects)
+        assert ar_written.commit == stored_ar.commit
+        assert ar_written.importance == stored_ar.importance
+        assert ar_written.linked_commit == stored_ar.linked_commit
+        assert ar_written.log_str == stored_ar.log_str
+        assert ar_written.message == stored_ar.message
+        assert ar_written.show == stored_ar.show
+        assert ar_written.tags == stored_ar.tags
+        assert ar_written.type == stored_ar.type
+        assert len(ar_written.detail_objects) == len(stored_ar.detail_objects)
 
-        assert ar._detail_objects[0][0] == stored_ar._detail_objects[0][0]
-        assert ar._detail_objects[0][1] == stored_ar._detail_objects[0][1]
-        assert ar._detail_objects[0][2] == stored_ar._detail_objects[0][2]
+        assert ar_written.detail_objects[0].show == stored_ar.detail_objects[0].show
+        assert ar_written.detail_objects[0].type.value == stored_ar.detail_objects[0].type.value
+        assert ar_written.detail_objects[0].importance == stored_ar.detail_objects[0].importance
 
-        assert ar._detail_objects[0][3].is_loaded is True
-        assert ar._detail_objects[1][3].is_loaded is True
+        assert ar_written.detail_objects[0].is_loaded is True
+        assert ar_written.detail_objects[1].is_loaded is True
 
-        assert stored_ar._detail_objects[0][3].is_loaded is False
-        assert stored_ar._detail_objects[1][3].is_loaded is False
+        assert stored_ar.detail_objects[0].is_loaded is False
+        assert stored_ar.detail_objects[1].is_loaded is False
 
         assert stored_ar.username == 'default'
         assert stored_ar.email == 'default@test.com'
 
     def test_put_get_activity_record_with_tag(self, mock_config_with_activitystore):
         """Method to test creating and getting an individual activity record with a tag"""
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "this is a thing" * 1000)
-        adr1.tags = ['tag1', 'tag2']
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    tags=ImmutableList(['tag1', 'tag2']),
+                                    data={'text/plain': 'this is a thing' * 1000})
 
         linked_commit = helper_create_labbook_change(mock_config_with_activitystore[1], 1)
 
@@ -274,40 +276,40 @@ class TestActivityStore:
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit=linked_commit.hexsha)
-
-        ar.add_detail_object(adr1)
-        ar.tags = ['tag1', 'tag2']
+                            linked_commit=linked_commit.hexsha,
+                            tags=ImmutableList(['tag1', 'tag2']),
+                            detail_objects=DetailRecordList([adr1]))
 
         assert ar.commit is None
 
         # Create Activity Record
         ar_written = mock_config_with_activitystore[0].create_activity_record(ar)
-        assert ar.commit is not None
+        assert ar.commit is None # The original object is not mutated
+        assert ar_written.commit is not None
 
         # Get Note and check
         stored_ar = mock_config_with_activitystore[0].get_activity_record(ar_written.commit)
 
-        assert ar.commit == stored_ar.commit
-        assert ar.importance == stored_ar.importance
-        assert ar.linked_commit == stored_ar.linked_commit
-        assert ar.log_str == stored_ar.log_str
-        assert ar.message == stored_ar.message
-        assert ar.show == stored_ar.show
-        assert ar.tags == stored_ar.tags
-        assert ar.type == stored_ar.type
-        assert len(ar._detail_objects) == len(stored_ar._detail_objects)
+        assert ar_written.commit == stored_ar.commit
+        assert ar_written.importance == stored_ar.importance
+        assert ar_written.linked_commit == stored_ar.linked_commit
+        assert ar_written.log_str == stored_ar.log_str
+        assert ar_written.message == stored_ar.message
+        assert ar_written.show == stored_ar.show
+        assert ar_written.tags == stored_ar.tags
+        assert ar_written.type == stored_ar.type
+        assert len(ar_written.detail_objects) == len(stored_ar.detail_objects)
         assert stored_ar.username == 'default'
         assert stored_ar.email == 'default@test.com'
-        assert stored_ar.username == ar.username
-        assert stored_ar.email == ar.email
+        assert stored_ar.username == ar_written.username
+        assert stored_ar.email == ar_written.email
 
-        assert ar._detail_objects[0][0] == stored_ar._detail_objects[0][0]
-        assert ar._detail_objects[0][1] == stored_ar._detail_objects[0][1]
-        assert ar._detail_objects[0][2] == stored_ar._detail_objects[0][2]
+        assert ar_written.detail_objects[0].show == stored_ar.detail_objects[0].show
+        assert ar_written.detail_objects[0].type.value == stored_ar.detail_objects[0].type.value
+        assert ar_written.detail_objects[0].importance == stored_ar.detail_objects[0].importance
 
-        assert ar._detail_objects[0][3].is_loaded is True
-        assert stored_ar._detail_objects[0][3].is_loaded is False
+        assert ar_written.detail_objects[0].is_loaded is True
+        assert stored_ar.detail_objects[0].is_loaded is False
 
     def test_get_activity_record_does_not_exist(self, mock_config_with_activitystore):
         """Test getting a note by a commit hash that does not exist"""
@@ -560,3 +562,27 @@ class TestActivityStore:
         assert activity_records[0].commit == record2.commit
         assert activity_records[0].linked_commit == record2.linked_commit
         assert activity_records[0].message == record2.message
+
+    def test_malformed_detail_record(self, mock_config_with_activitystore):
+        """Test for Issue #936 (prevent malformed detail record from borking activities)"""
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    data={'text/plain':  'this is a thing' * 1000})
+
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    data={'mime_type/unknown':  'another item'})
+
+        linked_commit = helper_create_labbook_change(mock_config_with_activitystore[1], 1)
+
+        ar = ActivityRecord(ActivityType.CODE,
+                            message="added some code",
+                            linked_commit=linked_commit.hexsha,
+                            detail_objects=DetailRecordList([adr1, adr2]))
+
+        # Create Activity Record
+        ar_written = mock_config_with_activitystore[0].create_activity_record(ar)
+        stored_ar = mock_config_with_activitystore[0].get_activity_record(ar_written.commit)
+
+        # Verify that the malformed record is not stored
+        assert len(ar.detail_objects) == 2
+        assert len(ar_written.detail_objects) == 1
+        assert len(stored_ar.detail_objects) == 1

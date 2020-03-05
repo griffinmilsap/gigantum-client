@@ -2,8 +2,11 @@ import graphene
 from gtmcore.dataset.storage import get_storage_backend
 
 
-class DatasetType(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class DatasetType(graphene.ObjectType):
     """A type that represents a type of Dataset that can be created"""
+    class Meta:
+        interfaces = (graphene.relay.Node, )
+
     # The loaded yaml data
     _dataset_type_data = None
 

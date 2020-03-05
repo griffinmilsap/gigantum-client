@@ -8,12 +8,11 @@ from lmsrvcore.auth.identity import get_identity_manager_instance
 
 def get_logged_in_user() -> User:
     """A method to get the current logged in User object"""
-    # Check for user in redis cache
-    access_token = flask.g.get('access_token', None)
-    id_token = flask.g.get('id_token', None)
-
     request_scoped_user = flask.g.get('user_obj', None)
     if not request_scoped_user:
+        access_token = flask.g.get('access_token', None)
+        id_token = flask.g.get('id_token', None)
+
         request_scoped_user = get_identity_manager_instance().get_user_profile(access_token, id_token)
         flask.g.user_obj = request_scoped_user
 

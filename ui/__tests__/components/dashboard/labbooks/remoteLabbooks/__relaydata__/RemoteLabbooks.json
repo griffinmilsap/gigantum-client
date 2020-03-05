@@ -5,24 +5,235 @@
     "edges": [
      {
       "node": {
+       "name": "xd",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnhk",
+       "isLocal": false,
+       "creationDateUtc": "2019-07-09T15:19:14.867196Z",
+       "modifiedDateUtc": "2019-07-09T15:19:16.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/xd.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MTo0"
+     },
+     {
+      "node": {
+       "name": "update-test",
+       "description": "asdfdsfag",
+       "visibility": "private",
+       "owner": "dmk",
+       "id": "UmVtb3RlTGFiYm9vazpkbWsmdXBkYXRlLXRlc3Q=",
+       "isLocal": false,
+       "creationDateUtc": "2018-06-07T23:03:54.000Z",
+       "modifiedDateUtc": "2018-06-07T23:03:54.000Z",
+       "importUrl": "https://repo.gigantum.io/dmk/update-test.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MTo1"
+     },
+     {
+      "node": {
        "name": "ui-test-remote",
-       "description": "No Description",
+       "description": "",
        "visibility": "private",
        "owner": "uitest",
        "id": "UmVtb3RlTGFiYm9vazp1aXRlc3QmdWktdGVzdC1yZW1vdGU=",
-       "isLocal": true,
-       "creationDateUtc": "2019-01-18T15:01:55.468Z",
-       "modifiedDateUtc": "2019-01-18T15:01:55.468Z",
+       "isLocal": false,
+       "creationDateUtc": "2019-01-18T15:01:54.000Z",
+       "modifiedDateUtc": "2019-01-18T15:01:54.000Z",
+       "importUrl": "https://repo.gigantum.io/uitest/ui-test-remote.git",
        "__typename": "RemoteLabbook"
       },
-      "cursor": "MQ=="
+      "cursor": "MTo2"
+     },
+     {
+      "node": {
+       "name": "ui-test-project",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+       "isLocal": true,
+       "creationDateUtc": "2020-01-30T15:53:01.334508Z",
+       "modifiedDateUtc": "2020-02-03T15:10:07.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/ui-test-project.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MTo3"
+     },
+     {
+      "node": {
+       "name": "trump-tweets",
+       "description": "A LabBook to analyze Trumps stupid tweets!",
+       "visibility": "private",
+       "owner": "dmk",
+       "id": "UmVtb3RlTGFiYm9vazpkbWsmdHJ1bXAtdHdlZXRz",
+       "isLocal": false,
+       "creationDateUtc": "2018-08-16T22:37:51.000Z",
+       "modifiedDateUtc": "2018-08-16T22:37:51.000Z",
+       "importUrl": "https://repo.gigantum.io/dmk/trump-tweets.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MTo4"
+     },
+     {
+      "node": {
+       "name": "test-sync",
+       "description": "sdassad",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3Qtc3luYw==",
+       "isLocal": true,
+       "creationDateUtc": "2020-01-13T22:26:26.207231Z",
+       "modifiedDateUtc": "2020-01-13T22:27:54.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/test-sync.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MTo5"
+     },
+     {
+      "node": {
+       "name": "test-lb",
+       "description": "This a short description",
+       "visibility": "private",
+       "owner": "dmk",
+       "id": "UmVtb3RlTGFiYm9vazpkbWsmdGVzdC1sYg==",
+       "isLocal": false,
+       "creationDateUtc": "2018-04-30T13:37:43.000Z",
+       "modifiedDateUtc": "2018-04-30T13:37:43.000Z",
+       "importUrl": "https://repo.gigantum.io/dmk/test-lb.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxMA=="
+     },
+     {
+      "node": {
+       "name": "test-it",
+       "description": "",
+       "visibility": "private",
+       "owner": "calum-test1",
+       "id": "UmVtb3RlTGFiYm9vazpjYWx1bS10ZXN0MSZ0ZXN0LWl0",
+       "isLocal": false,
+       "creationDateUtc": "2019-08-14T20:19:21.566535Z",
+       "modifiedDateUtc": "2019-08-14T20:27:56.000Z",
+       "importUrl": "https://repo.gigantum.io/calum-test1/test-it.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxMQ=="
+     },
+     {
+      "node": {
+       "name": "testing-notifications",
+       "description": "sdfsdf",
+       "visibility": "private",
+       "owner": "dmk",
+       "id": "UmVtb3RlTGFiYm9vazpkbWsmdGVzdGluZy1ub3RpZmljYXRpb25z",
+       "isLocal": false,
+       "creationDateUtc": "2018-08-08T20:36:29.000Z",
+       "modifiedDateUtc": "2018-08-08T20:36:29.000Z",
+       "importUrl": "https://repo.gigantum.io/dmk/testing-notifications.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxMg=="
+     },
+     {
+      "node": {
+       "name": "testing-activity-feed",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3RpbmctYWN0aXZpdHktZmVlZA==",
+       "isLocal": false,
+       "creationDateUtc": "2018-04-24T14:35:16.000Z",
+       "modifiedDateUtc": "2018-04-24T14:35:16.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/testing-activity-feed.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxMw=="
+     },
+     {
+      "node": {
+       "name": "test-book",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3QtYm9vaw==",
+       "isLocal": false,
+       "creationDateUtc": "2018-03-13T23:02:22.000Z",
+       "modifiedDateUtc": "2018-03-13T23:02:22.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/test-book.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxNA=="
+     },
+     {
+      "node": {
+       "name": "test-activity-feed",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3QtYWN0aXZpdHktZmVlZA==",
+       "isLocal": false,
+       "creationDateUtc": "2019-03-07T15:59:30.768505Z",
+       "modifiedDateUtc": "2019-03-22T19:02:58.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/test-activity-feed.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxNQ=="
+     },
+     {
+      "node": {
+       "name": "test-1",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3QtMQ==",
+       "isLocal": false,
+       "creationDateUtc": "2019-02-28T16:05:52.264086Z",
+       "modifiedDateUtc": "2019-02-28T16:05:54.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/test-1.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxNg=="
+     },
+     {
+      "node": {
+       "name": "test",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlc3Q=",
+       "isLocal": true,
+       "creationDateUtc": "2020-01-07T20:59:36.367046Z",
+       "modifiedDateUtc": "2020-01-07T20:59:38.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/test.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxNw=="
+     },
+     {
+      "node": {
+       "name": "tempq",
+       "description": "",
+       "visibility": "private",
+       "owner": "cbutler",
+       "id": "UmVtb3RlTGFiYm9vazpjYnV0bGVyJnRlbXBx",
+       "isLocal": false,
+       "creationDateUtc": "2019-04-04T19:41:37.964628Z",
+       "modifiedDateUtc": "2019-04-04T19:41:40.000Z",
+       "importUrl": "https://repo.gigantum.io/cbutler/tempq.git",
+       "__typename": "RemoteLabbook"
+      },
+      "cursor": "MToxOA=="
      }
     ],
     "pageInfo": {
-     "endCursor": "MQ==",
+     "endCursor": "MToxOQ==",
      "hasNextPage": true,
      "hasPreviousPage": false,
-     "startCursor": "MQ=="
+     "startCursor": "MTow"
     }
    },
    "id": "TGFiYm9va0xpc3Q6"

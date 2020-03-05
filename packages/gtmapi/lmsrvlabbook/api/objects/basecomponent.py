@@ -2,8 +2,11 @@ import graphene
 from gtmcore.environment import BaseRepository
 
 
-class BaseComponent(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class BaseComponent(graphene.ObjectType):
     """A type that represents a Base Image Environment Component"""
+    class Meta:
+        interfaces = (graphene.relay.Node,)
+
     # The loaded yaml data
     _component_data = None
 

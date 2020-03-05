@@ -2,17 +2,15 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
-import relayTestingUtils from '@gigantum/relay-testing-utils';
 import path from 'path';
 // data
 import codeData from 'Tests/components/labbook/code/__relaydata__/CodeBrowser.json';
 // components
 import File from 'Components/shared/fileBrowser/fileRow/File';
 
-
-let edge = codeData.data.labbook.code.allFiles.edges[2]
-let filename = path.basename(edge.node.key);
-let file = {
+const edge = codeData.data.labbook.code.allFiles.edges[1];
+const filename = path.basename(edge.node.key);
+const file = {
   edge,
 };
 
@@ -25,7 +23,7 @@ const mutationData = {
   parentId: codeData.data.labbook.id,
 };
 
-let fixtures = {
+const fixtures = {
   connectDragSource: jsx => jsx,
   closeLinkModal: jest.fn(),
   setState: jest.fn(),
@@ -48,10 +46,9 @@ let fixtures = {
 };
 
 describe('Project File component', () => {
-
   it('File Snapshot', () => {
     const component = renderer.create(
-       <File.DecoratedComponent {...fixtures}/>
+      <File.DecoratedComponent {...fixtures} />,
     );
 
     const tree = component.toJSON();
@@ -60,7 +57,7 @@ describe('Project File component', () => {
   });
 
   const component = mount(
-     <File.DecoratedComponent {...fixtures}/>
+    <File.DecoratedComponent {...fixtures} />,
   );
 
   it('Rename', () => {
@@ -93,26 +90,26 @@ describe('Project File component', () => {
   });
 
   it('Mouseover file row', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
-    }
+    };
     component.find('.File').simulate('mouseover', evt);
     expect(component.state('hover')).toEqual(true);
   });
 
 
   it('Mouseout file row', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
-    }
+    };
     component.find('.File').simulate('mouseout', evt);
     expect(component.state('hover')).toEqual(false);
   });
 
   it('MouseEnter', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
-    }
+    };
     component.setProps({ isDragging: true });
     component.setState({ isDragging: true, isHovered: true });
     component.find('.File').simulate('mouseEnter', evt);
@@ -121,9 +118,9 @@ describe('Project File component', () => {
 
 
   it('MouseLeave', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
-    }
+    };
     component.setProps({ isDragging: false });
     component.setState({ isDragging: false, isHovered: false });
     component.find('.File').simulate('mouseLeave', evt);
@@ -131,19 +128,19 @@ describe('Project File component', () => {
   });
 
   it('Set File to unchecked', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
       stopPropagation: () => {},
-    }
+    };
     component.find('.CheckboxMultiselect__check').simulate('click', evt);
     expect(component.state('isSelected')).toEqual(false);
   });
 
   it('Set File to checked', () => {
-    let evt = {
+    const evt = {
       preventDefault: () => {},
       stopPropagation: () => {},
-    }
+    };
     component.find('.CheckboxMultiselect__uncheck').simulate('click', evt);
     expect(component.state('isSelected')).toEqual(true);
   });

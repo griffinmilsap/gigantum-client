@@ -72,8 +72,8 @@ class TestActivityDetailRecord(object):
         """Test adding values to the detail object"""
         adr = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, key="my_key2")
 
-        adr.add_value("text/plain", "this is some data")
-        adr.add_value("text/html", "<p>this is some data</p>")
+        adr = adr.add_value("text/plain", "this is some data")
+        adr = adr.add_value("text/html", "<p>this is some data</p>")
 
         assert len(adr.data.keys()) == 2
         assert adr.data["text/plain"] == "this is some data"
@@ -88,17 +88,17 @@ class TestActivityDetailRecord(object):
 
         assert adr.data_size == 0
 
-        adr.add_value("text/plain", "0000000000")
+        adr = adr.add_value("text/plain", "0000000000")
         assert adr.data_size == 10
 
-        adr.add_value("text/html", "0000000000")
+        adr = adr.add_value("text/html", "0000000000")
         assert adr.data_size == 20
 
     def test_to_dict(self):
         """Test converting to a dictionary"""
         adr = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, key="my_key2", show=True, importance=25)
-        adr.add_value("text/plain", "this is some data")
-        adr.add_value("text/html", "<p>this is some data</p>")
+        adr = adr.add_value("text/plain", "this is some data")
+        adr = adr.add_value("text/html", "<p>this is some data</p>")
 
         dict_obj = adr.to_dict()
         assert type(dict_obj) == dict
@@ -111,9 +111,12 @@ class TestActivityDetailRecord(object):
 
     def test_to_bytes_from_bytes(self):
         """Test converting to a byte array"""
-        adr = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, key="my_key3", show=True, importance=225,
-                                   action=ActivityAction.CREATE)
-        adr.add_value("text/plain", "this is some data")
+        adr = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED,
+                                   key="my_key3",
+                                   show=True,
+                                   importance=225,
+                                   action=ActivityAction.CREATE,
+                                   data={"text/plain": "this is some data"})
 
         byte_array_no_compression = adr.to_bytes(compress=False)
         assert type(byte_array_no_compression) == bytes
@@ -132,13 +135,13 @@ class TestActivityDetailRecord(object):
     def test_compression(self):
         """Test compression on large objects"""
         adr = ActivityDetailRecord(ActivityDetailType.INPUT_DATA, key="my_ke3", show=True, importance=125)
-        adr.add_value("text/plain", "this is some data00000000000000000000000000000000000" * 1000)
+        adr = adr.add_value("text/plain", "this is some data00000000000000000000000000000000000" * 1000)
 
         byte_array_no_compression = adr.to_bytes(compress=False)
         assert type(byte_array_no_compression) == bytes
 
         adr2 = ActivityDetailRecord(ActivityDetailType.INPUT_DATA, key="my_ke3", show=True, importance=125)
-        adr2.add_value("text/plain", "this is some data00000000000000000000000000000000000" * 1000)
+        adr2 = adr2.add_value("text/plain", "this is some data00000000000000000000000000000000000" * 1000)
         byte_array_compression = adr2.to_bytes(compress=True)
         assert type(byte_array_compression) == bytes
 
@@ -157,8 +160,11 @@ class TestActivityDetailRecord(object):
 
     def test_to_json(self):
         """Test converting to json"""
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, key="my_key3", show=True, importance=225)
-        adr.add_value("text/plain", "this is some data")
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   key="my_key3",
+                                   show=True,
+                                   importance=225,
+                                   data={"text/plain": "this is some data"})
 
         adr_in_json = adr.to_json()
         assert type(adr_in_json) == str
@@ -172,9 +178,12 @@ class TestActivityDetailRecord(object):
 
     def test_jsonify_data(self):
         """Test converting to json"""
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, key="my_key3fgjg", show=True, importance=45)
-        adr.add_value("text/plain", "this is some data to jsonify")
-        adr.add_value("text/markdown", "this is some data to `jsonify`")
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   key="my_key3fgjg",
+                                   show=True,
+                                   importance=45,
+                                   data={"text/plain": "this is some data to jsonify",
+                                         "text/markdown": "this is some data to `jsonify`"})
 
         data = adr.jsonify_data()
         assert type(data) == dict

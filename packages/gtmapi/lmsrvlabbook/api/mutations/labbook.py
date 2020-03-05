@@ -9,6 +9,7 @@ from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
 from gtmcore.files import FileOperations
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType
+from gtmcore.activity.utils import ImmutableDict, TextData, DetailRecordList, ImmutableList
 from gtmcore.environment import ComponentManager
 
 from lmsrvcore.api.mutations import ChunkUploadMutation, ChunkUploadInput
@@ -48,16 +49,20 @@ class CreateLabbook(graphene.relay.ClientIDMutation):
                                         description=description,
                                         author=get_logged_in_author())
 
-        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=False, importance=0)
-        adr.add_value('text/plain', f"Created new LabBook: {username}/{name}")
+        adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                   show=False,
+                                   importance=0,
+                                   data=TextData('plain',
+                                                 f"Created new Project: {username}/{name}"))
 
         # Create activity record
+        # Note, message uses Project terminology due to its user-facing nature.
         ar = ActivityRecord(ActivityType.LABBOOK,
-                            message=f"Created new LabBook: {username}/{name}",
+                            message=f"Created new Project: {username}/{name}",
                             show=True,
                             importance=255,
-                            linked_commit=lb.git.commit_hash)
-        ar.add_detail_object(adr)
+                            linked_commit=lb.git.commit_hash,
+                            detail_objects=DetailRecordList([adr]))
 
         store = ActivityStore(lb)
         store.create_activity_record(ar)
@@ -168,14 +173,18 @@ class SetLabbookDescription(graphene.relay.ClientIDMutation):
             lb.git.add(os.path.join(lb.config_path))
             commit = lb.git.commit('Updating description')
 
-            adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=False)
-            adr.add_value('text/plain', "Updated description of Project")
+            adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                       show=False,
+                                       data=TextData('plain',
+                                                     "Updated description of Project"))
+
             ar = ActivityRecord(ActivityType.LABBOOK,
                                 message="Updated description of Project",
                                 linked_commit=commit.hexsha,
-                                tags=["labbook"],
-                                show=False)
-            ar.add_detail_object(adr)
+                                tags=ImmutableList(["labbook"]),
+                                show=False,
+                                detail_objects=DetailRecordList([adr]))
+
             ars = ActivityStore(lb)
             ars.create_activity_record(ar)
         return SetLabbookDescription(success=True)

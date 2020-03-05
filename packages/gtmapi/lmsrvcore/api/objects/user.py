@@ -24,8 +24,11 @@ from lmsrvcore.auth.identity import get_identity_manager_instance
 import flask
 
 
-class UserIdentity(graphene.ObjectType, interfaces=(graphene.relay.Node, User)):
+class UserIdentity(graphene.ObjectType):
     """A type representing the identity of the logged in user"""
+    class Meta:
+        interfaces = (graphene.relay.Node, User)
+
     is_session_valid = graphene.Boolean()
 
     @classmethod

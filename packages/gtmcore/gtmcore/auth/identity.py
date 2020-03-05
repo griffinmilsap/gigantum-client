@@ -1,22 +1,3 @@
-# Copyright (c) 2017 FlashX, LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 import abc
 import importlib
 import requests
@@ -40,7 +21,8 @@ logger = LMLogger.get_logger()
 # Dictionary of supported implementations.
 SUPPORTED_IDENTITY_MANAGERS = {
     'local': ["gtmcore.auth.local", "LocalIdentityManager"],
-    'browser': ["gtmcore.auth.browser", "BrowserIdentityManager"]
+    'browser': ["gtmcore.auth.browser", "BrowserIdentityManager"],
+    'anonymous': ["gtmcore.auth.anonymous", "AnonymousIdentityManager"]
 }
 
 
@@ -79,8 +61,36 @@ class IdentityManager(metaclass=abc.ABCMeta):
     def user(self, value: User) -> None:
         self._user = value
 
+    @property
+    def allow_server_access(self) -> bool:
+        """Property indicating if an identity manager is configured in a way that will allow access to a gigantum
+         hub server.
+
+        Returns:
+            bool
+        """
+        return True
+
+    @staticmethod
+    def is_anonymous(access_token: str) -> bool:
+        """Method to determine if the user is running anonymously. For most auth middleware this simply returns False,
+        as only the anonymous auth middleware supports anonymous users.
+
+        Anonymous access_token are indicated via a specially crafted base64 encoded string with the format:
+
+            GIGANTUM-ANONYMOUS-USER&<UUID>
+
+        Args:
+            access_token(str): The current access_token
+
+        Returns:
+            bool
+        """
+        return False
+
     def _check_first_login(self, username: Optional[str],
-                           access_token: Optional[str], id_token: Optional[str]) -> None:
+                           access_token: Optional[str],
+                           id_token: Optional[str]) -> None:
         """Method to check if this is the first time a user has logged in. If so, import the demo labbook
 
         All child classes should place this method at the end of their `get_user_profile()` implementation
@@ -313,8 +323,8 @@ class IdentityManager(metaclass=abc.ABCMeta):
         """Method to check if the user is currently authenticated in the context of this identity manager
 
         Args:
-            access_token(str): (Optional) API access JSON web token from Auth0
-            id_token(str): (Optional) ID JSON web token from Auth0
+            access_token(str): API access JSON web token from Auth0
+            id_token(str): ID JSON web token from Auth0 (Optional, not needed in all middlewares)
 
         Returns:
             bool

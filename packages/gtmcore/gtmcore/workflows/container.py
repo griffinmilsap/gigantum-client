@@ -3,6 +3,7 @@ import time
 
 from gtmcore.labbook import LabBook, SecretStore
 from gtmcore.container import container_for_context
+from gtmcore.gitlib.git import GitAuthor
 from gtmcore.logging import LMLogger
 
 logger = LMLogger.get_logger()
@@ -11,9 +12,9 @@ logger = LMLogger.get_logger()
 class ContainerWorkflows(object):
 
     @staticmethod
-    def start_labbook(labbook: LabBook, username: str) -> Optional[str]:
+    def start_labbook(labbook: LabBook, username: str, author: Optional[GitAuthor] = None) -> Optional[str]:
         project_container = container_for_context(username, labbook=labbook)
-        project_container.start_project_container()
+        project_container.start_project_container(author=author)
 
         secret_store = SecretStore(labbook, username)
 

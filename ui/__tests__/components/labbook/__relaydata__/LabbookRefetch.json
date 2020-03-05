@@ -1,0 +1,13 @@
+{
+ "errors": [
+  {
+   "message": "Variable \"$labbookID\" of required type \"ID!\" was not provided.",
+   "locations": [
+    {
+     "line": 5,
+     "column": 3
+    }
+   ]
+  }
+ ]
+}

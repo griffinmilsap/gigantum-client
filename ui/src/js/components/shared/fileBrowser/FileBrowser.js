@@ -5,6 +5,13 @@ import { DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 import classNames from 'classnames';
 import isEqual from 'react-fast-compare';
+// store
+import {
+  setFileBrowserLock,
+} from 'JS/redux/actions/labbook/labbook';
+import {
+  setUploadMessageRemove,
+} from 'JS/redux/actions/footer';
 // assets
 import './FileBrowser.scss';
 // components
@@ -21,6 +28,28 @@ import prepareUpload from './utilities/PrepareUpload';
 import FileBrowserMutations from './utilities/FileBrowserMutations';
 import Connectors from './utilities/Connectors';
 import FileFormatter, { fileHandler } from './utilities/FileFormatter';
+
+
+/**
+  *  @param {Object} uploadData
+  *  checks to see length of upload file
+  *  @return {Object}
+  */
+const getQueuedFiles = (uploadData) => {
+  const fileTooLarge = uploadData
+    && uploadData.fileSizeData
+    && uploadData.fileSizeData.fileSizeNotAllowed
+    && uploadData.fileSizeData.fileSizeNotAllowed.length;
+  const filePrompted = uploadData
+    && uploadData.fileSizeData
+    && uploadData.fileSizeData.fileSizePrompt
+    && uploadData.fileSizeData.fileSizePrompt.length;
+
+  return {
+    fileTooLarge,
+    filePrompted,
+  };
+};
 
 /**
   *  @param {Array} files
@@ -745,7 +774,10 @@ class FileBrowser extends Component {
   *  user cancels upload
   */
   _cancelUpload = () => {
+    const { owner, name } = this.props;
     this.setState({ fileSizePromptVisible: false });
+    setUploadMessageRemove('', null, 0);
+    setFileBrowserLock(owner, name, false);
   }
 
   /**
@@ -754,15 +786,9 @@ class FileBrowser extends Component {
   *  @return {string}
   */
   _getFilePromptText = () => {
-    const { props } = this;
-    const firstChar = props.section.charAt(0).toUpperCase();
-    const allOtherChars = props.section.substr(1, props.section.length - 1);
-    const section = `${firstChar}/${allOtherChars}`;
-
-    const text = (props.section === 'code')
-      ? "You're uploading some large files to the Code Section, are you sure you don't want to place these in the Input Section? Note, putting large files in the Code Section can hurt performance."
-      : `You're uploading some large files to the ${section} Section, are you sure you don't want to place these in a Dataset?`;
-    return text;
+    const { section } = this.props;
+    const size = (section === 'code') ? '100MB' : '500MB';
+    return `Click 'Continue' to upload all files under the ${size} limit. \nFiles over the limit will be ignored.`
   }
 
   /**
@@ -859,13 +885,14 @@ class FileBrowser extends Component {
 
   render() {
     const { props, state } = this;
-    const { files, mutationData } = state;
+    const { files, mutationData, uploadData } = this.state;
     const {
       isOver,
       canDrop,
       name,
       owner,
-    } = props;
+      section,
+    } = this.props;
     const { isSelected } = this._checkChildState();
     const allFilesLocal = checkLocalAll(files);
     const uploadPromptText = this._getFilePromptText();
@@ -876,6 +903,7 @@ class FileBrowser extends Component {
     const readOnly = props.section === 'data' && !props.isManaged;
     const downloadList = getDownloadList(props, state);
     const downloadDisabled = props.isLocked || state.downloadingEdges || state.downloadingAll;
+    const { fileTooLarge, filePrompted } = getQueuedFiles(uploadData);
     // declare css here
     const fileBrowserCSS = classNames({
       FileBrowser: true,
@@ -957,8 +985,11 @@ class FileBrowser extends Component {
                  userRejectsUpload={this._userRejectsUpload}
                  userAcceptsUpload={this._userAcceptsUpload}
                  uploadPromptText={uploadPromptText}
+                 fileTooLarge={fileTooLarge}
+                 filePrompted={filePrompted}
                  name={name}
                  owner={owner}
+                 section={section}
                />
              )
            }

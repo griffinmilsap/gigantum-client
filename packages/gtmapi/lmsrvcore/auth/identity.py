@@ -1,27 +1,11 @@
-# Copyright (c) 2017 FlashX, LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THEt
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+from typing import Tuple, Optional
 from flask import current_app
-from gtmcore.auth.identity import AuthenticationError
+from gtmcore.auth.identity import AuthenticationError, IdentityManager
+import flask
+import base64
 
 
-def get_identity_manager_instance():
+def get_identity_manager_instance() -> IdentityManager:
     """Method to retrieve the id manager from the flask application"""
     if "LABMGR_ID_MGR" not in current_app.config:
         raise AuthenticationError("Application mis-configured. Missing identity manager instance.", 401)
@@ -29,20 +13,45 @@ def get_identity_manager_instance():
     return current_app.config["LABMGR_ID_MGR"]
 
 
-def parse_token(auth_header: str) -> str:
-    """Method to extract the bearer token from the authorization header
+def tokens_from_headers(headers: dict) -> Tuple[Optional[str], Optional[str]]:
+    """Method to retrieve the access and id tokens from the request headers, if available."""
+    access_token = None
+    id_token = None
+    if "Authorization" in headers:
+        try:
+            _, access_token = headers['Authorization'].split("Bearer ")
+        except ValueError:
+            raise AuthenticationError("Could not parse JWT from Authorization Header. Should be `Bearer <token>`", 401)
+
+    if "Identity" in headers:
+        id_token = headers['Identity']
+
+    return access_token, id_token
+
+
+def tokens_from_request_context(tokens_required=False) -> Tuple[Optional[str], Optional[str]]:
+    """Method to return tokens stored in the flask request context. If `tokens_required` is True, an AuthenticationError
+    exception will be raised if tokens are not present.
 
     Args:
-        auth_header(str): The Authorization header
+        tokens_required: boolean indicating if tokens must exist
 
-    Returns:
-        str
     """
-    if "Bearer" in auth_header:
-        _, token = auth_header.split("Bearer ")
-        if not token:
-            raise AuthenticationError("Could not parse JWT from Authorization Header. Should be `Bearer XXX`", 401)
-    else:
-        raise AuthenticationError("Could not parse JWT from Authorization Header. Should be `Bearer XXX`", 401)
+    access_token = flask.g.get('access_token', None)
+    id_token = flask.g.get('id_token', None)
 
-    return token
+    if tokens_required:
+        if not access_token or not id_token:
+            raise AuthenticationError("This operation requires a valid session. Please log in.", 401)
+
+    # If the access token is an anonymous token, set tokens to None so future requests and git operations
+    # try to run without authentication.
+    if access_token:
+        parts = access_token.split('.')
+        if len(parts) == 3:
+            header = base64.b64decode(parts[0]).decode()
+            if "GIGANTUM-ANONYMOUS-USER" == header:
+                access_token = None
+                id_token = None
+
+    return access_token, id_token

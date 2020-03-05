@@ -12,6 +12,7 @@ type Props = {
   relay: Object,
   secretsMutations: Object,
   secrets: Object,
+  isLocked: boolean,
 }
 
 class PackageCard extends PureComponent<Props> {
@@ -22,6 +23,7 @@ class PackageCard extends PureComponent<Props> {
       relay,
       secretsMutations,
       secrets,
+      isLocked,
     } = this.props;
     return (
       <div className="SecretCard Card Card--auto Card--no-hover column-1-span-12 relative">
@@ -30,6 +32,7 @@ class PackageCard extends PureComponent<Props> {
           relay={relay}
           name={name}
           owner={owner}
+          isLocked={isLocked}
         />
         <SecretsTable
           secretsMutations={secretsMutations}
@@ -37,6 +40,7 @@ class PackageCard extends PureComponent<Props> {
           relay={relay}
           name={name}
           owner={owner}
+          isLocked={isLocked}
         />
       </div>
     );

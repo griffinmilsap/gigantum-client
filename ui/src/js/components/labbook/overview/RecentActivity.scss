@@ -113,6 +113,12 @@
   }
 }
 
+.ReactMarkdown-long {
+  p {
+    -webkit-line-clamp: none !important;
+  }
+}
+
 .RecentActivity__fadeout {
   position: relative;
   bottom: 2em;

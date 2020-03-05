@@ -7,7 +7,7 @@ from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.utilities import configure_git_credentials
 
 
-class RemoteLabbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class RemoteLabbook(graphene.ObjectType):
     """A type representing a LabBook stored on a remote server
 
     RemoteLabbooks are uniquely identified by both the "owner" and the "name" of the LabBook
@@ -16,6 +16,9 @@ class RemoteLabbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRep
           the data
 
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # A short description of the LabBook limited to 140 UTF-8 characters
     description = graphene.String()
 

@@ -3,7 +3,8 @@ import graphene
 import flask
 import os
 
-from gtmcore.dataset import Dataset
+from gtmcore.gitlib import RepoLocation
+from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.dispatcher import Dispatcher, jobs
 from gtmcore.logging import LMLogger
@@ -11,7 +12,7 @@ from gtmcore.workflows.gitlab import GitLabManager, ProjectPermissions
 from gtmcore.workflows import DatasetWorkflow, MergeOverride
 
 from lmsrvcore.api import logged_mutation
-from lmsrvcore.auth.identity import parse_token
+from lmsrvcore.auth.identity import tokens_from_request_context
 from lmsrvcore.utilities import configure_git_credentials
 from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 from lmsrvcore.api.mutations import ChunkUploadMutation, ChunkUploadInput
@@ -39,19 +40,15 @@ class PublishDataset(graphene.relay.ClientIDMutation):
         username = get_logged_in_username()
         ds = InventoryManager().load_dataset(username, owner, dataset_name,
                                              author=get_logged_in_author())
-        # Extract valid Bearer token
-        if "HTTP_AUTHORIZATION" in info.context.headers.environ:
-            token = parse_token(info.context.headers.environ["HTTP_AUTHORIZATION"])
-        else:
-            raise ValueError(
-                "Authorization header not provided. Must have a valid session to query for collaborators")
+
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
         job_metadata = {'method': 'publish_dataset',
                         'dataset': ds.key}
         job_kwargs = {'repository': ds,
                       'username': username,
-                      'access_token': token,
-                      'id_token': flask.g.id_token,
+                      'access_token': access_token,
+                      'id_token': id_token,
                       'public': set_public}
         dispatcher = Dispatcher()
         job_key = dispatcher.dispatch_task(jobs.publish_repository, kwargs=job_kwargs, metadata=job_metadata)
@@ -79,6 +76,9 @@ class SyncDataset(graphene.relay.ClientIDMutation):
         ds = InventoryManager().load_dataset(username, owner, dataset_name,
                                              author=get_logged_in_author())
 
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context()
+
         # Configure git creds for the user
         configure_git_credentials()
 
@@ -89,8 +89,8 @@ class SyncDataset(graphene.relay.ClientIDMutation):
                       'username': username,
                       'pull_only': pull_only,
                       'override': override,
-                      'access_token': flask.g.get('access_token', None),
-                      'id_token': flask.g.get('id_token', None)}
+                      'access_token': access_token,
+                      'id_token': id_token}
 
         dispatcher = Dispatcher()
         job_key = dispatcher.dispatch_task(jobs.sync_repository, kwargs=job_kwargs, metadata=job_metadata)
@@ -114,7 +114,9 @@ class ImportRemoteDataset(graphene.relay.ClientIDMutation):
         # Configure git creds for user
         configure_git_credentials()
 
-        wf = DatasetWorkflow.import_from_remote(remote_url, username=get_logged_in_username())
+        current_username = get_logged_in_username()
+        remote = RepoLocation(remote_url, current_username)
+        wf = DatasetWorkflow.import_from_remote(remote, username=current_username)
         ds = wf.dataset
 
         import_owner = InventoryManager().query_owner(ds)
@@ -171,15 +173,18 @@ class AddDatasetCollaborator(graphene.relay.ClientIDMutation):
         # Here "username" refers to the intended recipient username.
         # Todo: it should probably be renamed here and in the frontend to "collaboratorUsername"
         logged_in_username = get_logged_in_username()
-        InventoryManager().load_dataset(logged_in_username, owner, dataset_name,
-                                        author=get_logged_in_author())
+        ds = InventoryManager().load_dataset(logged_in_username, owner, dataset_name,
+                                             author=get_logged_in_author())
 
         if permissions == 'readonly':
             perm = ProjectPermissions.READ_ONLY
+            perm_msg = "read-only"
         elif permissions == 'readwrite':
             perm = ProjectPermissions.READ_WRITE
+            perm_msg = "read & write"
         elif permissions == 'owner':
             perm = ProjectPermissions.OWNER
+            perm_msg = "administrator"
         else:
             raise ValueError(f"Unknown permission set: {permissions}")
 
@@ -187,12 +192,10 @@ class AddDatasetCollaborator(graphene.relay.ClientIDMutation):
         config = flask.current_app.config['LABMGR_CONFIG']
         remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
+        # Add / Update collaborator
         mgr = GitLabManager(remote_config['git_remote'],
                             remote_config['hub_api'],
                             access_token=access_token,
@@ -201,14 +204,26 @@ class AddDatasetCollaborator(graphene.relay.ClientIDMutation):
         existing_collabs = mgr.get_collaborators(owner, dataset_name)
 
         if username not in [n[1] for n in existing_collabs]:
+            collaborator_msg = f"Adding collaborator {username} with {perm_msg} permissions"
             logger.info(f"Adding user {username} to {owner}/{dataset_name}"
                         f"with permission {perm}")
             mgr.add_collaborator(owner, dataset_name, username, perm)
         else:
+            collaborator_msg = f"Updating collaborator {username} to {perm_msg} permissions"
             logger.warning(f"Changing permission of {username} on"
                            f"{owner}/{dataset_name} to {perm}")
             mgr.delete_collaborator(owner, dataset_name, username)
             mgr.add_collaborator(owner, dataset_name, username, perm)
+
+        # Add to activity feed
+        store = ActivityStore(ds)
+        ar = ActivityRecord(ActivityType.DATASET,
+                            message=collaborator_msg,
+                            linked_commit="no-linked-commit",
+                            importance=255)
+        store.create_activity_record(ar)
+
+        # Return response
         create_data = {"owner": owner,
                        "name": dataset_name}
 
@@ -226,18 +241,15 @@ class DeleteDatasetCollaborator(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, owner, dataset_name, username, client_mutation_id=None):
         logged_in_username = get_logged_in_username()
-        InventoryManager().load_dataset(logged_in_username, owner, dataset_name,
-                                        author=get_logged_in_author())
+        ds = InventoryManager().load_dataset(logged_in_username, owner, dataset_name,
+                                             author=get_logged_in_author())
 
         # Get remote server configuration
         config = flask.current_app.config['LABMGR_CONFIG']
         remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
         mgr = GitLabManager(remote_config['git_remote'],
                             remote_config['hub_api'],
@@ -245,6 +257,15 @@ class DeleteDatasetCollaborator(graphene.relay.ClientIDMutation):
                             id_token=id_token)
         mgr.delete_collaborator(owner, dataset_name, username)
 
+        # Add to activity feed
+        store = ActivityStore(ds)
+        ar = ActivityRecord(ActivityType.DATASET,
+                            message=f"Removing collaborator {username}",
+                            linked_commit="no-linked-commit",
+                            importance=255)
+        store.create_activity_record(ar)
+
+        # Return response
         create_data = {"owner": owner,
                        "name": dataset_name}
 

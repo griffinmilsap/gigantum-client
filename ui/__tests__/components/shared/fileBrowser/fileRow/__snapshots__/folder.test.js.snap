@@ -83,7 +83,7 @@ exports[`File component File Snapshot 1`] = `
     <div
       className="Folder__cell Folder__cell--date"
     >
-      Fri Jan 18 2019
+      Mon Feb 03 2020
     </div>
     <div
       className="Folder__cell Folder__cell--menu"
@@ -96,7 +96,6 @@ exports[`File component File Snapshot 1`] = `
           className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn__addFolder"
           data-click-id="addFolder"
           data-tooltip="Add Subfolder"
-          disabled={false}
           onClick={[Function]}
           type="button"
         />

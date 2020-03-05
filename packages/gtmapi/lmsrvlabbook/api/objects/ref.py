@@ -28,8 +28,11 @@ from lmsrvlabbook.api.objects.commit import LabbookCommit
 from lmsrvlabbook.dataloader.labbook import LabBookLoader
 
 
-class LabbookRef(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository, GitRef)):
+class LabbookRef(graphene.ObjectType):
     """An object representing a git reference in a LabBook repository"""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository, GitRef)
+
     # The target commit the reference points to
     commit = graphene.Field(LabbookCommit)
 

@@ -847,5 +847,11 @@ button {
     width: 20px;
     height: 20px;
   }
-
+  &--disabled {
+    overflow: hidden;
+    border: 0;
+    background-color: $romanSilver;
+    box-shadow: none !important;
+    cursor: auto;
+  }
 }

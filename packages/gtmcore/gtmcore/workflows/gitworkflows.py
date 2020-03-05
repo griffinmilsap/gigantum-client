@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import sys
 import os
 import time
 from enum import Enum
@@ -8,6 +7,7 @@ from typing import Optional, Callable, cast, List
 from humanfriendly import format_size
 
 from gtmcore.configuration.utils import call_subprocess
+from gtmcore.gitlib import RepoLocation
 from gtmcore.logging import LMLogger
 from gtmcore.labbook import LabBook
 from gtmcore.labbook.schemas import CURRENT_SCHEMA as CURRENT_LABBOOK_SCHEMA
@@ -49,7 +49,7 @@ class GitWorkflow(ABC):
 
     @classmethod
     @abstractmethod
-    def import_from_remote(cls, remote_url: str, username: str) -> 'GitWorkflow':
+    def import_from_remote(cls, remote: RepoLocation, username: str, config_file: str = None) -> 'GitWorkflow':
         pass
 
     def garbagecollect(self):
@@ -136,14 +136,14 @@ class LabbookWorkflow(GitWorkflow):
         return cast(LabBook, self.repository)
 
     @classmethod
-    def import_from_remote(cls, remote_url: str, username: str,
+    def import_from_remote(cls, remote: RepoLocation, username: str,
                            config_file: str = None) -> 'LabbookWorkflow':
         """Take a URL of a remote Labbook and manifest it locally on this system. """
 
         try:
             inv_manager = InventoryManager(config_file=config_file)
-            _, namespace, repo_name = remote_url.rsplit('/', 2)
-            repo = gitworkflows_utils.clone_repo(remote_url=remote_url, username=username, owner=namespace,
+            repo = gitworkflows_utils.clone_repo(remote_url=remote.remote_location, username=username,
+                                                 owner=remote.owner,
                                                  load_repository=inv_manager.load_labbook_from_directory,
                                                  put_repository=inv_manager.put_labbook)
             logger.info(f"Imported remote Project {str(repo)} on branch {repo.active_branch}")
@@ -272,12 +272,11 @@ class DatasetWorkflow(GitWorkflow):
         return cast(Dataset, self.repository)
 
     @classmethod
-    def import_from_remote(cls, remote_url: str, username: str,
+    def import_from_remote(cls, remote: RepoLocation, username: str,
                            config_file: str = None) -> 'DatasetWorkflow':
         """Take a URL of a remote Dataset and manifest it locally on this system. """
         inv_manager = InventoryManager(config_file=config_file)
-        _, namespace, repo_name = remote_url.rsplit('/', 2)
-        repo = gitworkflows_utils.clone_repo(remote_url=remote_url, username=username, owner=namespace,
+        repo = gitworkflows_utils.clone_repo(remote_url=remote.remote_location, username=username, owner=remote.owner,
                                              load_repository=inv_manager.load_dataset_from_directory,
                                              put_repository=inv_manager.put_dataset)
         return cls(repo)

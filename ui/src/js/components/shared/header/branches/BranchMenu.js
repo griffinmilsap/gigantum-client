@@ -274,10 +274,12 @@ class BranchMenu extends Component<Props> {
         setErrorMessage(owner, name, 'Failed to switch branches.', error);
       }
       self.setState({ switchingBranch: false });
-      this._toggleCover(null);
       updateMigationState(response);
 
       branchMutations.buildImage((response, error) => {
+        setTimeout(() => {
+          this._toggleCover(null);
+        }, 3000);
         if (error) {
           setErrorMessage(owner, name, 'Failed to switch branches.', error);
         }

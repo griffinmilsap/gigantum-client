@@ -1,22 +1,3 @@
-# Copyright (c) 2017 FlashX, LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 import os
 import yaml
 import glob
@@ -25,7 +6,7 @@ import operator
 import requests
 import shutil
 from collections import OrderedDict
-from typing import (Any, List, Dict, Optional)
+from typing import (Any, List, Optional)
 
 from gtmcore.gitlib import get_git_interface
 from gtmcore.logging import LMLogger
@@ -37,13 +18,18 @@ logger = LMLogger.get_logger()
 def repo_url_to_name(url: str) -> str:
     """Method to generate a directory name from the repo URL for local storage
 
+    Assumes URL of the form whatever/namespace/repo(.git)(@branch). SSH URLs will not work.
+
     Args:
         url(str): repository URL
 
     Returns:
         str
     """
-    url, _ = url.rsplit(".git", 1)
+    if "@" in url:
+        url, branch = url.split("@")
+    if url.endswith('.git'):
+        url = url[:-4]
     _, namespace, repo = url.rsplit("/", 2)
     return "{}_{}".format(namespace, repo)
 
@@ -63,29 +49,6 @@ class RepositoryManager(object):
                                                        ".labmanager", "environment_repositories"))
         self.git = get_git_interface(self.config.config['git'])
 
-    def _clone_repo(self, url: str, location: str, branch: Optional[str]) -> None:
-        """Private method to clone a repository
-
-        Args:
-            url(str): the git repo url for the repository
-            location(str): the directory to clone into
-
-        Returns:
-            None
-        """
-        # Create the directory to clone into
-        os.makedirs(location)
-
-        # Set the gitlib to point to that directory
-        self.git.set_working_directory(location)
-
-        # Clone the repo
-        self.git.clone(url)
-
-        if branch is not None:
-            self.git.fetch()
-            self.git.checkout(branch)
-
     @staticmethod
     def _internet_is_available() -> bool:
         """Private method to check if the user can get to GitHub, since that is where the component repos are
@@ -101,11 +64,13 @@ class RepositoryManager(object):
 
         return True
 
-    def _update_repo(self, location: str, branch: Optional[str]) -> None:
+    def _update_repo(self, location: str, branch: Optional[str] = None) -> None:
         """Private method to update a repository
 
         Args:
-            location(str): the directory containing the repository
+            location: the directory containing the repository
+            branch: any refspec acceptable to git (default is all configured remote branches, which defaults to all
+              branches with a regular clone, or just the initial branch with a single-branch clone)
 
         Returns:
             None
@@ -113,16 +78,10 @@ class RepositoryManager(object):
         # Set the gitlib to point to that directory
         self.git.set_working_directory(location)
 
-        # Clone the repo
-        self.git.fetch()
-
-        if branch is not None:
-            self.git.checkout(branch)
-        else:
-            # if no branch set, fallback to master
-            self.git.checkout("master")
-
-        self.git.pull()
+        # Fetch the requested branch
+        self.git.fetch(refspec=branch)
+        # Using FETCH_HEAD is robust / easy when you aren't tracking all remote branches, but still might switch branches
+        self.git.checkout('FETCH_HEAD')
 
     def update_repositories(self) -> bool:
         """Method to update all repositories in the LabManager configuration file
@@ -138,7 +97,7 @@ class RepositoryManager(object):
 
             for repo_url in repo_urls:
                 repo_dir_name = repo_url_to_name(repo_url)
-                repo_dir = os.path.join(self.local_repo_directory, repo_dir_name)
+                full_repo_dir = os.path.join(self.local_repo_directory, repo_dir_name)
 
                 # Get branch if encoded in URL
                 branch = None
@@ -146,12 +105,15 @@ class RepositoryManager(object):
                     repo_url, branch = repo_url.split("@")
 
                 # Check if repo exists locally
-                if not os.path.exists(repo_dir):
-                    # Need to clone
-                    self._clone_repo(repo_url, repo_dir, branch)
+                if not os.path.exists(full_repo_dir):
+                    # Create the directory to clone into
+                    os.makedirs(full_repo_dir)
+
+                    # Clone the repo
+                    self.git.clone(repo_url, full_repo_dir, branch, single_branch=True)
                 else:
                     # Need to update
-                    self._update_repo(repo_dir, branch)
+                    self._update_repo(full_repo_dir, branch)
 
             for existing_dir in [n for n in os.listdir(self.local_repo_directory)
                                  if os.path.isdir(os.path.join(self.local_repo_directory, n))]:

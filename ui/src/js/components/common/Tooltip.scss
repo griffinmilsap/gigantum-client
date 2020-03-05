@@ -90,6 +90,7 @@
 .Tooltip.dockerInstructionsEnvironment,
 .Tooltip.codeFiles,
 .Tooltip.codeBrowser,
+.Tooltip.sensitiveFiles,
 .Tooltip.inputDataFiles,
 .Tooltip.inputDataBrowser,
 .Tooltip.outputDataFiles,
@@ -255,8 +256,7 @@
   }
 }
 
-.Tooltip.createLabbook,
-.Tooltip.importLabbook{
+.Tooltip.createLabbook{
   .Tooltip__toggle{
     right: -90px;
     bottom: 72px;
@@ -272,6 +272,24 @@
     left: 103px;
   }
 }
+
+.Tooltip.importLabbook{
+  .Tooltip__toggle{
+    right: -90px;
+    bottom: 20px;
+  }
+  .Tooltip__pointer{
+    right: -107px;
+    bottom: 66px;
+
+    @include triangle('left', 14px, $slateBlue);
+  }
+  .Tooltip__message{
+    bottom: 52px;
+    left: 103px;
+  }
+}
+
 
 .Tooltip.cloudLocal{
   .Tooltip__toggle {

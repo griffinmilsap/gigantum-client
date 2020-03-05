@@ -5,6 +5,7 @@ from typing import (Any, Dict, List, Tuple, Optional)
 
 from gtmcore.activity.detaildb import ActivityDetailDB
 from gtmcore.activity.records import ActivityDetailRecord, ActivityRecord
+from gtmcore.activity.utils import DetailRecordList
 from gtmcore.logging import LMLogger
 
 logger = LMLogger.get_logger()
@@ -43,8 +44,8 @@ class ActivityStore(object):
             self.compress_details: bool = self.repository.client_config.config['detaildb']['options']['compress']
             self.compress_min_bytes = self.repository.client_config.config['detaildb']['options']['compress_min_bytes']
         else:
-            self.compress_details: bool = False
-            self.compress_min_bytes: int = 0
+            self.compress_details = False
+            self.compress_min_bytes = 0
 
     def _validate_tags(self, tags: List[str]) -> List[str]:
         """Method to clean and validate tags
@@ -154,27 +155,33 @@ class ActivityStore(object):
         # If there isn't a linked commit, generate a UUID to uniquely ID the data in levelDB that will never
         # collide with the actual git hash space by making it 32 char vs. 40 for git
         if not record.linked_commit:
-            record.linked_commit = uuid.uuid4().hex
+            record = record.update(linked_commit = uuid.uuid4().hex)
 
         # Write all ActivityDetailObjects to the datastore
-        with record.inspect_detail_objects() as details:
-            for idx, detail in enumerate(details):
-                # TODO issue #936
-                # E.g., set directive to 'ignore'?
-                # I think that an exception may result in a malformed detaildb / activity record
+        updated_details = []
+        for detail in record.detail_objects:
+            try:
                 updated_detail = self.put_detail_record(detail)
-                record.update_detail_object(updated_detail, idx)
+                updated_details.append(updated_detail)
+            except Exception as e:
+                # Issue #936 - prevent a malformed detail record from breaking the rest of the record
+                logger.warning(f'ActivityDetailRecord(action={detail.action}, data={list(detail.data.keys())}) is malformed and cannot be written to disk')
+        record = record.update(detail_objects = DetailRecordList(updated_details))
 
         # Add everything in the repo activity/log directory
         self.repository.git.add_all(self.detaildb.root_path)
 
         # Commit changes and update record
         commit = self.repository.git.commit(record.log_str)
-        record.commit = commit.hexsha
 
-        # Update record with username and email
-        record.username = self.repository.git.author.name
-        record.email = self.repository.git.author.email
+        record = record.update(
+            # Commit changes and update record
+            commit=commit.hexsha,
+
+            # Update record with username and email
+            username=self.repository.git.author.name,
+            email=self.repository.git.author.email,
+        )
 
         logger.debug(f"Successfully created ActivityRecord {commit.hexsha}")
         return record
@@ -274,11 +281,10 @@ class ActivityStore(object):
         bytes_record = detail_obj.to_bytes(compress)
 
         # Write record and store key
-        detail_obj.key = self.detaildb.put(self._encode_write_options(compress=compress) +
-                                           bytes_record)
+        key = self.detaildb.put(self._encode_write_options(compress=compress) + bytes_record)
 
-        logger.debug(f"Successfully wrote ActivityDetailRecord {detail_obj.key}")
-        return detail_obj
+        logger.debug(f"Successfully wrote ActivityDetailRecord {key}")
+        return detail_obj.update(key = key)
 
     def get_detail_record(self, detail_key: str) -> ActivityDetailRecord:
         """Method to fetch a detail entry from the activity detail db
@@ -296,6 +302,7 @@ class ActivityStore(object):
         options = self._decode_write_options(detail_bytes[:1])
 
         # Create object
-        record = ActivityDetailRecord.from_bytes(detail_bytes[1:], decompress=options['compress'])
-        record.key = detail_key
+        record = ActivityDetailRecord.from_bytes(detail_bytes[1:],
+                                                 decompress=options['compress'],
+                                                 key=detail_key)
         return record

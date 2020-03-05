@@ -11,330 +11,78 @@ exports[`DetailRecords Renders a snapshot 1`] = `
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-          data-selenium-id="DetailRecords"
-        >
-          <p>
-            Add conda2 managed package: numpy "1.16.0"
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-          data-selenium-id="DetailRecords"
-        >
-          <p>
-            Add pip managed package: pandas "0.23.4"
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Input Data file 
-            <code>
-              input/README.md
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Input Data file 
-            <code>
-              input/setup.py
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Code file 
-            <code>
-              code/folder/README.md
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Code file 
-            <code>
-              code/folder/requirements.txt
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Code file 
-            <code>
-              code/folder/setup.py
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Code directory 
-            <code>
-              code/folder2
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-        >
-          <p>
-            Created new Code directory 
-            <code>
-              code/folder
-            </code>
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--create"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-          data-selenium-id="DetailRecords"
-        >
-          <p>
-            Added base python2-minimal
-
-A minimal Base containing Python 2.7 and JupyterLab with no additional packages
-
-  - repository: gigantum_base-images
-  - component: python2-minimal
-  - revision: 6
-
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
     <div
       className="DetailsRecords__container"
     >
       <div
-        className="DetailsRecords__action DetailsRecords__action--noaction"
+        className="DetailsRecords__action DetailsRecords__action--null"
       />
-      <li
-        className="DetailsRecords__item"
-      >
-        <div
-          className="ReactMarkdown"
-          data-selenium-id="DetailRecords"
-        >
-          <p>
-            Created new LabBook: uitest/ui-test-project
-          </p>
-        </div>
-        <div
-          className="DetailsRecords hidden"
-        />
-        <p
-          className="DetailsRecords__link hidden"
-          onClick={[Function]}
-        >
-          More...
-        </p>
-      </li>
     </div>
   </ul>
 </div>

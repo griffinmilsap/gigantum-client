@@ -5,8 +5,11 @@ import classNames from 'classnames';
 import './AddSecret.scss';
 // utils
 
+type Props = {
+  isLocked: boolean,
+}
 
-export default class AddSecret extends Component {
+export default class AddSecret extends Component<Props> {
   state = {
     file: null,
     path: '~/',
@@ -103,9 +106,11 @@ export default class AddSecret extends Component {
 
   render() {
     const { state } = this;
+    const { isLocked } = this.props;
     const displayedName = state.file ? state.file.name : '';
     const buttonCSS = classNames({
       'Btn Btn--allStyling Btn--noMargin': true,
+      'Btn--disabled': isLocked,
       hidden: (state.file !== null),
     });
     const buttonText = state.file ? 'Change File' : 'Choose File';
@@ -134,7 +139,7 @@ export default class AddSecret extends Component {
                 id="add_secret"
                 className="hidden"
                 type="file"
-                disabled={state.file}
+                disabled={state.file || isLocked}
                 onChange={evt => this._setFile(evt.target.files)}
               />
             </label>
@@ -169,7 +174,7 @@ export default class AddSecret extends Component {
             Cancel
           </button>
           <button
-            disabled={(state.file === null) || state.showError}
+            disabled={(state.file === null) || state.showError || isLocked}
             type="button"
             className="Btn Btn--last"
             onClick={() => this._uploadFile()}

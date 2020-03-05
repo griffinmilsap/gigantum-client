@@ -9,8 +9,10 @@ from lmsrvcore.auth.user import get_logged_in_username
 logger = LMLogger.get_logger()
 
 
-class SecretFileMapping(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class SecretFileMapping(graphene.ObjectType):
     """Represents a secret vault - i.e., a directory that contains secret key files. """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
 
     # Name of the secrets file.
     filename = graphene.String()

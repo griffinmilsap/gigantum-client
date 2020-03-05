@@ -4,15 +4,13 @@ import time
 from abc import ABC, abstractmethod
 from typing import Optional, Callable, List, Dict, Any
 
-import requests
-
 from gtmcore.configuration import Configuration
-from gtmcore.exceptions import GigantumException
 from gtmcore.container.cuda import should_launch_with_cuda_support
 from gtmcore.dataset.cache import get_cache_manager_class
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
 from gtmcore.logging import LMLogger
 from gtmcore.labbook import LabBook
+from gtmcore.gitlib.git import GitAuthor
 
 from gtmcore.container.exceptions import ContainerException
 
@@ -62,7 +60,7 @@ class ContainerOperations(ABC):
 
         if not override_image_name:
             # If you haven't manually set the image tag, load the default tag AFTER the labbook instance has been loaded
-            self.image_tag: str = self.default_image_tag(self.labbook.owner, self.labbook.name)
+            self.image_tag = self.default_image_tag(self.labbook.owner, self.labbook.name)
 
     @abstractmethod
     def build_image(self, nocache: bool = False, feedback_callback: Optional[Callable] = None) -> None:
@@ -152,7 +150,8 @@ class ContainerOperations(ABC):
 
     @abstractmethod
     def run_container(self, cmd: Optional[str] = None, image_name: Optional[str] = None, environment: List[str] = None,
-                      volumes: Optional[Dict] = None, wait_for_output=False, container_name: Optional[str] = None, **run_args) \
+                      volumes: Optional[Dict] = None, wait_for_output=False, container_name: Optional[str] = None,
+                      **run_args) \
             -> Optional[str]:
         """ Start a Docker container, by default for the Project connected to this instance.
 
@@ -172,12 +171,19 @@ class ContainerOperations(ABC):
         """
         raise NotImplementedError()
 
-    def start_project_container(self):
+    def start_project_container(self, author: Optional[GitAuthor] = None) -> None:
         """Start the Docker container for the Project connected to this instance.
 
         This method sets the Client IP to the environment variable `GIGANTUM_CLIENT_IP`
 
-        All relevant configuration for a fully functional Project is set up here, then passed off to self.run_container()
+        If author is provided, `GIGANTUM_EMAIL` and `GIGANTUM_USERNAME` env vars are set
+
+        All relevant configuration for a fully functional Project is set up here, then passed off to
+         self.run_container()
+         
+        Args:
+             author: Optionally provide a GitAuthor instance to configure the save hook
+         
         """
         if not self.labbook:
             raise ValueError('labbook must be specified for run_container')
@@ -207,6 +213,11 @@ class ContainerOperations(ABC):
             env_var = [f"LOCAL_USER_ID={os.environ['LOCAL_USER_ID']}"]
         else:
             env_var = ["WINDOWS_HOST=1"]
+
+        # If an author is provided, configure env vars for the save hook
+        if author:
+            env_var.append(f'GIGANTUM_USERNAME={author.name}')
+            env_var.append(f'GIGANTUM_EMAIL={author.email}')
 
         # Set the client IP in the project container
         try:
@@ -242,7 +253,6 @@ class ContainerOperations(ABC):
             logger.info(f"Launching container without GPU support. {reason}")
 
         self.run_container(environment=env_var, volumes=volumes_dict, **resource_args)
-
 
     @abstractmethod
     def stop_container(self, container_name: Optional[str] = None) -> bool:
@@ -326,6 +336,7 @@ class ContainerOperations(ABC):
         Args:
             image_tag: the "key" where we'll use to look up / store environment hashes
             env_dir: a directory where we can find a gigantum environment specification
+            update_cache: Update the cache stored on the filesystem?
 
         Returns:
             'not cached', 'match', or 'changed'
@@ -450,6 +461,7 @@ class SidecarContainerOperations:
 
     def query_container_ip(self) -> Optional[str]:
         return self.primary_container.query_container_ip(self.sidecar_container_name)
+
 
 # We only want to hit the filesystem once to get this value (otherwise, we parse the config file for every container
 # operation). This is used ONLY in container_for_context() below. Context-specific logic should otherwise be contained

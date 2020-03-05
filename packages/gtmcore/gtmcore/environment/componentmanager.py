@@ -14,6 +14,7 @@ from gtmcore.environment.repository import BaseRepository  # type: ignore
 from gtmcore.logging import LMLogger
 from gtmcore.activity import ActivityStore, ActivityType, ActivityRecord, ActivityDetailType, ActivityDetailRecord, \
     ActivityAction
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 from gtmcore.labbook.schemas import CURRENT_SCHEMA
 
 logger = LMLogger.get_logger()
@@ -39,9 +40,16 @@ chmod 777 /var/run/docker.sock
 export JUPYTER_RUNTIME_DIR=/mnt/share/jupyter/runtime
 chown -R giguser:root /mnt/share/
 
+# If user information is available via env vars, pre-configure git client
+if [ ! -z ${GIGANTUM_EMAIL+x} ]; then 
+  git config --global user.email "$GIGANTUM_EMAIL"
+  git config --global user.name "$GIGANTUM_USERNAME" 
+fi
+
 # Run the Docker Command
 exec gosu giguser "$@"
 """
+
 
 def strip_package_and_version(package_manager: str, package_str: str) -> Tuple[str, Optional[str]]:
     """For a particular package encoded with version, this strips off the version and returns a tuple
@@ -155,14 +163,19 @@ class ComponentManager(object):
         short_message = f"Wrote custom Docker snippet `{name}`"
         self.labbook.git.add(docker_file)
         commit = self.labbook.git.commit(short_message)
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.CREATE)
-        adr.add_value('text/plain', '\n'.join(docker_content))
+
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('plain', '\n'.join(docker_content)))
+
         ar = ActivityRecord(ActivityType.ENVIRONMENT,
                             message=short_message,
                             show=True,
                             linked_commit=commit.hexsha,
-                            tags=["environment", "docker", "snippet"])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(["environment", "docker", "snippet"]))
+
         ars = ActivityStore(self.labbook)
         ars.create_activity_record(ar)
 
@@ -185,14 +198,19 @@ class ComponentManager(object):
         short_message = f"Removed custom Docker snippet `{name}`"
         logger.info(short_message)
         commit = self.labbook.git.commit(short_message)
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.DELETE)
-        adr.add_value('text/plain', short_message)
+
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.DELETE,
+                                   data=TextData('plain', short_message))
+
         ar = ActivityRecord(ActivityType.ENVIRONMENT,
                             message=short_message,
                             show=False,
                             linked_commit=commit.hexsha,
-                            tags=["environment", "docker", "snippet"])
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(["environment", "docker", "snippet"]))
+
         ars = ActivityStore(self.labbook)
         ars.create_activity_record(ar)
 
@@ -217,10 +235,11 @@ class ComponentManager(object):
                             show=True,
                             message="",
                             linked_commit="",
-                            tags=["environment", 'package_manager', package_manager])
+                            tags=ImmutableList(["environment", 'package_manager', package_manager]))
 
         update_cnt = 0
         add_cnt = 0
+        detail_objects = []
         for pkg in packages:
             version_str = f'"{pkg["version"]}"' if pkg["version"] else 'latest'
 
@@ -254,8 +273,8 @@ class ComponentManager(object):
                 package_yaml_file.write(os.linesep.join(yaml_lines))
 
             # Create activity record
-            adr.add_value('text/plain', detail_msg)
-            ar.add_detail_object(adr)
+            adr = adr.add_value('text/plain', detail_msg)
+            detail_objects.append(adr)
             logger.info("Added package {} to labbook at {}".format(pkg["package"], self.labbook.root_dir))
 
         # Set activity message
@@ -269,8 +288,12 @@ class ComponentManager(object):
         # Add to git
         self.labbook.git.add_all(self.env_dir)
         commit = self.labbook.git.commit(ar_msg)
-        ar.linked_commit = commit.hexsha
-        ar.message = ar_msg
+
+        ar = ar.update(
+            detail_objects=DetailRecordList(detail_objects),
+            linked_commit=commit.hexsha,
+            message=ar_msg
+        )
 
         # Store
         ars = ActivityStore(self.labbook)
@@ -289,8 +312,9 @@ class ComponentManager(object):
                             message="",
                             show=True,
                             linked_commit="",
-                            tags=["environment", 'package_manager', package_manager])
+                            tags=ImmutableList(["environment", 'package_manager', package_manager]))
 
+        detail_objects = []
         for pkg in package_names:
             yaml_filename = '{}_{}.yaml'.format(package_manager, pkg)
             package_yaml_path = os.path.join(self.env_dir, 'package_manager', yaml_filename)
@@ -317,16 +341,22 @@ class ComponentManager(object):
             self.labbook.git.remove(package_yaml_path)
 
             # Create detail record
-            adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.DELETE)
-            adr.add_value('text/plain', f"Removed {package_manager} managed package: {pkg}")
-            ar.add_detail_object(adr)
+            adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                       show=False,
+                                       action=ActivityAction.DELETE,
+                                       data=TextData('plain', f"Removed {package_manager} managed package: {pkg}"))
+            detail_objects.append(adr)
             logger.info(f"Removed {package_manager} managed package: {pkg}")
 
         # Add to git
         short_message = f"Removed {len(package_names)} {package_manager} managed package(s)"
         commit = self.labbook.git.commit(short_message)
-        ar.linked_commit = commit.hexsha
-        ar.message = short_message
+
+        ar = ar.update(
+            detail_objects = DetailRecordList(detail_objects),
+            linked_commit = commit.hexsha,
+            message = short_message
+        )
 
         # Store
         ars = ActivityStore(self.labbook)
@@ -410,16 +440,18 @@ class ComponentManager(object):
                                   f"  - revision: {revision}\n"))
 
         # Create detail record
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.CREATE)
-        adr.add_value('text/plain', long_message)
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.CREATE,
+                                   data=TextData('plain', long_message))
 
         # Create activity record
         ar = ActivityRecord(ActivityType.ENVIRONMENT,
                             message=short_message,
                             linked_commit=commit.hexsha,
-                            tags=["environment", "base"],
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(["environment", "base"]),
                             show=True)
-        ar.add_detail_object(adr)
 
         # Store
         ars = ActivityStore(self.labbook)
@@ -466,11 +498,9 @@ class ComponentManager(object):
             ar = ActivityRecord(ActivityType.ENVIRONMENT,
                                 message=short_message,
                                 linked_commit=commit.hexsha,
-                                tags=["environment", "base"],
+                                detail_objects=DetailRecordList(detail_records),
+                                tags=ImmutableList(["environment", "base"]),
                                 show=True)
-
-            for adr in detail_records:
-                ar.add_detail_object(adr)
 
             # Store the activity record.
             ars = ActivityStore(self.labbook)
@@ -517,8 +547,10 @@ class ComponentManager(object):
                                   f"  - repository: {repo}",
                                   f"  - component: {base_name}",
                                   f"  - revision: {revision}\n"))
-        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.DELETE)
-        adr.add_value('text/plain', long_message)
+        adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                   show=False,
+                                   action=ActivityAction.DELETE,
+                                   data=TextData('plain', long_message))
         detail_records.append(adr)
 
         return f"Removed base from {repo}: {base_name} r{revision}"
@@ -544,8 +576,11 @@ class ComponentManager(object):
 
             # Create detail record
             long_message = f"Removing base from {curr_repo}: {curr_base_name}"
-            adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT, show=False, action=ActivityAction.DELETE)
-            adr.add_value('text/plain', long_message)
+            adr = ActivityDetailRecord(ActivityDetailType.ENVIRONMENT,
+                                       show=False,
+                                       action=ActivityAction.DELETE,
+                                       data=TextData('plain', long_message))
+
             detail_records.append(adr)
 
         return f"Removing all bases from project with {len(base_paths)} base configuration files."

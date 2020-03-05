@@ -8,7 +8,7 @@ import {
   setExportingState,
   setModalVisible,
 } from 'JS/redux/actions/labbook/labbook';
-import { setIsSyncing } from 'JS/redux/actions/dataset/dataset';
+import { setIsSyncing, setIsExporting } from 'JS/redux/actions/dataset/dataset';
 // config
 import Config from 'JS/config';
 // components
@@ -69,6 +69,11 @@ type Props = {
   },
   modalVisible: boolean,
   sectionType: string,
+  toggleBranchesView: Function,
+  mergeFilter: boolean,
+  auth: Object,
+  isLocked: boolean,
+  setBranchUptodate: Function,
 };
 
 class Header extends Component<Props> {
@@ -77,16 +82,19 @@ class Header extends Component<Props> {
    *
    ******************** */
   /**
-   @param {boolean} isExporting
+   @param {boolean} newIsExporting
    updates container status state
    updates labbook state
   */
-  _setExportingState = (isExporting) => {
-    const { props } = this;
-    const { owner, name } = props[props.sectionType];
+  _setExportingState = (newIsExporting) => {
+    const { sectionType, isExporting } = this.props;
+    const { owner, name } = this.props[sectionType];
 
-    if (props.isExporting !== isExporting) {
-      setExportingState(owner, name, isExporting);
+    if (isExporting !== newIsExporting) {
+      setExportingState(owner, name, newIsExporting);
+    }
+    if (sectionType === 'dataset') {
+      setIsExporting(owner, name, isExporting);
     }
   }
 
@@ -183,12 +191,21 @@ class Header extends Component<Props> {
   }
 
   render() {
-    const { props } = this;
     const {
       labbook,
       branchName,
       dataset,
-    } = props;
+      isSticky,
+      isDeprecated,
+      branchesOpen,
+      diskLow,
+      sectionType,
+      toggleBranchesView,
+      mergeFilter,
+      auth,
+      isLocked,
+      setBranchUptodate,
+    } = this.props;
     const {
       visibility,
       description,
@@ -197,20 +214,20 @@ class Header extends Component<Props> {
       id,
     } = labbook || dataset;
     const section = labbook || dataset;
-    const isLabbookSection = props.sectionType === 'labbook';
-    const branches = getBranches(props);
+    const isLabbookSection = sectionType === 'labbook';
+    const branches = getBranches(this.props);
 
     // declare css here
     const headerCSS = classNames({
       Header: true,
-      'Header--sticky': props.isSticky,
-      'Header--demo': (window.location.hostname === Config.demoHostName) || props.diskLow,
-      'Header--is-deprecated': props.isDeprecated,
-      'Header--branchesOpen': props.branchesOpen,
+      'Header--sticky': isSticky,
+      'Header--demo': (window.location.hostname === Config.demoHostName) || diskLow,
+      'Header--is-deprecated': isDeprecated,
+      'Header--branchesOpen': branchesOpen,
     });
     const branchesErrorCSS = classNames({
-      BranchesError: props.branchesOpen,
-      hidden: !props.branchesOpen,
+      BranchesError: branchesOpen,
+      hidden: !branchesOpen,
     });
 
     return (
@@ -223,31 +240,31 @@ class Header extends Component<Props> {
 
               <TitleSection
                 self={this}
-                {...props}
+                {...this.props}
               />
               <ErrorBoundary
                 type={branchesErrorCSS}
                 key="branches"
               >
                 <BranchMenu
-                  {...props}
+                  {...this.props}
                   defaultRemote={section.defaultRemote}
-                  branchesOpen={props.branchesOpen}
+                  branchesOpen={branchesOpen}
                   section={section}
                   branches={branches}
                   sectionId={section.id}
                   activeBranch={section.activeBranchName || 'master'}
-                  toggleBranchesView={props.toggleBranchesView}
-                  mergeFilter={props.mergeFilter}
-                  isSticky={props.isSticky}
-                  visibility={props.visibility}
-                  sectionType={props.sectionType}
-                  auth={props.auth}
+                  toggleBranchesView={toggleBranchesView}
+                  mergeFilter={mergeFilter}
+                  isSticky={isSticky}
+                  visibility={visibility}
+                  sectionType={sectionType}
+                  auth={auth}
                   setSyncingState={this._setSyncingState}
                   setPublishingState={this._setPublishingState}
                   setExportingState={this._setExportingState}
-                  isLocked={props.isLocked}
-                  setBranchUptodate={props.setBranchUptodate}
+                  isLocked={isLocked}
+                  setBranchUptodate={setBranchUptodate}
                 />
               </ErrorBoundary>
 
@@ -264,17 +281,17 @@ class Header extends Component<Props> {
                 setSyncingState={this._setSyncingState}
                 setExportingState={this._setExportingState}
                 branchName={branchName}
-                isSticky={props.isSticky}
-                {...props}
+                isSticky={isSticky}
+                {...this.props}
               />
 
               { isLabbookSection
-                && <Container {...props} />
+                && <Container {...this.props} />
               }
             </div>
           </div>
 
-          <Navigation {...props} />
+          <Navigation {...this.props} />
 
         </div>
       </div>

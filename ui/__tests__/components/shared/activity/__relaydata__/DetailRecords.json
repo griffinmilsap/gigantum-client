@@ -1,173 +1,1110 @@
 {
+ "errors": [
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    0,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    1,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    2,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    3,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    4,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    5,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    6,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    7,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    8,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    9,
+    "tags"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 11,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "action"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 13,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "data"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 14,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "type"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 15,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "show"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 16,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "importance"
+   ]
+  },
+  {
+   "message": "[Errno 2] No such file or directory: '/mnt/gigantum/cbutler/cbutler/labbooks/ui-test-project/.gigantum/activity/log/log_50459b691a8075016c961c72eeb91661_0'",
+   "locations": [
+    {
+     "line": 17,
+     "column": 7
+    }
+   ],
+   "path": [
+    "labbook",
+    "detailRecords",
+    10,
+    "tags"
+   ]
+  }
+ ],
  "data": {
   "labbook": {
-   "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0",
-   "description": "This is a ui test project\n",
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+   "description": "",
    "detailRecords": [
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUF4UVlBQUc4QUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBeFFZQUFHOEFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAxQYAAG8AAAA=",
-     "data": [
-      [
-       "text/plain",
-       "Add conda2 managed package: numpy \"1.16.0\""
-      ]
-     ],
-     "type": "ENVIRONMENT",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFRZ1lBQUc4QUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBUWdZQUFHOEFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAQgYAAG8AAAA=",
-     "data": [
-      [
-       "text/plain",
-       "Add pip managed package: pandas \"0.23.4\""
-      ]
-     ],
-     "type": "ENVIRONMENT",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFrZ1FBQUhnQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBa2dRQUFIZ0FBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAkgQAAHgAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Input Data file `input/README.md`"
-      ]
-     ],
-     "type": "INPUT_DATA",
-     "show": false,
-     "importance": 255,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUF0Z1VBQUhnQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBdGdVQUFIZ0FBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAtgUAAHgAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Input Data file `input/setup.py`"
-      ]
-     ],
-     "type": "INPUT_DATA",
-     "show": false,
-     "importance": 253,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUE0Z0lBQUhnQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBNGdJQUFIZ0FBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAA4gIAAHgAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Code file `code/folder/README.md`"
-      ]
-     ],
-     "type": "CODE",
-     "show": false,
-     "importance": 255,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFiZ01BQUlRQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBYmdNQUFJUUFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAbgMAAIQAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Code file `code/folder/requirements.txt`"
-      ]
-     ],
-     "type": "CODE",
-     "show": false,
-     "importance": 254,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFCZ1FBQUhnQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBQmdRQUFIZ0FBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAABgQAAHgAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Code file `code/folder/setup.py`"
-      ]
-     ],
-     "type": "CODE",
-     "show": false,
-     "importance": 253,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFYQUlBQUhJQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBWEFJQUFISUFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAXAIAAHIAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Code directory `code/folder2`"
-      ]
-     ],
-     "type": "CODE",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUExZ0VBQUhJQUFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBMWdFQUFISUFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAA1gEAAHIAAAA=",
-     "data": [
-      [
-       "text/markdown",
-       "Created new Code directory `code/folder`"
-      ]
-     ],
-     "type": "CODE",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFod0FBQURzQkFBQT0=",
-     "action": "CREATE",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBaHdBQUFEc0JBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAhwAAADsBAAA=",
-     "data": [
-      [
-       "text/plain",
-       "Added base python2-minimal\n\nA minimal Base containing Python 2.7 and JupyterLab with no additional packages\n\n  - repository: gigantum_base-images\n  - component: python2-minimal\n  - revision: 6\n"
-      ]
-     ],
-     "type": "ENVIRONMENT",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     },
     {
-     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFBQUFBQUhNQUFBQT0=",
-     "action": "NOACTION",
+     "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfNTA0NTliNjkxYTgwNzUwMTZjOTYxYzcyZWViOTE2NjFYMTluWDE5c2MyNEFBQUFBQUFBQUFITUFBQUE9",
+     "action": null,
      "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAAAAAAHMAAAA=",
-     "data": [
-      [
-       "text/plain",
-       "Created new LabBook: uitest/ui-test-project"
-      ]
-     ],
-     "type": "LABBOOK",
-     "show": false,
-     "importance": 0,
-     "tags": []
+     "data": null,
+     "type": null,
+     "show": null,
+     "importance": null,
+     "tags": null
     }
    ]
   }

@@ -20,7 +20,15 @@ export const setIsProcessing = (owner, name, isProcessing) => dispatcher(
 );
 
 export const setIsSyncing = (owner, name, isSyncing) => dispatcher(
-  types.SET_IS_SYNCHING,
+  types.SET_IS_SYNCING,
+  {
+    namespace: `${owner}_${name}`,
+    isSyncing,
+  },
+);
+
+export const setIsExporting = (owner, name, isSyncing) => dispatcher(
+  types.SET_IS_EXPORTING,
   {
     namespace: `${owner}_${name}`,
     isSyncing,

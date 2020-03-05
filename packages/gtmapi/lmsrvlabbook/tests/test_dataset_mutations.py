@@ -502,7 +502,7 @@ class TestDatasetMutations(object):
         variables = {"datasetName": "dataset100", "owner": "default"}
         result = fixture_working_dir[2].execute(query, variable_values=variables)
         assert "errors" in result
-        assert result['errors'][0]['message'] == "Deleting a remote Dataset requires a valid session."
+        assert "requires a valid session" in result['errors'][0]['message']
 
     @responses.activate
     def test_delete_remote_dataset_gitlab_error(self, fixture_working_dir):

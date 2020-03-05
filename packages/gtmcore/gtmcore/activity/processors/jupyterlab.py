@@ -4,6 +4,7 @@ from typing import (Any, Dict, List)
 from gtmcore.logging import LMLogger
 from gtmcore.activity.processors.processor import ActivityProcessor, ExecutionData
 from gtmcore.activity import ActivityRecord, ActivityDetailType, ActivityDetailRecord, ActivityAction
+from gtmcore.activity.utils import ImmutableDict, ImmutableList, TextData
 
 logger = LMLogger.get_logger()
 
@@ -24,25 +25,28 @@ class JupyterLabCellVisibilityProcessor(ActivityProcessor):
 
     def process(self, result_obj: ActivityRecord, data: List[ExecutionData],
                 status: Dict[str, Any], metadata: Dict[str, Any]) -> ActivityRecord:
-        with result_obj.inspect_detail_objects() as old_details:
-            for idx, detail in enumerate(old_details):
-                if detail.type is ActivityDetailType.CODE_EXECUTED:
-                    code = detail.data['text/markdown']
-                    res = self.comment_re.search(code)
-                    if res:
-                        directive = res[1]
-                        if directive == 'auto':
-                            # This is the default behavior
-                            pass
-                        elif directive in ['show', 'hide', 'ignore']:
-                            for tag in detail.tags:
-                                # currently, the 'ex1' type tags are the only ones...
-                                if tag.startswith('ex'):
-                                    result_obj.modify_tag_visibility(tag, directive)
-                        else:
-                            # We have encountered an unknown comment directive.
-                            logger.warning(f'Encountered unknown comment directive gtm:{directive}')
-                            pass
+        tags = {}
+        for idx, detail in enumerate(result_obj.detail_objects):
+            if detail.type is ActivityDetailType.CODE_EXECUTED:
+                code = detail.data['text/markdown']
+                res = self.comment_re.search(code)
+                if res:
+                    directive = res[1]
+                    if directive == 'auto':
+                        # This is the default behavior
+                        pass
+                    elif directive in ['show', 'hide', 'ignore']:
+                        for tag in detail.tags:
+                            # currently, the 'ex1' type tags are the only ones...
+                            if tag.startswith('ex'):
+                                tags[tag] = directive
+                    else:
+                        # We have encountered an unknown comment directive.
+                        logger.warning(f'Encountered unknown comment directive gtm:{directive}')
+                        pass
+
+        if tags:
+            result_obj = result_obj.set_visibility(tags)
 
         return result_obj
 
@@ -69,20 +73,21 @@ class JupyterLabCodeProcessor(ActivityProcessor):
             for result_entry in reversed(cell.code):
                 if result_entry.get('code'):
                     # Create detail record to capture executed code
-                    adr_code = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, show=False,
+                    adr_data = f"```\n{result_entry.get('code')}\n```"
+                    adr_code = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED,
+                                                    show=False,
                                                     action=ActivityAction.EXECUTE,
-                                                    importance=max(255-result_cnt, 0))
+                                                    importance=max(255-result_cnt, 0),
+                                                    tags=ImmutableList(cell.tags),
+                                                    data=TextData('markdown', adr_data))
 
-                    adr_code.add_value('text/markdown', f"```\n{result_entry.get('code')}\n```")
-                    adr_code.tags = cell.tags
-
-                    result_obj.add_detail_object(adr_code)
+                    result_obj = result_obj.add_detail_object(adr_code)
 
                     result_cnt += 1
 
         # Set Activity Record Message
         cell_str = f"{cell_cnt} cells" if cell_cnt > 1 else "cell"
-        result_obj.message = f"Executed {cell_str} in notebook {metadata['path']}"
+        result_obj = result_obj.update(message = f"Executed {cell_str} in notebook {metadata['path']}")
 
         return result_obj
 
@@ -121,19 +126,19 @@ class JupyterLabPlaintextProcessor(ActivityProcessor):
                         text_data = result_entry['data']['text/plain']
 
                         if len(text_data) > 0:
+                            if len(text_data) <= truncate_at:
+                                adr_data = text_data
+                            else:
+                                adr_data = text_data[:truncate_at] + " ...\n\n <result truncated>"
+
                             adr = ActivityDetailRecord(ActivityDetailType.RESULT,
                                                        show=True if len(text_data) < max_show_len else False,
                                                        action=ActivityAction.CREATE,
-                                                       importance=max(255-result_cnt-100, 0))
+                                                       importance=max(255-result_cnt-100, 0),
+                                                       tags=ImmutableList(cell.tags),
+                                                       data=TextData('plain', adr_data))
 
-                            if len(text_data) <= truncate_at:
-                                adr.add_value("text/plain", text_data)
-                            else:
-                                adr.add_value("text/plain", text_data[:truncate_at] + " ...\n\n <result truncated>")
-
-                            # Set cell data to tag
-                            adr.tags = cell.tags
-                            result_obj.add_detail_object(adr)
+                            result_obj = result_obj.add_detail_object(adr)
 
                             result_cnt += 1
 
@@ -166,18 +171,18 @@ class JupyterLabImageExtractorProcessor(ActivityProcessor):
                     for mime_type in result_entry['data']:
                         if mime_type in supported_image_types:
                             # You got an image
-                            adr_img = ActivityDetailRecord(ActivityDetailType.RESULT, show=True,
+                            adr_img = ActivityDetailRecord(ActivityDetailType.RESULT,
+                                                           show=True,
                                                            action=ActivityAction.CREATE,
-                                                           importance=max(255-result_cnt, 0))
+                                                           importance=max(255-result_cnt, 0),
+                                                           tags=ImmutableList(cell.tags),
+                                                           data=ImmutableDict({mime_type: result_entry['data'][mime_type]}))
 
-                            adr_img.add_value(mime_type, result_entry['data'][mime_type])
-
-                            adr_img.tags = cell.tags
-                            result_obj.add_detail_object(adr_img)
+                            result_obj = result_obj.add_detail_object(adr_img)
 
                             # Set Activity Record Message
-                            result_obj.message = "Executed cell in notebook {} and generated a result".format(
-                                metadata['path'])
+                            msg = f"Executed cell in notebook {metadata['path']} and generated a result"
+                            result_obj = result_obj.update(message = msg)
 
                             result_cnt += 1
 

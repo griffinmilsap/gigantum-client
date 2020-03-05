@@ -121,6 +121,8 @@ class BuildProgress extends Component {
       const { error } = footerMessage[0];
 
       const regexMessage = message.replace(regex, '<span style="color:#fcd430">$1</span>')
+          // Backspace (note funny syntax) deletes any previous character
+          .replace(/.[\b]/g, '')
           // \r\n should be treated as a regular newline
           .replace(/\r\n/g, '\n')
           // Get rid of anything on a line before a carriage return

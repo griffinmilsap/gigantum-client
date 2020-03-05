@@ -4,7 +4,7 @@
       import {mount} from 'enzyme'
       import sessionCheck from '/Auth/sessionCheck';
 
-      import relayTestingUtils from 'relay-testing-utils'
+      import relayTestingUtils from '@gigantum/relay-testing-utils'
 
       test('Test sessionCheck', () => {
 

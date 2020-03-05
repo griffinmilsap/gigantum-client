@@ -1,0 +1,132 @@
+@import '~Styles/_imports.scss';
+
+.UserNote {
+  padding: 10px 0 0 0;
+  position: relative;
+  flex: 1;
+  width: calc(100% - 40px);
+
+  animation: slide-down-fade-in 0.25s;
+  .fa {
+    font-family: FontAwesome !important;
+  }
+
+  &__summary--fullscreen {
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    z-index: index($elements, modal);
+
+    height: 100vh;
+    width: 100vw;
+  }
+}
+.UserNote {
+  .UserNote__title[type="text"] {
+    color: $primaryText;
+    margin: 10px 0 20px;
+    width: 100% !important;
+  }
+
+}
+
+
+.UserNote__close {
+  position: absolute;
+  top: -10px !important;
+  right: -10px !important;
+  cursor: pointer;
+  z-index: index($elements, button);
+  height: 24px;
+  width: 24px;
+
+  @include close();
+
+}
+
+.UserNote__container {
+  padding: 18px 0;
+  position: relative;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+  min-height: 250px !important;
+}
+
+.CodeMirror-sizer {
+  height: 200px;
+}
+
+.UserNote {
+  span.ReactTags__tag:first-child{
+      margin-left: 0px !important;
+  }
+
+  div.ReactTags__selected a.ReactTags__remove {
+      color: #aaa;
+      margin-left: 5px;
+      cursor: pointer;
+  }
+
+  div.ReactTags__suggestions {
+      position: absolute;
+  }
+  div.ReactTags__suggestions ul {
+      list-style-type: none;
+      box-shadow: .05em .01em .5em rgba(0,0,0,.2);
+      background: white;
+      width: 200px;
+  }
+  div.ReactTags__suggestions li {
+      border-bottom: 1px solid #ddd;
+      padding: 5px 10px;
+      margin: 0;
+  }
+  div.ReactTags__suggestions li mark {
+      text-decoration: underline;
+      background: none;
+      font-weight: 600;
+  }
+  div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+      background: #b7cfe0;
+      cursor: pointer;
+  }
+
+  .ReactTags__selected {
+      display: flex;
+      height: auto;
+      top: 100px;
+      border: 1px solid $grey;
+      border-top: 1px solid $primary;
+      padding: 0 10px;
+      overflow: auto;
+    }
+
+  .ReactTags__tag.Languages,
+  .ReactTags__tag.Dataset.Type {
+      background: $primary !important;
+      color: $white !important;
+      a {
+          color: $white !important;
+      }
+  }
+
+  .ReactTags__tag.Development.Environments {
+      background: $slateBlue !important;
+      color: $white !important;
+      a {
+          color: $white !important;
+      }
+  }
+
+  .ReactTags__tag.Tags {
+      background: $lightblue !important;
+      color: $white !important;
+      a {
+          color: $white !important;
+      }
+  }
+}

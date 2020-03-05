@@ -5,67 +5,115 @@
     "edges": [
      {
       "node": {
-       "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1yZW1vdGU=",
-       "name": "ui-test-remote",
+       "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+       "name": "ui-test-project",
        "description": "",
-       "owner": "uitest",
-       "creationDateUtc": "2019-01-18T15:01:23+00:00",
-       "modifiedOnUtc": "2019-01-18T15:01:27+00:00",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-30T15:53:01+00:00",
+       "modifiedOnUtc": "2020-02-03T15:10:07+00:00",
        "__typename": "Labbook"
       },
       "cursor": "MA=="
      },
      {
       "node": {
-       "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0",
-       "name": "ui-test-project",
-       "description": "This is a ui test project\n",
-       "owner": "uitest",
-       "creationDateUtc": "2019-01-18T14:54:18+00:00",
-       "modifiedOnUtc": "2019-01-18T14:59:22+00:00",
+       "id": "TGFiYm9vazpjYnV0bGVyJnRlc3Qtc3luYw==",
+       "name": "test-sync",
+       "description": "sdassad",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-13T22:26:26+00:00",
+       "modifiedOnUtc": "2020-01-13T22:27:54+00:00",
        "__typename": "Labbook"
       },
       "cursor": "MQ=="
      },
      {
       "node": {
-       "id": "TGFiYm9vazp1aXRlc3QmdGVzdC10dA==",
-       "name": "test-tt",
+       "id": "TGFiYm9vazpjYnV0bGVyJnRlc3Q=",
+       "name": "test",
        "description": "",
-       "owner": "uitest",
-       "creationDateUtc": "2019-01-11T19:31:30+00:00",
-       "modifiedOnUtc": "2019-01-11T19:31:32+00:00",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-07T20:59:36+00:00",
+       "modifiedOnUtc": "2020-01-08T16:38:53+00:00",
        "__typename": "Labbook"
       },
       "cursor": "Mg=="
      },
      {
       "node": {
-       "id": "TGFiYm9vazp1aXRlc3QmbmV3LXByb2plY3Q=",
-       "name": "new-project",
-       "description": "",
-       "owner": "uitest",
-       "creationDateUtc": "2019-01-16T20:38:00+00:00",
-       "modifiedOnUtc": "2019-01-24T20:17:51+00:00",
+       "id": "TGFiYm9vazpnaWdhbnR1bS1leGFtcGxlcyZzY2lraXQtbGVhcm4taW4tZ2lnYW50dW0=",
+       "name": "scikit-learn-in-gigantum",
+       "description": "An intro the Gigantum pre-configured data science base, using scikit-learn",
+       "owner": "gigantum-examples",
+       "creationDateUtc": "2019-11-06T20:29:46+00:00",
+       "modifiedOnUtc": "2019-11-11T20:36:23+00:00",
        "__typename": "Labbook"
       },
       "cursor": "Mw=="
      },
      {
       "node": {
-       "id": "TGFiYm9vazp1aXRlc3QmYXdmdWwtaW50ZXJzZWN0aW9ucy1kZW1v",
-       "name": "awful-intersections-demo",
-       "description": "A fun demo LabBook to automatically find and generate cringe-worthy maps of horrible intersections",
-       "owner": "uitest",
-       "creationDateUtc": "2018-05-24T18:26:57+00:00",
-       "modifiedOnUtc": "2019-01-11T19:52:37+00:00",
+       "id": "TGFiYm9vazpjYnV0bGVyJnByaXZhdGUtdGVzdA==",
+       "name": "private-test",
+       "description": "",
+       "owner": "cbutler",
+       "creationDateUtc": "2019-09-04T14:57:15+00:00",
+       "modifiedOnUtc": "2020-01-17T19:50:19+00:00",
        "__typename": "Labbook"
       },
       "cursor": "NA=="
+     },
+     {
+      "node": {
+       "id": "TGFiYm9vazpjYnV0bGVyJm5ldGZsaXgtc3RhdHM=",
+       "name": "netflix-stats",
+       "description": "",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-25T21:41:20+00:00",
+       "modifiedOnUtc": "2020-01-27T16:06:26+00:00",
+       "__typename": "Labbook"
+      },
+      "cursor": "NQ=="
+     },
+     {
+      "node": {
+       "id": "TGFiYm9vazpjYnV0bGVyJmtqampq",
+       "name": "kjjjj",
+       "description": "",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-08T23:01:15+00:00",
+       "modifiedOnUtc": "2020-01-13T22:17:30+00:00",
+       "__typename": "Labbook"
+      },
+      "cursor": "Ng=="
+     },
+     {
+      "node": {
+       "id": "TGFiYm9vazpkbWsmYmFzaC1rZXJuZWwtZXhhbXBsZQ==",
+       "name": "bash-kernel-example",
+       "description": "An example showing how to combine pip and docker snippets to add a kernel",
+       "owner": "dmk",
+       "creationDateUtc": "2019-10-20T18:27:50+00:00",
+       "modifiedOnUtc": "2020-01-07T20:54:31+00:00",
+       "__typename": "Labbook"
+      },
+      "cursor": "Nw=="
+     },
+     {
+      "node": {
+       "id": "TGFiYm9vazpjYnV0bGVyJmFkYXNkZGFz",
+       "name": "adasddas",
+       "description": "",
+       "owner": "cbutler",
+       "creationDateUtc": "2020-01-22T18:38:44+00:00",
+       "modifiedOnUtc": "2020-01-27T16:26:08+00:00",
+       "__typename": "Labbook"
+      },
+      "cursor": "OA=="
      }
     ],
     "pageInfo": {
-     "endCursor": "NA==",
+     "endCursor": "OA==",
      "hasNextPage": false,
      "hasPreviousPage": false,
      "startCursor": "MA=="

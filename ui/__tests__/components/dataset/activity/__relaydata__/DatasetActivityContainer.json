@@ -1,110 +1,26 @@
 {
  "data": {
   "dataset": {
-   "id": "RGF0YXNldDp1aXRlc3QmdWktdGVzdC1kYXRhc2V0",
-   "description": "This is a testing dataset",
+   "id": "RGF0YXNldDpjYnV0bGVyJnVpLXRlc3QtZGF0YXNldA==",
+   "description": "",
    "activityRecords": {
     "edges": [
      {
       "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JjdmNTk5MmVkNzJiZDJjMTIzYmRhMmE3ODFjZTkxYjg0NGZiMjcwMzE=",
-       "commit": "7f5992ed72bd2c123bda2a781ce91b844fb27031",
-       "linkedCommit": "24a05eb963c66f3c2e831a1bfc08a042155a7075",
-       "type": "DATASET",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "save",
-        "upload"
-       ],
-       "message": "Uploaded 1 new file(s). ",
-       "timestamp": "2019-01-11T17:15:23+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmxvZ181NWUyYWNlMjhhZDI0ODQ0ODc4MmQ5OTJjY2M2ZjFhOFgxOW5YMTlzYzI0QUFBQUFpd0VBQUdnQUFBQT0=",
-         "key": "log_55e2ace28ad248448782d992ccc6f1a8X19nX19sc24AAAAAiwEAAGgAAAA=",
-         "show": false,
-         "importance": 255,
-         "type": "DATASET"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "7f5992ed72bd2c123bda2a781ce91b844fb27031"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmE5NDdjMGIzNjg5MDAzZGI0ZjNjMWYyOGVmZDE1Mjc4ZDE5YjUxY2U=",
-       "commit": "a947c0b3689003db4f3c1f28efd15278d19b51ce",
-       "linkedCommit": "6fcfca49ed3f5a19e12a9ceae1a3ec2ab044c751",
-       "type": "DATASET",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "save",
-        "upload"
-       ],
-       "message": "Uploaded 1 new file(s). ",
-       "timestamp": "2019-01-11T17:14:09+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmxvZ181NWUyYWNlMjhhZDI0ODQ0ODc4MmQ5OTJjY2M2ZjFhOFgxOW5YMTlzYzI0QUFBQUFBd0VBQUhRQUFBQT0=",
-         "key": "log_55e2ace28ad248448782d992ccc6f1a8X19nX19sc24AAAAAAwEAAHQAAAA=",
-         "show": false,
-         "importance": 255,
-         "type": "DATASET"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "a947c0b3689003db4f3c1f28efd15278d19b51ce"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmU5MmI3NmY5ZjFmMDNmN2Y5NWU5ZmJiN2Q5OGIyNjFjZjMwMzlmMmI=",
-       "commit": "e92b76f9f1f03f7f95e9fbb7d98b261cf3039f2b",
-       "linkedCommit": "1043564b64e7b6dd5ac5631f979ee11738d4b1bc",
-       "type": "DATASET",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "save",
-        "upload"
-       ],
-       "message": "Uploaded 1 new file(s). ",
-       "timestamp": "2019-01-11T17:12:28+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmxvZ181NWUyYWNlMjhhZDI0ODQ0ODc4MmQ5OTJjY2M2ZjFhOFgxOW5YMTlzYzI0QUFBQUFod0FBQUdnQUFBQT0=",
-         "key": "log_55e2ace28ad248448782d992ccc6f1a8X19nX19sc24AAAAAhwAAAGgAAAA=",
-         "show": false,
-         "importance": 255,
-         "type": "DATASET"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "e92b76f9f1f03f7f95e9fbb7d98b261cf3039f2b"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JjU0YmUyMjAzNTU3NTAyNTI2Yjg1YjQ2NjMzOTlmYTNlOGJkOTc5ZmY=",
-       "commit": "54be2203557502526b85b4663399fa3e8bd979ff",
-       "linkedCommit": "41a7bf498043c9e81ab369a0badce9a8a351db46",
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZjYnV0bGVyJnVpLXRlc3QtZGF0YXNldCZjMDBkYzVmZWM1MTM2ZGNhNGM4YmNiODEyMDJlMDU2MTc3M2U4NmQ3",
+       "commit": "c00dc5fec5136dca4c8bcb81202e0561773e86d7",
+       "linkedCommit": "b2de6589f1e28d1e8db37d149bf7b5fff52cffb3",
        "type": "DATASET",
        "show": true,
        "importance": 255,
        "tags": [],
-       "message": "Created new Dataset: uitest/ui-test-dataset",
-       "timestamp": "2019-01-11T17:10:03+00:00",
-       "username": "uitest",
+       "message": "Created new Dataset: cbutler/ui-test-dataset",
+       "timestamp": "2020-01-30T16:00:02+00:00",
+       "username": "cbutler",
        "detailObjects": [
         {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmxvZ181NWUyYWNlMjhhZDI0ODQ0ODc4MmQ5OTJjY2M2ZjFhOFgxOW5YMTlzYzI0QUFBQUFBQUFBQUhNQUFBQT0=",
-         "key": "log_55e2ace28ad248448782d992ccc6f1a8X19nX19sc24AAAAAAAAAAHMAAAA=",
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZjYnV0bGVyJnVpLXRlc3QtZGF0YXNldCZsb2dfZmQ2Nzc3MTg2OGEyMjBlNWI2N2FiOTRiYzQwMWNiZDBYMTluWDE5c2MyNEFBQUFBbkFBQUFITUFBQUE9",
+         "key": "log_fd67771868a220e5b67ab94bc401cbd0X19nX19sc24AAAAAnAAAAHMAAAA=",
          "show": false,
          "importance": 0,
          "type": "DATASET"
@@ -112,13 +28,13 @@
        ],
        "__typename": "ActivityRecordObject"
       },
-      "cursor": "54be2203557502526b85b4663399fa3e8bd979ff"
+      "cursor": "c00dc5fec5136dca4c8bcb81202e0561773e86d7"
      },
      {
       "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JjNiY2QzYWI4ODFmMjkzMDNlYjc2OTQwYTY0MWUzNTI0ZjA2OTczN2E=",
-       "commit": "3bcd3ab881f29303eb76940a641e3524f069737a",
-       "linkedCommit": "02f3c0f706ffecbd836c40cea17ddbce5b1e27f5",
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6ZGF0YXNldCZjYnV0bGVyJnVpLXRlc3QtZGF0YXNldCZlN2U5Yjc2YWI3Y2RiNDhkNDVmZjk3MzM0N2JiZWE5MmJlZjZiZDdm",
+       "commit": "e7e9b76ab7cdb48d45ff973347bbea92bef6bd7f",
+       "linkedCommit": "920d6d80063cad9f2a25267a4330a49a750268b7",
        "type": "DATASET",
        "show": true,
        "importance": 255,
@@ -126,12 +42,12 @@
         "config"
        ],
        "message": "Updated Dataset storage backend configuration",
-       "timestamp": "2019-01-11T17:10:02+00:00",
-       "username": "uitest",
+       "timestamp": "2020-01-30T16:00:02+00:00",
+       "username": "cbutler",
        "detailObjects": [
         {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZ1aXRlc3QmdWktdGVzdC1kYXRhc2V0JmxvZ19kZGQwMzMzM2U4Njg2MjFiMjA0NGU2MjExN2VlOGU3M1gxOW5YMTlzYzI0QUFBQUFBQUFBQUlnQUFBQT0=",
-         "key": "log_ddd03333e868621b2044e62117ee8e73X19nX19sc24AAAAAAAAAAIgAAAA=",
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6ZGF0YXNldCZjYnV0bGVyJnVpLXRlc3QtZGF0YXNldCZsb2dfZmQ2Nzc3MTg2OGEyMjBlNWI2N2FiOTRiYzQwMWNiZDBYMTluWDE5c2MyNEFBQUFBQUFBQUFJZ0FBQUE9",
+         "key": "log_fd67771868a220e5b67ab94bc401cbd0X19nX19sc24AAAAAAAAAAIgAAAA=",
          "show": false,
          "importance": 255,
          "type": "DATASET"
@@ -139,12 +55,12 @@
        ],
        "__typename": "ActivityRecordObject"
       },
-      "cursor": "3bcd3ab881f29303eb76940a641e3524f069737a"
+      "cursor": "e7e9b76ab7cdb48d45ff973347bbea92bef6bd7f"
      }
     ],
     "pageInfo": {
-     "endCursor": "3bcd3ab881f29303eb76940a641e3524f069737a",
-     "hasNextPage": true,
+     "endCursor": "e7e9b76ab7cdb48d45ff973347bbea92bef6bd7f",
+     "hasNextPage": false,
      "hasPreviousPage": false,
      "startCursor": null
     }

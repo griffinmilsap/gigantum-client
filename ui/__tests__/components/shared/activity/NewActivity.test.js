@@ -1,6 +1,6 @@
 
 // components
-import NewActivity from 'Components/shared/activity/NewActivity';
+import NewActivity from 'Components/shared/activity/utils/NewActivity';
 
 describe('NewActivity', () => {
   it('Returns a promise', () => {

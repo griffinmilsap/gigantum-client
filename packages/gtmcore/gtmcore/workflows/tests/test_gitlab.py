@@ -26,8 +26,8 @@ def property_mocks_fixture():
 
 class TestGitLabManager(object):
     @responses.activate
-    def test_user_token(self, gitlab_mngr_fixture):
-        """test the user_token property"""
+    def test_repo_token(self, gitlab_mngr_fixture):
+        """test the repo_token property"""
         # Setup responses mock for this test
         responses.add(responses.POST, 'https://gigantum.com/api/v1',
                       json={'data': {'additionalCredentials': {'gitServiceToken': 'afaketoken'}}}, status=200)
@@ -35,26 +35,26 @@ class TestGitLabManager(object):
         assert gitlab_mngr_fixture._gitlab_token is None
 
         # Get token
-        token = gitlab_mngr_fixture.user_token
+        token = gitlab_mngr_fixture._repo_token()
         assert token == 'afaketoken'
         assert gitlab_mngr_fixture._gitlab_token == 'afaketoken'
 
         # Assert token is returned and set on second call and does not make a request
         responses.add(responses.POST, 'https://gigantum.com/api/v1',
                       json={'data': {'additionalCredentials': {'gitServiceToken': 'NOTTHERIGHTTOKEN'}}}, status=500)
-        assert token == gitlab_mngr_fixture.user_token
+        assert token == gitlab_mngr_fixture._repo_token()
         assert token == 'afaketoken'
 
     @responses.activate
-    def test_user_token_error(self, gitlab_mngr_fixture):
-        """test the user_token property"""
+    def test_repo_token_error(self, gitlab_mngr_fixture):
+        """test the repo_token property"""
         # Setup responses mock for this test
         responses.add(responses.POST, 'https://gigantum.com/api/v1',
                       json={'data': {'additionalCredentials': {'gitServiceToken': 'NOTTHERIGHTTOKEN'}}}, status=500)
 
         # Make sure error is raised when getting the key fails and returns !=200
         with pytest.raises(GitLabException):
-            _ = gitlab_mngr_fixture.user_token
+            _ = gitlab_mngr_fixture._repo_token()
 
     def test_repository_id(self):
         """test the repository_id property"""
@@ -125,7 +125,8 @@ class TestGitLabManager(object):
     @responses.activate
     def test_get_collaborators(self, gitlab_mngr_fixture, property_mocks_fixture):
         """Test the get_collaborators method"""
-        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=1&per_page=20',
                       json=[
                                 {
                                     "id": 29,
@@ -143,7 +144,8 @@ class TestGitLabManager(object):
                                 }
                             ],
                       status=200)
-        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=1&per_page=20',
                       status=400)
 
         collaborators = gitlab_mngr_fixture.get_collaborators("testuser", "test-labbook")
@@ -177,7 +179,8 @@ class TestGitLabManager(object):
                                 "state": "active",
                             },
                       status=201)
-        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=1&per_page=20',
                       json=[
                                 {
                                     "id": 29,
@@ -227,7 +230,8 @@ class TestGitLabManager(object):
                                 }
                             ],
                       status=201)
-        responses.add(responses.POST, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.POST, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                      'page=1&per_page=20',
                       json={
                                 "id": 100,
                                 "name": "New Person",
@@ -237,10 +241,10 @@ class TestGitLabManager(object):
                       status=400)
 
         with pytest.raises(ValueError):
-            _ = gitlab_mngr_fixture.add_collaborator("testuser", "test-labbook", "person100", ProjectPermissions.OWNER)
+            gitlab_mngr_fixture.add_collaborator("testuser", "test-labbook", "person100", ProjectPermissions.OWNER)
 
         with pytest.raises(ValueError):
-            _ = gitlab_mngr_fixture.add_collaborator("testuser", "test-labbook", "person100", ProjectPermissions.READ_ONLY)
+            gitlab_mngr_fixture.add_collaborator("testuser", "test-labbook", "person100", ProjectPermissions.READ_ONLY)
 
     @responses.activate
     def test_delete_collaborator(self, gitlab_mngr_fixture, property_mocks_fixture):
@@ -257,7 +261,8 @@ class TestGitLabManager(object):
                       status=200)
         responses.add(responses.DELETE, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members/100',
                       status=204)
-        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=1&per_page=20',
                       json=[
                                 {
                                     "id": 29,
@@ -289,22 +294,61 @@ class TestGitLabManager(object):
                       status=200)
         responses.add(responses.DELETE, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members/100',
                       status=204)
-        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members',
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/users?username=person100',
                       json=[
                                 {
-                                    "id": 29,
-                                    "name": "Jane Doe",
-                                    "username": "janed",
-                                    "access_level": 40,
-                                    "expires_at": None
+                                    "id": 100,
+                                    "name": "New Person",
+                                    "username": "person100",
+                                    "state": "active",
                                 }
                             ],
+                      status=200)
+        responses.add(responses.DELETE, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members/100',
                       status=400)
 
-        # What is this test even for?
-        # gitlab_mngr_fixture.delete_collaborator("testuser", "test-labbook", 'person100')
-        # with pytest.raises(TestGitLabManager):
-        #     gitlab_mngr_fixture.delete_collaborator("testuser", "test-labbook", 'person100')
+        gitlab_mngr_fixture.delete_collaborator("testuser", "test-labbook", 'person100')
+        with pytest.raises(ValueError):
+            gitlab_mngr_fixture.delete_collaborator("testuser", "test-labbook", 'person100')
+
+    @responses.activate
+    def test_get_collaborators_pagination(self, gitlab_mngr_fixture, property_mocks_fixture):
+        """Test the get_collaborators method and required pagination"""
+        data1 = [{"id": 1,
+                  "name": "Jane Doe",
+                  "username": "janed",
+                  "access_level": ProjectPermissions.OWNER.value,
+                  "expires_at": None}]
+        for idx in range(2, 21):
+            data1.append({"id": idx,
+                          "name": f"User {idx}",
+                          "username": f"user{idx}",
+                          "access_level": ProjectPermissions.READ_ONLY.value,
+                          "expires_at": None})
+        data2 = list()
+        for idx in range(21, 25):
+            data2.append({"id": idx,
+                          "name": f"User {idx}",
+                          "username": f"user{idx}",
+                          "access_level": ProjectPermissions.READ_ONLY.value,
+                          "expires_at": None})
+
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=1&per_page=20',
+                      json=data1,
+                      status=200)
+
+        responses.add(responses.GET, 'https://repo.gigantum.io/api/v4/projects/testuser%2Ftest-labbook/members?'
+                                     'page=2&per_page=20',
+                      json=data2,
+                      status=200)
+
+        collaborators = gitlab_mngr_fixture.get_collaborators("testuser", "test-labbook")
+
+        assert len(collaborators) == 24
+        assert collaborators[0] == (1, 'janed', ProjectPermissions.OWNER)
+        assert collaborators[1] == (2, 'user2', ProjectPermissions.READ_ONLY)
+        assert collaborators[23] == (24, 'user24', ProjectPermissions.READ_ONLY)
 
     @responses.activate
     def test_error_on_missing_repo(self, gitlab_mngr_fixture):

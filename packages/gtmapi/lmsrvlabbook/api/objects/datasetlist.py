@@ -15,11 +15,12 @@ from lmsrvlabbook.api.connections.remotedataset import RemoteDatasetConnection, 
 from lmsrvcore.caching import DatasetCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.connections import ListBasedConnection
+from lmsrvcore.auth.identity import tokens_from_request_context
 
 logger = LMLogger.get_logger()
 
 
-class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class DatasetList(graphene.ObjectType):
     """A type simply used as a container to group local and remote Datasets for better relay support
 
     Dataset and RemoteDataset objects are uniquely identified by both the "owner" and the "name" of the Dataset
@@ -27,6 +28,9 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
     NOTE: RemoteDatasets require all fields to be explicitly set as there is no current way to asynchronously retrieve
           the data
     """
+    class Meta:
+        interfaces = (graphene.relay.Node,)
+
     # List of specific local datasets based on Node ID
     local_by_id = graphene.List(Dataset, ids=graphene.List(graphene.String))
 
@@ -186,11 +190,8 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
         else:
             sort = "desc"
 
-        # Extract valid tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if access_token is None or id_token is None:
-            raise ValueError("Authorization headers not provided. Cannot list remote Projects.")
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
         query_template = Template("""
 {
@@ -247,7 +248,7 @@ class DatasetList(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
                                 "creation_date_utc": node["createdOnUtc"],
                                 "modified_date_utc": node["modifiedOnUtc"],
                                 "visibility": node["visibility"],
-                                "import_url": f"https://{remote_url}/{node['namespace']}/{node['repositoryName']}.git"
+                                "import_url": f"https://{remote_url}/{node['namespace']}/{node['repositoryName']}.git/"
                                }
 
                 edge_objs.append(RemoteDatasetConnection.Edge(node=RemoteDataset(**create_data),

@@ -69,6 +69,7 @@ const determineIsLocked = (props) => {
     isSyncing,
     isPublishing,
     isUploading,
+    globalIsUploading,
   } = props;
 
   return (
@@ -79,6 +80,7 @@ const determineIsLocked = (props) => {
     || isSyncing
     || isPublishing
     || isUploading
+    || globalIsUploading
   );
 };
 
@@ -173,6 +175,7 @@ class Labbook extends Component<Props> {
       || nextProps.isSyncing
       || isPublishing
       || isUploading
+      || nextProps.globalIsUploading
       || (transitionState === 'Starting')
       || (transitionState === 'Exporting');
 
@@ -183,7 +186,10 @@ class Labbook extends Component<Props> {
       ? nextProps.labbook.collaborators
       : [];
 
-    const lockFileBrowser = nextProps.isSyncing || nextProps.globalIsUploading || isPublishing;
+    const lockFileBrowser = nextProps.isSyncing
+      || nextProps.globalIsUploading
+      || isPublishing
+      || nextProps.isExporting;
     return {
       ...state,
       deletedBranches: newDeletedBranches,

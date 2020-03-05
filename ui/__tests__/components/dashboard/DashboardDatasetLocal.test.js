@@ -1,14 +1,13 @@
 // vendor
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { mount } from 'enzyme';
 import relayTestingUtils from '@gigantum/relay-testing-utils';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 // store
 import store from 'JS/redux/store';
 import history from 'JS/history';
-// components;
+// components
 import LocalDatasets from 'Components/dashboard/datasets/localDatasets/LocalDatasets';
 // data
 import json from './datasets/localDatasets/__relaydata__/LocalDatasets.json';
@@ -31,7 +30,7 @@ describe('DashbboardDatasetsLocal', () => {
         <Provider store={store}>
           <Router>
             <LocalDatasets
-                {...fixtures}
+              {...fixtures}
             />
           </Router>
         </Provider>, {}, json.data,

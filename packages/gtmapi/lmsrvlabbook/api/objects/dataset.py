@@ -16,6 +16,8 @@ from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
 from gtmcore.configuration.utils import call_subprocess
 from gtmcore.inventory.branching import BranchManager
+from lmsrvcore.auth.identity import get_identity_manager_instance
+from lmsrvcore.auth.identity import tokens_from_request_context
 
 from lmsrvlabbook.api.objects.datasettype import DatasetType
 from lmsrvlabbook.api.objects.collaborator import Collaborator
@@ -41,12 +43,15 @@ class DatasetConfigurationParameterInput(graphene.InputObjectType):
     value = graphene.String(required=True)
 
 
-class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class Dataset(graphene.ObjectType):
     """A type representing a Dataset and all of its contents
 
     Datasets are uniquely identified by both the "owner" and the "name" of the Dataset
 
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # Store collaborator data so it is only fetched once per request
     _collaborators = None
 
@@ -163,11 +168,8 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         config = flask.current_app.config['LABMGR_CONFIG']
         remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
 
         # Get collaborators from remote service
         mgr = GitLabManager(remote_config['git_remote'], remote_config['hub_api'],
@@ -411,26 +413,26 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
 
     @staticmethod
     def helper_resolve_visibility(dataset, info):
-        # Get remote server configuration
-        config = flask.current_app.config['LABMGR_CONFIG']
-        remote_config = config.get_remote_configuration()
+        if not get_identity_manager_instance().allow_server_access:
+            return 'local'
+        else:
+            # Get remote server configuration
+            config = flask.current_app.config['LABMGR_CONFIG']
+            remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+            # Get tokens from request context
+            access_token, id_token = tokens_from_request_context()
 
-        mgr = GitLabManager(remote_config['git_remote'],
-                            remote_config['hub_api'],
-                            access_token=access_token,
-                            id_token=id_token)
-        try:
-            owner = InventoryManager().query_owner(dataset)
-            d = mgr.repo_details(namespace=owner, repository_name=dataset.name)
-            return d.get('visibility')
-        except GitLabException:
-            return "local"
+            mgr = GitLabManager(remote_config['git_remote'],
+                                remote_config['hub_api'],
+                                access_token=access_token,
+                                id_token=id_token)
+            try:
+                owner = InventoryManager().query_owner(dataset)
+                d = mgr.repo_details(namespace=owner, repository_name=dataset.name)
+                return d.get('visibility')
+            except GitLabException:
+                return "local"
 
     def resolve_visibility(self, info):
         """ Return string indicating visibility of project from GitLab:
@@ -446,11 +448,7 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
         if remotes:
             url = [x['url'] for x in remotes if x['name'] == 'origin']
             if url:
-                url = url[0]
-                if "http" in url and url[-4:] != ".git":
-                    logger.warning(f"Fixing remote URL format: {dataset.name}: {url}")
-                    url = f"{url}.git"
-                return url
+                return url[0]
             else:
                 dataset.warning(f"There exist remotes in {str(dataset)}, but no origin found.")
         return None
@@ -472,9 +470,10 @@ class Dataset(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
     @staticmethod
     def _helper_configure_default_parameters(dataset):
         """Helper to load the default configuration at runtime"""
-        dataset.backend.set_default_configuration(get_logged_in_username(),
-                                                  flask.g.get('access_token', None),
-                                                  flask.g.get('id_token', None))
+        # Get tokens from request context
+        access_token, id_token = tokens_from_request_context(tokens_required=True)
+
+        dataset.backend.set_default_configuration(get_logged_in_username(), access_token, id_token)
         return dataset
 
     def resolve_backend_is_configured(self, info):

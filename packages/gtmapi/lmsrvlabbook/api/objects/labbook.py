@@ -15,7 +15,8 @@ from gtmcore.environment.utils import get_package_manager
 from lmsrvcore.caching import LabbookCacheController
 from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
-from lmsrvcore.auth.identity import parse_token
+from lmsrvcore.auth.identity import get_identity_manager_instance
+from lmsrvcore.auth.identity import tokens_from_request_context
 
 from lmsrvlabbook.api.objects.jobstatus import JobStatus
 from lmsrvlabbook.api.objects.environment import Environment
@@ -34,12 +35,15 @@ from lmsrvlabbook.dataloader.fetch import FetchLoader
 logger = LMLogger.get_logger()
 
 
-class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class Labbook(graphene.ObjectType):
     """A type representing a LabBook and all of its contents
 
     LabBooks are uniquely identified by both the "owner" and the "name" of the LabBook
 
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # Store collaborator data so it is only fetched once per request
     _collaborators = None
 
@@ -411,27 +415,27 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
             info: The graphene info object for this requests
 
         """
-        config = flask.current_app.config['LABMGR_CONFIG']
-        remote_config = config.get_remote_configuration()
+        if self._collaborators is None:
+            config = flask.current_app.config['LABMGR_CONFIG']
+            remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+            # Get tokens from request context
+            access_token, id_token = tokens_from_request_context(tokens_required=True)
 
-        mgr = GitLabManager(remote_config['git_remote'],
-                            remote_config['hub_api'],
-                            access_token=access_token,
-                            id_token=id_token)
-        try:
-            self._collaborators = [Collaborator(owner=self.owner, name=self.name,
-                                                collaborator_username=c[1],
-                                                permission=ProjectPermissions(c[2]).name)
-                                   for c in mgr.get_collaborators(self.owner, self.name)]
-        except ValueError:
-            # If ValueError Raised, assume repo doesn't exist yet
-            self._collaborators = []
+            mgr = GitLabManager(remote_config['git_remote'],
+                                remote_config['hub_api'],
+                                access_token=access_token,
+                                id_token=id_token)
+            try:
+                self._collaborators = [Collaborator(owner=self.owner, name=self.name,
+                                                    collaborator_username=c[1],
+                                                    permission=ProjectPermissions(c[2]).name)
+                                       for c in mgr.get_collaborators(self.owner, self.name)]
+            except ValueError:
+                # If ValueError Raised, assume repo doesn't exist yet
+                self._collaborators = []
+        else:
+            return self._collaborators
 
     def helper_resolve_collaborators(self, labbook, info):
         """Helper method to fetch this labbook's collaborators and generate the resulting list of collaborators
@@ -544,27 +548,27 @@ class Labbook(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepositor
 
     @staticmethod
     def helper_resolve_visibility(labbook, info):
-        # Get remote server configuration
-        config = flask.current_app.config['LABMGR_CONFIG']
-        remote_config = config.get_remote_configuration()
+        if not get_identity_manager_instance().allow_server_access:
+            return 'local'
+        else:
+            # Get remote server configuration
+            config = flask.current_app.config['LABMGR_CONFIG']
+            remote_config = config.get_remote_configuration()
 
-        # Extract valid Bearer and ID tokens
-        access_token = flask.g.get('access_token', None)
-        id_token = flask.g.get('id_token', None)
-        if not access_token or not id_token:
-            raise ValueError("Deleting a remote Dataset requires a valid session.")
+            # Get tokens from request context
+            access_token, id_token = tokens_from_request_context(tokens_required=True)
 
-        mgr = GitLabManager(remote_config['git_remote'],
-                            remote_config['hub_api'],
-                            access_token=access_token,
-                            id_token=id_token)
-        try:
-            owner = InventoryManager().query_owner(labbook)
-            d = mgr.repo_details(namespace=owner, repository_name=labbook.name)
-            assert 'visibility' in d.keys(), 'Visibility is not in repo details response keys'
-            return d.get('visibility')
-        except GitLabException:
-            return "local"
+            mgr = GitLabManager(remote_config['git_remote'],
+                                remote_config['hub_api'],
+                                access_token=access_token,
+                                id_token=id_token)
+            try:
+                owner = InventoryManager().query_owner(labbook)
+                d = mgr.repo_details(namespace=owner, repository_name=labbook.name)
+                assert 'visibility' in d.keys(), 'Visibility is not in repo details response keys'
+                return d.get('visibility')
+            except GitLabException:
+                return "local"
 
     def resolve_visibility(self, info):
         """ Return string indicating visibility of project from GitLab:

@@ -3,7 +3,7 @@
 exports[`DatasetActivityContainer Renders a snapshot 1`] = `
 <div
   className="Activity"
-  data-selenium-id="Activity"
+  data-selenium-id="Activityx"
 >
   <div
     className="Activity__inner-container flex flex--row flex--wrap justify--flex-start"
@@ -47,6 +47,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
       <div>
         <div
           className="Activity__date-section Activity__date-section--0"
+          data-selenium-id="DateSectionx"
         >
           <div
             className="Activity__date-tab note"
@@ -54,7 +55,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
             <div
               className="Activity__date-day"
             >
-              11
+              30
             </div>
             <div
               className="Activity__date-sub"
@@ -67,13 +68,13 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
               <div
                 className="Activity__date-year"
               >
-                2019
+                2020
               </div>
             </div>
           </div>
           <div
             className="UserNote__container"
-            data-selenium-id="UserNoteWrapper"
+            data-selenium-id="UserNoteWrapperx"
           >
             <button
               className="Btn Btn--feature Btn--feature--expanded--paddingLeft relative UserNote__button"
@@ -91,11 +92,11 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
           >
             <div
               className="CardWrapper"
-              data-selenium-id="CardWrapper"
+              data-selenium-id="CardWrapperx"
             >
               <div
                 className="ActivityCard__container column-1-span-9"
-                data-selenium-id="ActivityCard"
+                data-selenium-id="ActivityCardx"
               >
                 <div
                   className="ActivityCard ActivityCard--collapsed card"
@@ -111,6 +112,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                     <div
                       className="ActivityCard__title flex flex--row justify--space-between closed"
                       onClick={[Function]}
+                      role="presentation"
                     >
                       <div
                         className="ActivityCard__stack"
@@ -118,19 +120,21 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                         <p
                           className="ActivityCard__time"
                         >
-                          12:15pm
+                          4:00pm
                         </p>
                         <div
                           className="ActivityCard__user"
-                        />
+                        >
+                          C
+                        </div>
                       </div>
                       <h6
                         className="ActivityCard__commit-message"
                       >
                         <b>
-                          uitest - 
+                          cbutler - 
                         </b>
-                        Uploaded 1 new file(s). 
+                        Created new Dataset: cbutler/ui-test-dataset
                       </h6>
                     </div>
                   </div>
@@ -139,11 +143,11 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
             </div>
             <div
               className="CardWrapper"
-              data-selenium-id="CardWrapper"
+              data-selenium-id="CardWrapperx"
             >
               <div
                 className="ActivityCard__container column-1-span-9"
-                data-selenium-id="ActivityCard"
+                data-selenium-id="ActivityCardx"
               >
                 <div
                   className="ActivityCard ActivityCard--collapsed card"
@@ -159,6 +163,7 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                     <div
                       className="ActivityCard__title flex flex--row justify--space-between closed"
                       onClick={[Function]}
+                      role="presentation"
                     >
                       <div
                         className="ActivityCard__stack"
@@ -166,161 +171,19 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
                         <p
                           className="ActivityCard__time"
                         >
-                          12:14pm
+                          4:00pm
                         </p>
                         <div
                           className="ActivityCard__user"
-                        />
-                      </div>
-                      <h6
-                        className="ActivityCard__commit-message"
-                      >
-                        <b>
-                          uitest - 
-                        </b>
-                        Uploaded 1 new file(s). 
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="CardWrapper"
-              data-selenium-id="CardWrapper"
-            >
-              <div
-                className="ActivityCard__container column-1-span-9"
-                data-selenium-id="ActivityCard"
-              >
-                <div
-                  className="ActivityCard ActivityCard--collapsed card"
-                  style={Object {}}
-                >
-                  <div
-                    className="ActivityCard__badge ActivityCard__badge--dataset"
-                    title="dataset"
-                  />
-                  <div
-                    className="ActivityCard__content"
-                  >
-                    <div
-                      className="ActivityCard__title flex flex--row justify--space-between closed"
-                      onClick={[Function]}
-                    >
-                      <div
-                        className="ActivityCard__stack"
-                      >
-                        <p
-                          className="ActivityCard__time"
                         >
-                          12:12pm
-                        </p>
-                        <div
-                          className="ActivityCard__user"
-                        />
+                          C
+                        </div>
                       </div>
                       <h6
                         className="ActivityCard__commit-message"
                       >
                         <b>
-                          uitest - 
-                        </b>
-                        Uploaded 1 new file(s). 
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="CardWrapper"
-              data-selenium-id="CardWrapper"
-            >
-              <div
-                className="ActivityCard__container column-1-span-9"
-                data-selenium-id="ActivityCard"
-              >
-                <div
-                  className="ActivityCard ActivityCard--collapsed card"
-                  style={Object {}}
-                >
-                  <div
-                    className="ActivityCard__badge ActivityCard__badge--dataset"
-                    title="dataset"
-                  />
-                  <div
-                    className="ActivityCard__content"
-                  >
-                    <div
-                      className="ActivityCard__title flex flex--row justify--space-between closed"
-                      onClick={[Function]}
-                    >
-                      <div
-                        className="ActivityCard__stack"
-                      >
-                        <p
-                          className="ActivityCard__time"
-                        >
-                          12:10pm
-                        </p>
-                        <div
-                          className="ActivityCard__user"
-                        />
-                      </div>
-                      <h6
-                        className="ActivityCard__commit-message"
-                      >
-                        <b>
-                          uitest - 
-                        </b>
-                        Created new Dataset: uitest/ui-test-dataset
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="CardWrapper"
-              data-selenium-id="CardWrapper"
-            >
-              <div
-                className="ActivityCard__container column-1-span-9"
-                data-selenium-id="ActivityCard"
-              >
-                <div
-                  className="ActivityCard ActivityCard--collapsed card"
-                  style={Object {}}
-                >
-                  <div
-                    className="ActivityCard__badge ActivityCard__badge--dataset"
-                    title="dataset"
-                  />
-                  <div
-                    className="ActivityCard__content"
-                  >
-                    <div
-                      className="ActivityCard__title flex flex--row justify--space-between closed"
-                      onClick={[Function]}
-                    >
-                      <div
-                        className="ActivityCard__stack"
-                      >
-                        <p
-                          className="ActivityCard__time"
-                        >
-                          12:10pm
-                        </p>
-                        <div
-                          className="ActivityCard__user"
-                        />
-                      </div>
-                      <h6
-                        className="ActivityCard__commit-message"
-                      >
-                        <b>
-                          uitest - 
+                          cbutler - 
                         </b>
                         Updated Dataset storage backend configuration
                       </h6>
@@ -331,10 +194,6 @@ exports[`DatasetActivityContainer Renders a snapshot 1`] = `
             </div>
           </div>
         </div>
-        <div
-          className="ActivityCard ActivityCard__loader ActivityCard__loader--0 card column-1-span-9"
-          data-selenium-id="PaginationLoader"
-        />
       </div>
     </div>
   </div>

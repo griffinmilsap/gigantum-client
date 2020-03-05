@@ -10,6 +10,7 @@ from rq import get_current_job
 from gtmcore.activity.monitors.devenv import DevEnvMonitorManager
 from gtmcore.container import container_for_context
 from gtmcore.labbook import LabBook
+from gtmcore.gitlib import RepoLocation
 
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
 from gtmcore.inventory.branching import MergeConflict
@@ -115,7 +116,18 @@ def sync_repository(repository: Repository, username: str, override: MergeOverri
 
 
 def import_labbook_from_remote(remote_url: str, username: str, config_file: str = None) -> str:
-    """Return the root directory of the newly imported Project"""
+    """Return the root directory of the newly imported Project
+
+    Args:
+        remote_url: Canonical world-facing URI, like "https://repo.domain/owner/project". This will be converted to the
+          actual network location for our repository, like "https://username@repo.domain/owner/project.git/", as
+          robustly as we can manage.
+        username: username for currently logged in user
+        config_file: a copy of the parsed config file
+
+    Returns:
+        Path to project root directory
+    """
     p = os.getpid()
     logger = LMLogger.get_logger()
     logger.info(f"(Job {p}) Starting import_labbook_from_remote({remote_url}, {username})")
@@ -130,20 +142,18 @@ def import_labbook_from_remote(remote_url: str, username: str, config_file: str 
             job.meta['feedback'] = job.meta['feedback'] + f'\n{msg}'
         job.save_meta()
 
+    remote = RepoLocation(remote_url, username)
+    update_meta(f"Importing Project from {remote.owner_repo!r}...")
+
     try:
-        toks = remote_url.split("/")
-        if len(toks) > 1:
-            proj_path = f'{toks[-2]}/{toks[-1].replace(".git", "")}'
-        else:
-            proj_path = remote_url
-        update_meta(f"Importing Project from {proj_path!r}...")
-        wf = LabbookWorkflow.import_from_remote(remote_url, username, config_file)
-        update_meta(f"Imported Project {wf.labbook.name}!")
-        return wf.labbook.root_dir
+        wf = LabbookWorkflow.import_from_remote(remote, username, config_file)
     except Exception as e:
-        update_meta(f"Could not import Project from {remote_url}.")
+        update_meta(f"Could not import Project from {remote.remote_location}.")
         logger.exception(f"(Job {p}) Error on import_labbook_from_remote: {e}")
         raise
+
+    update_meta(f"Imported Project {wf.labbook.name}!")
+    return wf.labbook.root_dir
 
 
 def export_labbook_as_zip(labbook_path: str, lb_export_directory: str) -> str:

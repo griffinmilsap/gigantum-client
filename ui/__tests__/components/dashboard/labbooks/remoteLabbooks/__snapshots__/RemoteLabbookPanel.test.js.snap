@@ -13,17 +13,17 @@ exports[`Test RemoteLabbooks rendering 1`] = `
       data-tooltip="private"
     />
     <button
-      className="Btn__dashboard Btn--action Btn__dashboard--cloud Btn__Tooltip-data"
-      data-tooltip="This Project has already been imported"
-      disabled={true}
+      className="Btn__dashboard Btn--action Btn__dashboard--cloud-download"
+      disabled={false}
+      onClick={[Function]}
       type="button"
     >
-      Imported
+      Import
     </button>
     <button
-      className="Btn__dashboard Btn--action Btn__dashboard--delete"
-      data-tooltip=""
-      disabled={false}
+      className="Btn__dashboard Btn--action Tooltip-data Tooltip-data--wide Btn__dashboard--delete-disabled"
+      data-tooltip="Only owners and admins can delete a remote Project"
+      disabled={true}
       onClick={[Function]}
       type="button"
     >
@@ -43,7 +43,7 @@ exports[`Test RemoteLabbooks rendering 1`] = `
           <span
             className=""
           >
-            ui-test-remote
+            xd
           </span>
         </span>
       </h5>
@@ -51,7 +51,7 @@ exports[`Test RemoteLabbooks rendering 1`] = `
     <p
       className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--owner"
     >
-      uitest
+      cbutler
     </p>
     <p
       className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--metadata"
@@ -62,7 +62,7 @@ exports[`Test RemoteLabbooks rendering 1`] = `
         Created:
       </span>
        
-      Fri Jan 18 2019
+      Tue Jul 09 2019
     </p>
     <p
       className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--metadata"
@@ -73,18 +73,12 @@ exports[`Test RemoteLabbooks rendering 1`] = `
         Modified:
       </span>
        
-      Fri Jan 18 2019
+      Tue Jul 09 2019
     </p>
     <p
       className="RemoteLabbooks__paragraph RemoteLabbooks__paragraph--description"
     >
-      <span>
-        <span
-          className=""
-        >
-          No Description
-        </span>
-      </span>
+      No description provided
     </p>
   </div>
 </div>

@@ -6,6 +6,7 @@ from lmsrvcore import telemetry
 from lmsrvcore.auth.user import get_logged_in_author, get_logged_in_username
 from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
+from gtmcore.gitlib.git import GitAuthor
 
 
 logger = LMLogger.get_logger()
@@ -76,6 +77,7 @@ def savehook(username: str, owner: str, labbook_name: str):
     try:
         changed_file = request.args.get('file')
         jupyter_token = request.args.get('jupyter_token')
+        email = request.args.get('email')
         logger.debug(f"Received save hook for {changed_file} in {username}/{owner}/{labbook_name}")
 
         redis_conn = redis.Redis(db=1)
@@ -96,11 +98,8 @@ def savehook(username: str, owner: str, labbook_name: str):
             logger.info(f"Skipping jupyter savehook for {username}/{owner}/{labbook_name} due to active kernel")
             return 'success'
 
-        # TODO: DMK fix when integrating anonymous support.
-        # lb = InventoryManager().load_labbook(username, owner, labbook_name,
-        #                                      author=get_logged_in_author())
-
-        lb = InventoryManager().load_labbook(username, owner, labbook_name)
+        lb = InventoryManager().load_labbook(username, owner, labbook_name,
+                                             author=GitAuthor(name=username, email=email))
         with lb.lock():
             lb.sweep_uncommitted_changes()
 

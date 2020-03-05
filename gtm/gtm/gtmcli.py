@@ -160,9 +160,11 @@ def cloud_actions(args):
         if args.stage == "dev":
             config_override_file = os.path.join("resources", "client", "cloud-config-override-dev.yaml")
             honeycomb_dataset = "client-logs"
+            ui_build_script = "resources/docker/ui_build_script_hub_dev.sh"
         elif args.stage == "prod":
             config_override_file = os.path.join("resources", "client", "cloud-config-override-prod.yaml")
             honeycomb_dataset = "client-logs-prod"
+            ui_build_script = "resources/docker/ui_build_script_hub_prod.sh"
         else:
             raise ValueError(f"Unsupported stage when building cloud client: {args.stage}")
 
@@ -182,7 +184,7 @@ def cloud_actions(args):
                        "NGINX_API_CONFIG": "resources/client/nginx_api.conf",
                        "SUPERVISOR_CONFIG": os.path.join(build_args['build_dir'], "supervisord-cloud.conf"),
                        "ENTRYPOINT_FILE": "resources/client/entrypoint-cloud.sh",
-                       "UI_BUILD_SCRIPT": "resources/docker/ui_build_script_hub.sh",
+                       "UI_BUILD_SCRIPT": ui_build_script,
                        "HONEYTAIL_INSTALLER": "resources/client/honeytail-installer-cloud.sh",
                        "HONEYCOMB_WRITE_KEY": honeycomb_write_key
                        }

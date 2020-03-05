@@ -84,7 +84,7 @@ class TestDatasetFilesMutations(object):
         im = InventoryManager(fixture_working_dir[0])
         ds = im.create_dataset('default', 'default', "dataset100", storage_type="gigantum_object_v1", description="100")
         lb = im.create_labbook('default', 'default', "test-lb", description="tester")
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", 'default', 'dataset100', lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", 'default', 'dataset100', lb, 'default')
 
         flask.g.access_token = "asdf"
         flask.g.id_token = "1234"

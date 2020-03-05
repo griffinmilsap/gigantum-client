@@ -113,8 +113,18 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
       labbookName: 'ui-test-project',
       datasetName: 'ui-test-dataset',
       name: 'ui-test-project',
-      owner: 'uitest',
+      owner: 'cbutler',
       manager: 'pip',
+      overviewSkip: false,
+      activitySkip: false,
+      skipPackages: false,
+      environmentSkip: false,
+      dataSkip: false,
+      codeSkip: false,
+      datasetSkip: false,
+      inputSkip: false,
+      outputSkip: false,
+      labbookSkip: false,
       first: 20,
       cursor: null,
       hasNext: false,
@@ -182,7 +192,7 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
       const exists = fs.existsSync(testFile)
 
       //if test does not exist create a snapshot test
-      if(!exists){
+      if (!exists){
         createSnapshotTest(testFile, route)
       }
 
@@ -203,8 +213,6 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
 
       //create variables using relay info and variableReference
       let variables = buildQueryVariables(route)
-      console.log(route)
-      console.log(variables)
       return {
         dirname: route,
         relay: require(__dirname + '/../' + route), //relay query
@@ -217,8 +225,7 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
     //loop through queries
     relayQueries.forEach((queryData) => {
 
-      let variables = queryData.variables
-      console.log(variables)
+      let variables = queryData.variables;
       //fetchData for test from the api
       fetch('http://localhost:10000/api/labbook/', {
         method: 'POST',
@@ -229,7 +236,7 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
           'Identity': secret.idToken
         },
         body: JSON.stringify({
-          query: queryData.relay.text,
+          query: queryData.relay.params.text,
           variables: variables
         })
       }).then(function(response) {
@@ -240,7 +247,7 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
                 console.log(`Error: ${data.errors[0].message}`)
               }
               //create a relayData file to output data
-              let relayDataField = path.dirname(queryData.testFile) + '/__relaydata__/' + path.basename(queryData.testFile).replace('.test.js', '.json')
+              let relayDataField = path.dirname(queryData.testFile) + '/__relaydata__/' + path.basename(queryData.testFile).replace('.test.js', '.json');
 
               //check if directories exist
               function ensureDirectoryExistence(filePath) {
@@ -266,8 +273,13 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
 
                     let stringData = JSON.stringify(data, null, ' ')
 
-                    //write to the file
-                    fs.write(fd, stringData, 0, stringData.length, function(err) {
+                    // write to the file
+                    fs.write(
+                      fd,
+                      stringData,
+                      0,
+                      stringData.length,
+                      function(err) {
 
                         if (err) throw 'error writing file: ' + err;
 
@@ -277,13 +289,11 @@ moveIdTokens('./config/testData/cached_id_jwt', movePath, function(err){
                         })
                     });
                   });
-                }else{
+                } else {
 
-                  //create new files
+                  // create new files
                   fs.writeFile(relayDataField, JSON.stringify(data), { flag: 'wx' }, (err)=>{
-
                     console.log(err)
-
                   })
                 }
               })

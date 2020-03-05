@@ -20,8 +20,11 @@ ActivityDetailTypeEnum = graphene.Enum.from_enum(ActivityDetailType)
 ActivityActionTypeEnum = graphene.Enum.from_enum(ActivityAction)
 
 
-class ActivityDetailObject(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class ActivityDetailObject(graphene.ObjectType):
     """Container for Activity Detail Records"""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # The loaded detail record data
     _detail_record = None
     _repository_type = None
@@ -139,8 +142,11 @@ class ActivityDetailObject(graphene.ObjectType, interfaces=(graphene.relay.Node,
         return [(x, data_dict[x]) for x in data_dict]
 
 
-class ActivityRecordObject(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class ActivityRecordObject(graphene.ObjectType):
     """Container for Activity Records"""
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # An instance of the loaded activity record data
     _activity_record = None
     _repository_type = None
@@ -295,16 +301,16 @@ class ActivityRecordObject(graphene.ObjectType, interfaces=(graphene.relay.Node,
                 self._load_activity_record(info)
 
             # Load detail objects from database
-            with self._activity_record.inspect_detail_objects() as details:
-                self.detail_objects = [ActivityDetailObject(id=f"{self._repository_type}&{self.owner}&{self.name}&{d.key}",
-                                                            owner=self.owner,
-                                                            name=self.name,
-                                                            _repository_type=self._repository_type,
-                                                            key=d.key,
-                                                            show=d.show,
-                                                            tags=d.tags,
-                                                            importance=d.importance,
-                                                            action=d.action,
-                                                            type=d.type) for d in details]
+            self.detail_objects = [ActivityDetailObject(id=f"{self._repository_type}&{self.owner}&{self.name}&{d.key}",
+                                                        owner=self.owner,
+                                                        name=self.name,
+                                                        _repository_type=self._repository_type,
+                                                        key=d.key,
+                                                        show=d.show,
+                                                        tags=d.tags,
+                                                        importance=d.importance,
+                                                        action=d.action,
+                                                        type=d.type)
+                                   for d in self._activity_record.detail_objects]
 
         return self.detail_objects

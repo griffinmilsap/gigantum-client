@@ -1,13 +1,15 @@
 import json
 from contextlib import contextmanager
 from enum import Enum
-from typing import (Any, List, Tuple, Optional, Dict)
+from typing import (Any, List, Tuple, Optional, Dict, overload)
 import base64
 import blosc
 import copy
 import operator
 import datetime
+from dataclasses import field, dataclass
 
+from gtmcore.activity.utils import ImmutableDict, ImmutableList, SortedImmutableList, DetailRecordList
 from gtmcore.activity.serializers import Serializer
 from gtmcore.exceptions import GigantumException
 from gtmcore.logging import LMLogger
@@ -76,39 +78,76 @@ class ActivityDetailRecordEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
+@dataclass(frozen = True)
 class ActivityDetailRecord(object):
-    """A class to represent an activity detail entry that can be stored in an activity entry"""
+    """A class to represent an activity detail entry that can be stored in an activity entry
 
-    def __init__(self, detail_type: ActivityDetailType, key: Optional[str] = None, show: bool = True,
-                 importance: int = 0, action: ActivityAction = ActivityAction.NOACTION) -> None:
-        """Constructor
+    Attributes:
+        detail_type: Type indicating the category of detail
+        key: Key used to load detail record from the embedded detail DB
+        data:  Storage for detail record data, organized by MIME type to support proper rendering
+        action: Action for this detail record
+        show: Boolean indicating if this item should be "shown" or "hidden"
+        importance: A score indicating the importance, currently expected to range from 0-255
+        tags: A list of tags for the record
+    """
 
-        Args:
-            key(str): Key used to access and identify the object
+    # Type indicating the category of detail
+    detail_type: ActivityDetailType
+
+    @property
+    def type(self):
+        """Alias for detail_type for backwards compatibility"""
+        return self.detail_type
+
+    # Key used to load detail record from the embedded detail DB
+    key: Optional[str] = None
+
+    # Storage for detail record data, organized by MIME type to support proper rendering
+    data: ImmutableDict[str, str] = field(default_factory = ImmutableDict)
+
+    # Action for this detail record
+    action: ActivityAction = ActivityAction.NOACTION
+
+    # Boolean indicating if this item should be "shown" or "hidden"
+    show: bool = True
+
+    # A score indicating the importance, currently expected to range from 0-255
+    importance: int = 0
+
+    # A list of tags for the record
+    tags: ImmutableList[str] = field(default_factory = ImmutableList)
+
+    def update(self, 
+               detail_type: Optional[ActivityDetailType] = None,
+               key: Optional[str] = None,
+               data: Optional[ImmutableDict[str, str]] = None,
+               action: Optional[ActivityAction] = None,
+               show: Optional[bool] = None,
+               importance: Optional[int] = None,
+               tags: Optional[ImmutableList[str]] = None) -> 'ActivityDetailRecord':
+        l = locals()
+        def find(name):
+            v = l[name]
+            if v is None:
+                v = getattr(self,name)
+            return v
+
+        return ActivityDetailRecord(detail_type = find('detail_type'),
+                                    key = find('key'),
+                                    data = find('data'),
+                                    action = find('action'),
+                                    show = find('show'),
+                                    importance = find('importance'),
+                                    tags = find('tags'))
+
+    @property
+    def is_loaded(self):
+        """Flag indicating if this record object has been populated with data
+           (used primarily during lazy loading)
         """
-        # Key used to load detail record from the embedded detail DB
-        self.key = key
-
-        # Flag indicating if this record object has been populated with data (used primarily during lazy loading)
-        self.is_loaded = False
-
-        # Storage for detail record data, organized by MIME type to support proper rendering
-        self.data: dict = dict()
-
-        # Type indicating the category of detail
-        self.type = detail_type
-
-        # Action for this detail record
-        self.action = action
-
-        # Boolean indicating if this item should be "shown" or "hidden"
-        self.show = show
-
-        # A score indicating the importance, currently expected to range from 0-255
-        self.importance = importance
-
-        # A list of tags for the record
-        self.tags: Optional[List[str]] = []
+        # If data has been added, it can be accessed now
+        return len(self.data) > 0
 
     @property
     def log_str(self) -> str:
@@ -142,7 +181,7 @@ class ActivityDetailRecord(object):
         return ActivityDetailRecord(ActivityDetailType(int(type_int)), show=bool(int(show_int)),
                                     importance=int(importance), key=key, action=ActivityAction(int(action_int)))
 
-    def add_value(self, mime_type: str, value: Any) -> None:
+    def add_value(self, mime_type: str, value: str) -> 'ActivityDetailRecord':
         """Method to add data to this record by MIME type
 
         Args:
@@ -150,16 +189,13 @@ class ActivityDetailRecord(object):
             value(Any): The value for this record
 
         Returns:
-            None
+            ActivityDetailRecord
         """
         if mime_type in self.data:
             raise ValueError("Attempting to duplicate a MIME type while adding detail data")
 
         # Store value
-        self.data[mime_type] = value
-
-        # Since you added data, it can be accessed now
-        self.is_loaded = True
+        return self.update(data = self.data.set(mime_type, value))
 
     @property
     def data_size(self) -> int:
@@ -188,16 +224,16 @@ class ActivityDetailRecord(object):
             return {"t": self.type.value,
                     "i": self.importance,
                     "s": int(self.show),
-                    "d": copy.deepcopy(self.data),
-                    "a": self.tags,
+                    "d": copy.deepcopy(dict(self.data)),
+                    "a": list(self.tags),
                     "n": self.action.value
                     }
         else:
             return {"type": self.type.value,
                     "importance": self.importance,
                     "show": self.show,
-                    "data": self.data,
-                    "tags": self.tags,
+                    "data": dict(self.data),
+                    "tags": list(self.tags),
                     "action": self.action.value
                     }
 
@@ -227,7 +263,7 @@ class ActivityDetailRecord(object):
         return json.dumps(dict_data, cls=ActivityDetailRecordEncoder, separators=(',', ':')).encode('utf-8')
 
     @staticmethod
-    def from_bytes(byte_array: bytes, decompress: bool=True) -> 'ActivityDetailRecord':
+    def from_bytes(byte_array: bytes, decompress: bool=True, key: Optional[str] = None) -> 'ActivityDetailRecord':
         """Method to create ActivityDetailRecord from byte array (typically stored in the detail db)
 
         Returns:
@@ -250,19 +286,16 @@ class ActivityDetailRecord(object):
 
         # Return new instance
         new_instance = ActivityDetailRecord(detail_type=ActivityDetailType(obj_dict['t']),
+                                            key=key,
                                             show=bool(obj_dict["s"]),
-                                            importance=obj_dict["i"])
+                                            importance=obj_dict["i"],
+                                            # add tags if present (missing in "old" labbooks)
+                                            tags=ImmutableList(obj_dict['a'] if 'a' in obj_dict else []),
+                                            # add action if present (missing in "old" labbooks)
+                                            action=ActivityAction(int(obj_dict['n']))
+                                                   if 'n' in obj_dict else ActivityAction.NOACTION,
+                                            data=obj_dict['d'])
 
-        # add tags if present (missing in "old" labbooks)
-        if "a" in obj_dict:
-            new_instance.tags = obj_dict['a']
-
-        # add action if present (missing in "old" labbooks)
-        if "n" in obj_dict:
-            new_instance.action = ActivityAction(int(obj_dict['n']))
-
-        new_instance.data = obj_dict['d']
-        new_instance.is_loaded = True
         return new_instance
 
     def to_json(self) -> str:
@@ -299,119 +332,136 @@ class ActivityDetailRecord(object):
         return dict_data
 
 
+@dataclass(frozen=True)
 class ActivityRecord(object):
-    """Class representing an Activity Record"""
+    """Class representing an ActivityRecord
 
-    def __init__(self, activity_type: ActivityType, show: bool = True, message: str = None,
-                 importance: Optional[int] = None, tags: Optional[List[str]] = None,
-                 linked_commit: Optional[str] = None, timestamp: Optional[datetime.datetime] = None,
-                 username: Optional[str] = None, email: Optional[str] = None) -> None:
-        """Constructor
+    Attributes:
+        activity_type: Type indicating the category of detail
+        commit: Commit hash of this record in the git log
+        linked_commit: Commit hash of the commit this references
+        message: Message summarizing the event
+        detail_objects: Storage for detail objects
+        show: Boolean indicating if this item should be "shown" or "hidden"
+        importance: A score indicating the importance, currently expected to range from 0-255
+        timestamp: The datetime that the record was written to the git log
+        tags: A list of tags for the entire record
+        username: Username of the user who created the activity record
+        email: Email of the user who created the activity record
+    """
 
-        Args:
-            key(str): Key used to access and identify the object
-        """
-        # Commit hash of this record in the git log
-        self.commit: Optional[str] = None
+    # Type indicating the category of detail
+    activity_type: ActivityType
 
-        # Commit hash of the commit this references
-        self.linked_commit = linked_commit
+    @property
+    def type(self):
+        """Alias for activity_type for backwards compatibility"""
+        return self.activity_type
 
-        # Message summarizing the event
-        self.message = message
+    # Commit hash of this record in the git log
+    commit: Optional[str] = None
 
-        # Storage for detail objects in a tuple of (show, type (enum *value*), importance, object)
-        self._detail_objects: List[Tuple[bool, int, int, ActivityDetailRecord]] = list()
+    # Commit hash of the commit this references
+    linked_commit: Optional[str] = None
 
-        # Are we safely editing self._detail_objects?
-        self._in_modify = False
+    # Message summarizing the event
+    message: Optional[str] = None
 
-        # During an inspection, we can set modifications to entire sets based on a tag
-        self._tags_to_update: Dict[str, str] = {}
+    # Storage for detail objects in a tuple of (show, type (enum *value*), importance, object)
+    detail_objects: SortedImmutableList[ActivityDetailRecord] = field(default_factory=DetailRecordList)
 
-        # Type indicating the category of detail
-        self.type = activity_type
+    # Boolean indicating if this item should be "shown" or "hidden"
+    show: bool = True
 
-        # Boolean indicating if this item should be "shown" or "hidden"
-        self.show = show
+    # A score indicating the importance, currently expected to range from 0-255
+    importance: Optional[int] = None
 
-        # A score indicating the importance, currently expected to range from 0-255
-        self.importance = importance
+    # The datetime that the record was written to the git log
+    timestamp: Optional[datetime.datetime] = None
 
-        # The datetime that the record was written to the git log
-        self.timestamp = timestamp
+    # A list of tags for the entire record
+    tags: ImmutableList[str] = field(default_factory=ImmutableList)
 
-        # A list of tags for the entire record
-        self.tags = tags or []
+    # Username of the user who created the activity record
+    username: Optional[str] = None
 
-        # Username of the user who created the activity record
-        self.username = username
+    # Email of the user who created the activity record
+    email: Optional[str] = None
 
-        # Email of the user who created the activity record
-        self.email = email
+    def update(self,
+               activity_type: Optional[ActivityType] = None,
+               commit: Optional[str] = None,
+               linked_commit: Optional[str] = None,
+               message: Optional[str] = None,
+               detail_objects: Optional[SortedImmutableList[ActivityDetailRecord]] = None,
+               show: Optional[bool] = None,
+               importance: Optional[int] = None,
+               timestamp: Optional[datetime.datetime] = None,
+               tags: Optional[ImmutableList[str]] = None,
+               username: Optional[str] = None,
+               email: Optional[str] = None) -> 'ActivityRecord':
+        l = locals()
+
+        def find(name):
+            v = l[name]
+            if v is None:
+                v = getattr(self, name)
+            return v
+
+        return ActivityRecord(activity_type = find('activity_type'),
+                              commit = find('commit'),
+                              linked_commit = find('linked_commit'),
+                              message = find('message'),
+                              detail_objects = find('detail_objects'),
+                              show = find('show'),
+                              importance = find('importance'),
+                              timestamp = find('timestamp'),
+                              tags = find('tags'),
+                              username = find('username'),
+                              email = find('email'))
 
     @property
     def num_detail_objects(self):
-        return len(self._detail_objects)
+        return len(self.detail_objects)
 
-    def trim_detail_objects(self, num_objects: int) -> None:
+    def trim_detail_objects(self, num_objects: int) -> 'ActivityRecord':
         if num_objects < 1:
             raise ValueError("Cannot set `num_objects` less than 1")
-        self._detail_objects = self._detail_objects[0:num_objects]
 
-    @contextmanager
-    def inspect_detail_objects(self):
-        """To modify _detail_objects, use this in a `with` block
+        return self.update(detail_objects = self.detail_objects[0:num_objects])
 
-        Returns a new list, so that you can update the objects, or even delete them (but be careful to maintain
-        correspondence!). The list in ActivityRecord is sorted upon exiting the with context.
+    def add_detail_object(self, obj: ActivityDetailRecord) -> 'ActivityRecord':
+        """Method to add a detail object"""
+        return self.update(detail_objects = self.detail_objects.append(obj))
 
-        >>> with ar.inspect_detail_objects() as detail_objs:
-        ...   for i, obj in enumerate(detail_objs):
-        ...       new_obj = mutate_obj(obj)
-        ...       ar.update_detail_object(i, new_obj)
-        ... # ar._detail_objects is sorted on exiting `with` block
-        """
-        self._in_modify = True
-        try:
-            # Using unpacking here to get implicit assertion that records are four elements
-            yield [obj for _, _, _, obj in self._detail_objects]
-        finally:
-            if self._tags_to_update:
-                logger.info(f'_tags_to_update: {self._tags_to_update}')
-                # We regenerate our list, in case the user modified it:
-                old_details = [obj for _, _, _, obj in self._detail_objects]
-                self._detail_objects = []
-                for idx, detail in enumerate(old_details):
-                    # Default behavior is 'auto' whether it's in the comment or not
-                    directive = 'auto'
+    def set_visibility(self, tags: Dict[str, str]) -> 'ActivityRecord':
+        updated = []
+        for detail in self.detail_objects:
+            directive = 'auto'
 
-                    # We don't filter on .startswith('ex') here, so we can use other tags in future
-                    # Note also that
-                    for tag in detail.tags:
-                        try:
-                            # Currently show is the only attribute we update
-                            directive = self._tags_to_update[tag]
-                            if directive == 'show':
-                                detail.show = True
-                                break
-                            elif directive == 'hide':
-                                detail.show = False
-                                break
-                            elif directive in ['ignore', 'auto']:
-                                # 'ignore' is handled below - this will be dropped
-                                break
+            # We don't filter on .startswith('ex') here, so we can use other tags in future
+            # Note also that
+            for tag in detail.tags:
+                try:
+                    # Currently show is the only attribute we update
+                    directive = tags[tag]
+                    if directive == 'show':
+                        detail = detail.update(show = True)
+                        break
+                    elif directive == 'hide':
+                        detail = detail.update(show = False)
+                        break
+                    elif directive in ['ignore', 'auto']:
+                        # 'ignore' is handled below - this will be dropped
+                        break
 
-                        except KeyError:
-                            pass
+                except KeyError:
+                    pass
 
-                    if directive != 'ignore':
-                        self.add_detail_object(detail)
+            if directive != 'ignore':
+                updated.append(detail)
 
-                self._tags_to_update = {}
-
-            self._sort_detail_objects()
-            self._in_modify = False
+        return self.update(detail_objects = DetailRecordList(updated))
 
     @staticmethod
     def from_log_str(log_str: str, commit: str, timestamp: datetime.datetime,
@@ -439,20 +489,23 @@ class ActivityRecord(object):
                                              show=metadata["show"],
                                              importance=metadata["importance"],
                                              timestamp=timestamp,
-                                             tags=metadata["tags"],
+                                             tags=ImmutableList(metadata["tags"]),
                                              linked_commit=metadata['linked_commit'],
                                              username=username,
                                              email=email)
             if commit:
-                activity_record.commit = commit
+                activity_record = activity_record.update(commit = commit)
 
             # Add detail records
+            detail_objects = []
             for line in lines[4:]:
                 if line == "_GTM_ACTIVITY_END_":
                     break
 
                 # Append records
-                activity_record.add_detail_object(ActivityDetailRecord.from_log_str(line))
+                detail_objects.append(ActivityDetailRecord.from_log_str(line))
+
+            activity_record = activity_record.update(detail_objects = DetailRecordList(detail_objects))
 
             return activity_record
         else:
@@ -471,55 +524,13 @@ class ActivityRecord(object):
             raise ValueError("Message required when creating an activity object")
 
         meta = {"show": self.show, "importance": self.importance or 0, "type": self.type.value,
-                'linked_commit': self.linked_commit, 'tags': self.tags}
+                'linked_commit': self.linked_commit, 'tags': list(self.tags if self.tags else list())}
         log_str = f"{log_str}metadata:{json.dumps(meta, separators=(',', ':'))}**\n"
         log_str = f"{log_str}details:**\n"
-        if self._detail_objects:
-            for d in self._detail_objects:
-                log_str = f"{log_str}{d[3].log_str}**\n"
+        if self.detail_objects:
+            for d in self.detail_objects:
+                log_str = f"{log_str}{d.log_str}**\n"
 
         log_str = f"{log_str}_GTM_ACTIVITY_END_"
 
         return log_str
-
-    def _sort_detail_objects(self):
-        """Method to sort detail objects by show, type, then importance"""
-        self._detail_objects = sorted(self._detail_objects, key=operator.itemgetter(0, 1, 2), reverse=True)
-
-    def add_detail_object(self, obj: ActivityDetailRecord) -> None:
-        """Method to add a detail object
-
-        Args:
-            obj(ActivityDetailRecord): detail record to add
-
-        Returns:
-            None
-        """
-        self._detail_objects.append((obj.show, obj.type.value, obj.importance, obj))
-        self._sort_detail_objects()
-
-    def update_detail_object(self, obj: ActivityDetailRecord, index: int) -> None:
-        """Method to update a detail object in place
-
-        Can only be used while in the context of self.inspect_detail_objects
-
-        Args:
-            obj: detail record to add
-            index: index to update
-        """
-        if not self._in_modify:
-            raise GigantumException("Attempt to use ActivityRecord.update_detail_object() outside of "
-                                    "ActivityRecord.inspect_detail_objects()")
-        if index < 0 or index >= len(self._detail_objects):
-            raise ValueError("Index out of range when updating detail object")
-
-        self._detail_objects[index] = (obj.show, obj.type.value, obj.importance, obj)
-
-    def modify_tag_visibility(self, tag: str, show: str):
-        """Modify all detail objecvts with matching tag to have visibility specified in show"""
-        if not self._in_modify:
-            raise GigantumException("Attempt to use ActivityRecord.modify_tag_visibility() outside of "
-                                    "ActivityRecord.inspect_detail_objects()")
-
-        # We'll actually do the modifications in one pass when we exit the with-context
-        self._tags_to_update[tag] = show

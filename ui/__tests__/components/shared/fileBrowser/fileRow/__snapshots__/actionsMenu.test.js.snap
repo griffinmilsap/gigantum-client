@@ -9,7 +9,6 @@ exports[`ActionsMenu Component Renders a snapshot 1`] = `
     className="ActionsMenu__item Btn Btn--fileBrowser Tooltip-data Tooltip-data--small Btn--round Btn__addFolder visibility-hidden"
     data-click-id="addFolder"
     data-tooltip="Add Subfolder"
-    disabled={false}
     onClick={[Function]}
     type="button"
   />

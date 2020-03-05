@@ -56,7 +56,10 @@ const scrollToTop = () => {
 *  gets value of isLocked to lock out functionality while the backend is synching
 */
 const getIsLocked = (props) => {
-  const isLocked = props.isSyncing || props.isUploading;
+  const isLocked = props.isSyncing
+    || props.isExporting
+    || props.isUploading
+    || props.globalIsUploading;
   return isLocked;
 };
 

@@ -1,18 +1,17 @@
 {
  "data": {
   "labbook": {
-   "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0",
-   "description": "This is a ui test project\n",
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+   "description": "",
    "code": {
-    "id": "TGFiYm9va1NlY3Rpb246dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2Rl",
+    "id": "TGFiYm9va1NlY3Rpb246Y2J1dGxlciZ1aS10ZXN0LXByb2plY3QmY29kZQ==",
     "allFiles": {
      "edges": [
       {
        "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2RlJmZvbGRlci8=",
+        "id": "TGFiYm9va0ZpbGU6Y2J1dGxlciZ1aS10ZXN0LXByb2plY3QmY29kZSZmb2xkZXIv",
         "isDir": true,
-        "isFavorite": false,
-        "modifiedAt": 1547823333,
+        "modifiedAt": 1580742607,
         "key": "folder/",
         "size": "0",
         "__typename": "LabbookFile"
@@ -21,58 +20,21 @@
       },
       {
        "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2RlJmZvbGRlcjIv",
-        "isDir": true,
-        "isFavorite": false,
-        "modifiedAt": 1547823287,
-        "key": "folder2/",
-        "size": "0",
+        "id": "TGFiYm9va0ZpbGU6Y2J1dGxlciZ1aS10ZXN0LXByb2plY3QmY29kZSZOZXRmbGl4Vmlld2luZ0hpc3RvcnlKLmNzdg==",
+        "isDir": false,
+        "modifiedAt": 1580742580,
+        "key": "NetflixViewingHistoryJ.csv",
+        "size": "65168",
         "__typename": "LabbookFile"
        },
        "cursor": "MQ=="
-      },
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2RlJmZvbGRlci9SRUFETUUubWQ=",
-        "isDir": false,
-        "isFavorite": false,
-        "modifiedAt": 1547823332,
-        "key": "folder/README.md",
-        "size": "3303",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "Mg=="
-      },
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2RlJmZvbGRlci9yZXF1aXJlbWVudHMudHh0",
-        "isDir": false,
-        "isFavorite": true,
-        "modifiedAt": 1547823332,
-        "key": "folder/requirements.txt",
-        "size": "45",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "Mw=="
-      },
-      {
-       "node": {
-        "id": "TGFiYm9va0ZpbGU6dWl0ZXN0JnVpLXRlc3QtcHJvamVjdCZjb2RlJmZvbGRlci9zZXR1cC5weQ==",
-        "isDir": false,
-        "isFavorite": true,
-        "modifiedAt": 1547823332,
-        "key": "folder/setup.py",
-        "size": "1168",
-        "__typename": "LabbookFile"
-       },
-       "cursor": "NA=="
       }
      ],
      "pageInfo": {
       "hasNextPage": false,
       "hasPreviousPage": false,
       "startCursor": "MA==",
-      "endCursor": "NA=="
+      "endCursor": "MQ=="
      }
     }
    }

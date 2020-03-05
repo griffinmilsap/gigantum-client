@@ -8,6 +8,7 @@ from gtmcore.fixtures import ENV_UNIT_TEST_REPO, ENV_UNIT_TEST_BASE, ENV_UNIT_TE
 from gtmcore.files import FileOperations
 from gtmcore.environment import ComponentManager
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType
+from gtmcore.activity.utils import TextData, DetailRecordList
 
 
 import graphene
@@ -87,18 +88,18 @@ class TestLabBookOverviewQueries(object):
 
         # fake activity
         store = ActivityStore(lb)
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = False
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first")
+
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=False,
+                                    importance=100,
+                                    data=TextData('plain', 'first'))
 
         ar = ActivityRecord(ActivityType.CODE,
                             show=False,
                             message="ran some code",
                             importance=50,
-                            linked_commit="asdf")
-
-        ar.add_detail_object(adr1)
+                            linked_commit="asdf",
+                            detail_objects=DetailRecordList([adr1]))
 
         # Create Activity Record
         store.create_activity_record(ar)

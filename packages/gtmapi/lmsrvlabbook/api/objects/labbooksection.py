@@ -36,9 +36,12 @@ import json
 logger = LMLogger.get_logger()
 
 
-class LabbookSection(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class LabbookSection(graphene.ObjectType):
     """A type representing a section within a LabBook (i.e., code, input, output)
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # Section name (code, input, output)
     section = graphene.String()
 

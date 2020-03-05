@@ -3,6 +3,7 @@ from typing import (Any, Dict, List)
 from gtmcore.logging import LMLogger
 from gtmcore.activity.processors.processor import ActivityProcessor, ExecutionData
 from gtmcore.activity import ActivityRecord, ActivityDetailType, ActivityDetailRecord, ActivityAction
+from gtmcore.activity.utils import ImmutableDict, ImmutableList, TextData
 
 logger = LMLogger.get_logger()
 
@@ -44,17 +45,17 @@ class RStudioServerCodeProcessor(ActivityProcessor):
                     code_block = f"```\n{code_block}\n```"
 
                 # Create detail record to capture executed code
-                adr_code = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED, show=False,
+                adr_code = ActivityDetailRecord(ActivityDetailType.CODE_EXECUTED,
+                                                show=False,
                                                 action=ActivityAction.EXECUTE,
-                                                importance=max(255-result_cnt, 0))
+                                                importance=max(255-result_cnt, 0),
+                                                tags=ImmutableList(cell.tags),
+                                                data=TextData('markdown', code_block))
 
-                adr_code.add_value('text/markdown', code_block)
-                adr_code.tags = cell.tags
-
-                result_obj.add_detail_object(adr_code)
+                result_obj = result_obj.add_detail_object(adr_code)
 
         cell_str = f"{total_lines} lines" if cell_cnt > 1 else "code"
-        result_obj.message = f"Executed {cell_str} in {metadata['path']}"
+        result_obj = result_obj.update(message = f"Executed {cell_str} in {metadata['path']}")
 
         return result_obj
 
@@ -86,19 +87,19 @@ class RStudioServerPlaintextProcessor(ActivityProcessor):
                     if 'text/plain' in result_entry['data']:
                         text_data = result_entry['data']['text/plain']
                         if len(text_data) > 0:
+                            if len(text_data) <= truncate_at:
+                                adr_data = text_data
+                            else:
+                                adr_data = text_data[:truncate_at] + " ...\n\n <result truncated>"
+
                             adr = ActivityDetailRecord(ActivityDetailType.RESULT,
                                                        show=True if len(text_data) < max_show_len else False,
                                                        action=ActivityAction.CREATE,
-                                                       importance=max(255-result_cnt-100, 0))
+                                                       importance=max(255-result_cnt-100, 0),
+                                                       tags=ImmutableList(cell.tags),
+                                                       data=TextData('plain', adr_data))
 
-                            if len(text_data) <= truncate_at:
-                                adr.add_value("text/plain", text_data)
-                            else:
-                                adr.add_value("text/plain", text_data[:truncate_at] + " ...\n\n <result truncated>")
-
-                            # Set cell data to tag
-                            adr.tags = cell.tags
-                            result_obj.add_detail_object(adr)
+                            result_obj = result_obj.add_detail_object(adr)
 
                             result_cnt += 1
 
@@ -131,20 +132,22 @@ class RStudioServerImageExtractorProcessor(ActivityProcessor):
                     for mime_type in result_entry['data']:
                         if mime_type in supported_image_types:
                             # You got an image
-                            adr_img = ActivityDetailRecord(ActivityDetailType.RESULT, show=True,
-                                                           action=ActivityAction.CREATE,
-                                                           importance=max(255-result_cnt, 0))
 
                             # All RStudio responses should contain decoded strings, even b64encoded data
                             strdata = result_entry['data'][mime_type]
-                            adr_img.add_value(mime_type, strdata)
 
-                            adr_img.tags = cell.tags
+                            adr_img = ActivityDetailRecord(ActivityDetailType.RESULT,
+                                                           show=True,
+                                                           action=ActivityAction.CREATE,
+                                                           importance=max(255-result_cnt, 0),
+                                                           tags=ImmutableList(cell.tags),
+                                                           data=ImmutableDict({mime_type: strdata}))
 
-                            result_obj.add_detail_object(adr_img)
+                            result_obj = result_obj.add_detail_object(adr_img)
 
                             # Set Activity Record Message
-                            result_obj.message = "Executed in {} and generated a result".format(metadata['path'])
+                            msg = f"Executed in {metadata['path']} and generated a result"
+                            result_obj = result_obj.update(message = msg)
 
                             result_cnt += 1
 

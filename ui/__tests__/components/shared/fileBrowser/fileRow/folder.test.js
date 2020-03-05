@@ -11,7 +11,7 @@ import Folder from 'Components/shared/fileBrowser/fileRow/Folder';
 
 
 let edge = codeData.data.labbook.code.allFiles.edges[0];
-let fileEdge = codeData.data.labbook.code.allFiles.edges[2];
+let fileEdge = codeData.data.labbook.code.allFiles.edges[1];
 let filename = path.basename(edge.node.key);
 let file = {
   edge,

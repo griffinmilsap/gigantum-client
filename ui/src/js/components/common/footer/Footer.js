@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 // redux
 import { setPauseUpload } from 'JS/redux/actions/shared/fileBrowser/fileBrowserWrapper';
-import * as footerActions from 'JS/redux/actions/footer';
+import * as footerActionsRedux from 'JS/redux/actions/footer';
 // components
 import FooterNotificationList from './FooterNotificationList';
 import FooterUploadBar from './FooterUploadBar';
@@ -14,9 +14,13 @@ import './Footer.scss';
 
 
 type Props = {
-  viewHistory: bool,
+  messageListOpen: Boolean,
+  viewHistory: Boolean,
   history: Object,
   labbookName: string,
+  footerActions: {
+    setToggleMessageList: Function,
+  },
 }
 
 class Footer extends Component<Props> {
@@ -203,7 +207,7 @@ class Footer extends Component<Props> {
 const mapStateToProps = state => state.footer;
 
 const mapDispatchToProps = () => ({
-  footerActions,
+  footerActions: footerActionsRedux,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Footer);

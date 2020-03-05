@@ -3,7 +3,7 @@
 exports[`Test LocalLabbooks rendering 1`] = `
 <a
   className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-  href="/projects/uitest/ui-test-remote"
+  href="/projects/cbutler/ui-test-project"
   onClick={[Function]}
 >
   <div
@@ -23,6 +23,8 @@ exports[`Test LocalLabbooks rendering 1`] = `
         onClick={[Function]}
         onMouseOut={[Function]}
         onMouseOver={[Function]}
+        role="presentation"
+        type="button"
       >
         <div
           className="ContainerStatus__text"
@@ -46,12 +48,13 @@ exports[`Test LocalLabbooks rendering 1`] = `
       <h5
         className="LocalLabbooks__panel-title"
         onClick={[Function]}
+        role="presentation"
       >
         <span>
           <span
             className=""
           >
-            ui-test-remote
+            ui-test-project
           </span>
         </span>
       </h5>
@@ -59,7 +62,7 @@ exports[`Test LocalLabbooks rendering 1`] = `
     <p
       className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
     >
-      uitest
+      cbutler
     </p>
     <p
       className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -70,7 +73,7 @@ exports[`Test LocalLabbooks rendering 1`] = `
         Created:
       </span>
        
-      Fri Jan 18 2019
+      Thu Jan 30 2020
     </p>
     <p
       className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -81,7 +84,7 @@ exports[`Test LocalLabbooks rendering 1`] = `
         Modified:
       </span>
        
-      Fri Jan 18 2019
+      Mon Feb 03 2020
     </p>
     <p
       className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"

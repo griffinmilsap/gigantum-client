@@ -23,6 +23,7 @@ from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.logging import LMLogger
 
 from gtmcore.activity import ActivityStore, ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType
+from gtmcore.activity.utils import ImmutableDict, TextData, DetailRecordList
 from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 
 from lmsrvlabbook.api.objects.activity import ActivityRecordObject
@@ -52,18 +53,20 @@ class CreateUserNote(graphene.relay.ClientIDMutation):
     @classmethod
     def _create_user_note(cls, lb, title, body, tags):
         store = ActivityStore(lb)
+
+        data = TextData('markdown', body) if body else ImmutableDict()
         adr = ActivityDetailRecord(ActivityDetailType.NOTE,
                                    show=True,
-                                   importance=255)
-        if body:
-            adr.add_value('text/markdown', body)
+                                   importance=255,
+                                   data=data)
 
         ar = ActivityRecord(ActivityType.NOTE,
                             message=title,
                             linked_commit="no-linked-commit",
                             importance=255,
-                            tags=tags)
-        ar.add_detail_object(adr)
+                            tags=tags,
+                            detail_objects=DetailRecordList([adr]))
+
         ar = store.create_activity_record(ar)
         return ar
 

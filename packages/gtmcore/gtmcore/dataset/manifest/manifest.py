@@ -14,6 +14,7 @@ from stat import S_ISDIR
 
 from gtmcore.activity import ActivityStore, ActivityRecord, ActivityDetailType, ActivityType,\
     ActivityAction, ActivityDetailRecord
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 from gtmcore.dataset.manifest.hash import SmartHash
 from gtmcore.dataset.manifest.file import ManifestFileCache
 from gtmcore.dataset.cache import get_cache_manager_class, CacheManager
@@ -552,11 +553,12 @@ class Manifest(object):
                 raise ValueError("Failed to add directory to manifest")
 
             # Create detail record
-            adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=0,
-                                       action=ActivityAction.CREATE)
-
             msg = f"Created new empty directory `{relative_path}`"
-            adr.add_value('text/markdown', msg)
+            adr = ActivityDetailRecord(ActivityDetailType.DATASET,
+                                       show=False,
+                                       importance=0,
+                                       action=ActivityAction.CREATE,
+                                       data=TextData('markdown', msg))
 
             commit = self.dataset.git.commit(msg)
 
@@ -566,8 +568,8 @@ class Manifest(object):
                                 linked_commit=commit.hexsha,
                                 show=True,
                                 importance=255,
-                                tags=['directory-create'])
-            ar.add_detail_object(adr)
+                                detail_objects=DetailRecordList([adr]),
+                                tags=ImmutableList(['directory-create']))
 
             # Store
             ars = ActivityStore(self.dataset)
@@ -650,36 +652,28 @@ class Manifest(object):
             self.dataset.git.add_all()
             self.dataset.git.commit("Commit changes to manifest file.")
 
-            ar = ActivityRecord(ActivityType.DATASET,
-                                message="msg is set below after detail record processing...",
-                                show=True,
-                                importance=255,
-                                linked_commit=self.dataset.git.commit_hash,
-                                tags=[])
+            adrs = []
 
             for cnt, f in enumerate(status.created):
-                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
-                                           action=ActivityAction.CREATE)
-
                 msg = f"Created new {_item_type(f)} `{f}`"
-                adr.add_value('text/markdown', msg)
-                ar.add_detail_object(adr)
+                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
+                                           action=ActivityAction.CREATE, data=TextData('markdown', msg))
+
+                adrs.append(adr)
 
             for cnt, f in enumerate(status.modified):
-                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
-                                           action=ActivityAction.EDIT)
-
                 msg = f"Modified {_item_type(f)} `{f}`"
-                adr.add_value('text/markdown', msg)
-                ar.add_detail_object(adr)
+                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
+                                           action=ActivityAction.EDIT, data=TextData('markdown', msg))
+
+                adrs.append(adr)
 
             for cnt, f in enumerate(status.deleted):
-                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
-                                           action=ActivityAction.DELETE)
-
                 msg = f"Deleted {_item_type(f)} `{f}`"
-                adr.add_value('text/markdown', msg)
-                ar.add_detail_object(adr)
+                adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=max(255 - cnt, 0),
+                                           action=ActivityAction.DELETE, data=TextData('markdown', msg))
+
+                adrs.append(adr)
 
             num_files_created = sum([_item_type(x) == "file" for x in status.created])
             num_files_modified = sum([_item_type(x) == "file" for x in status.modified])
@@ -698,8 +692,15 @@ class Manifest(object):
                 mmsg = f"{num_dirs_modified} modified folder(s). " if num_dirs_modified > 0 else ""
                 dmsg = f"{num_dirs_deleted} deleted folder(s). " if num_dirs_deleted > 0 else ""
 
-            ar.message = f"{extra_msg if extra_msg else ''}" \
-                         f"{nmsg}{mmsg}{dmsg}"
+            message = f"{extra_msg if extra_msg else ''}" \
+                      f"{nmsg}{mmsg}{dmsg}"
+
+            ar = ActivityRecord(ActivityType.DATASET,
+                                message=message,
+                                show=True,
+                                importance=255,
+                                linked_commit=self.dataset.git.commit_hash,
+                                detail_objects=DetailRecordList(adrs))
 
             ars = ActivityStore(self.dataset)
             ars.create_activity_record(ar)

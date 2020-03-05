@@ -11,6 +11,7 @@ from werkzeug.wrappers import Request
 
 
 from gtmcore.dispatcher.jobs import export_labbook_as_zip
+from gtmcore.gitlib import RepoLocation
 
 from lmsrvcore.middleware import DataloaderMiddleware
 from lmsrvlabbook.tests.fixtures import (property_mocks_fixture, docker_socket_fixture,
@@ -243,8 +244,8 @@ class TestMutationsLabbookSharing(object):
         env = builder.get_environ()
         req = Request(environ=env)
 
-
-        sally_wf = LabbookWorkflow.import_from_remote(test_user_wf.remote, 'sally', config_file=mock_config_file[0])
+        remote = RepoLocation(test_user_wf.remote, 'sally')
+        sally_wf = LabbookWorkflow.import_from_remote(remote, 'sally', config_file=mock_config_file[0])
         sally_lb = sally_wf.labbook
         FileOperations.makedir(sally_lb, relative_path='code/sally-dir', create_activity_record=True)
         sally_wf.sync('sally')

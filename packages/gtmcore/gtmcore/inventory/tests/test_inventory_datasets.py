@@ -136,7 +136,7 @@ class TestInventoryDatasets(object):
         assert os.path.exists(lb_root_dir) is True
 
         # Link dataset
-        inv_manager.link_dataset_to_labbook(f"{ds_root_dir}/.git", "test", "dataset1", lb)
+        inv_manager.link_dataset_to_labbook(f"{ds_root_dir}/.git", "test", "dataset1", lb, 'test')
 
         m = Manifest(ds, 'test')
         helper_append_file(m.cache_mgr.cache_root, m.dataset_revision, "test1.txt", "asdfasdf")
@@ -327,7 +327,7 @@ class TestInventoryDatasets(object):
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is False
 
-        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb)
+        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb, 'test')
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is True
         dataset_submodule_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', 'test', 'dataset100')
@@ -361,7 +361,7 @@ class TestInventoryDatasets(object):
         os.makedirs(dataset_submodule_dir)
         os.makedirs(git_module_dir)
 
-        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb)
+        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb, 'test')
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is True
         assert os.path.exists(dataset_submodule_dir) is True
@@ -393,7 +393,7 @@ class TestInventoryDatasets(object):
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is False
 
         # link dataset and make sure it's there
-        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb)
+        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb, 'test')
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is True
         dataset_submodule_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', 'test', 'dataset100')
@@ -481,7 +481,7 @@ class TestInventoryDatasets(object):
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is False
 
-        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb)
+        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb, 'test')
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is True
         dataset_submodule_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', 'test', 'dataset100')
@@ -526,7 +526,7 @@ class TestInventoryDatasets(object):
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is False
 
-        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb)
+        inv_manager.link_dataset_to_labbook(ds.remote, 'test', 'dataset100', lb, 'test')
 
         assert os.path.exists(os.path.join(lb.root_dir, '.gitmodules')) is True
         dataset_submodule_dir = os.path.join(lb.root_dir, '.gigantum', 'datasets', 'test', 'dataset100')

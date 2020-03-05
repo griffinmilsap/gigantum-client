@@ -1,0 +1,38 @@
+{
+ "data": {
+  "labbook": {
+   "environment": {
+    "containerStatus": "NOT_RUNNING",
+    "imageStatus": "EXISTS",
+    "id": "RW52aXJvbm1lbnQ6Y2J1dGxlciZ1aS10ZXN0LXByb2plY3Q="
+   },
+   "collaborators": [
+    {
+     "id": "Q29sbGFib3JhdG9yOmNidXRsZXImdWktdGVzdC1wcm9qZWN0JmNidXRsZXImT1dORVI=",
+     "owner": "cbutler",
+     "name": "ui-test-project",
+     "collaboratorUsername": "cbutler",
+     "permission": "OWNER"
+    }
+   ],
+   "canManageCollaborators": true,
+   "visibility": "private",
+   "defaultRemote": "https://repo.gigantum.io/cbutler/ui-test-project.git",
+   "branches": [
+    {
+     "id": "QnJhbmNoOmNidXRsZXImdWktdGVzdC1wcm9qZWN0Jm1hc3Rlcg==",
+     "owner": "cbutler",
+     "name": "ui-test-project",
+     "branchName": "master",
+     "isActive": true,
+     "isLocal": true,
+     "isRemote": true,
+     "isMergeable": false,
+     "commitsBehind": 0,
+     "commitsAhead": 0
+    }
+   ],
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA=="
+  }
+ }
+}

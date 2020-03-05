@@ -124,7 +124,6 @@ class Environment extends Component<Props> {
       packageLatestRefetch,
       cancelRefetch,
     } = this.props;
-    const isLockedOnline = isLocked && !navigator.onLine;
     // declare css here
     const advancedCSS = classNames({
       'Btn Btn__advanced Btn--action Btn--noShadow': true,
@@ -137,7 +136,7 @@ class Environment extends Component<Props> {
       const { base } = environment;
       return (
         <div className="Environment">
-          <div className="Base__headerContainer">
+          <div className="Base__headerContainer flex">
             <h4>
                 Base&nbsp;&nbsp;&nbsp;
               <Tooltip section="baseEnvironment" />
@@ -154,7 +153,7 @@ class Environment extends Component<Props> {
               buildCallback={this._buildCallback}
               blockClass="Environment"
               base={base}
-              isLocked={isLockedOnline}
+              isLocked={isLocked}
               owner={owner}
               name={name}
             />
@@ -195,7 +194,7 @@ class Environment extends Component<Props> {
                 <CustomDockerfile
                   dockerfile={labbook.environment.dockerSnippet}
                   buildCallback={this._buildCallback}
-                  isLocked={isLockedOnline}
+                  isLocked={isLocked}
                   owner={owner}
                   name={name}
                 />
@@ -204,7 +203,7 @@ class Environment extends Component<Props> {
                   environmentId={labbook.environment.id}
                   owner={owner}
                   name={name}
-                  isLocked={isLockedOnline}
+                  isLocked={isLocked}
                 />
               </div>
             )

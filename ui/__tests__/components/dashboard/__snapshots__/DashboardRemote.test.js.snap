@@ -41,7 +41,7 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
         <a
           onClick={[Function]}
         >
-          Cloud
+          Gigantum Hub
         </a>
       </li>
       <div
@@ -96,7 +96,6 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
     </div>
     <div
       className="DashboardDropdown column-4-span-3 padding--0"
-      data-selenium-id="FilterByDropdown"
     >
       <div>
         Filter by:
@@ -105,7 +104,17 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
         className="Dropdown__filter-selector Dropdown Dropdown--collapsed"
         onClick={[Function]}
       >
-        All
+        <div
+          className="Dropdown__filter-selector"
+          data-selenium-id="FilterByDropdown"
+        >
+          All 
+          <span
+            className="Dropdown__filter-selector subtext"
+          >
+            (includes collaborators)
+          </span>
+        </div>
       </div>
       <ul
         className="Dropdown__menu box-shadow hidden"
@@ -114,7 +123,12 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
           className="DashboardDropdown__list-item"
           onClick={[Function]}
         >
-          All
+          All 
+          <span
+            className="subtext"
+          >
+            (includes collaborators)
+          </span>
            ✓ 
         </li>
         <li
@@ -122,14 +136,15 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
           onClick={[Function]}
         >
           My
-           Project
+           Projects
           
         </li>
         <li
           className="DashboardDropdown__list-item"
           onClick={[Function]}
         >
-          Shared with me
+          Collaborator's
+           Projects
           
         </li>
       </ul>

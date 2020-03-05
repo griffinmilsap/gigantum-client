@@ -18,11 +18,14 @@ from gtmcore.dataset.manifest import Manifest
 logger = LMLogger.get_logger()
 
 
-class LabbookOverview(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class LabbookOverview(graphene.ObjectType):
     """A type representing the overview of a LabBook
 
     It contains counts for all package managers, the last 3 activity records with show=True
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     # Class attribute to store package manager counts
     _package_manager_counts = None
 
@@ -163,9 +166,12 @@ class LabbookOverview(graphene.ObjectType, interfaces=(graphene.relay.Node, GitR
             lambda labbook: labbook.get_readme())
 
 
-class DatasetOverview(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class DatasetOverview(graphene.ObjectType):
     """A type representing the overview of a Dataset
     """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     _dataset_file_info = None
 
     # Dataset size information

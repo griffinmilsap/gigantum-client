@@ -1,184 +1,15 @@
 {
  "data": {
   "labbook": {
-   "id": "TGFiYm9vazp1aXRlc3QmdWktdGVzdC1wcm9qZWN0",
-   "description": "This is a ui test project\n",
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA==",
+   "description": "",
    "activityRecords": {
     "edges": [
      {
       "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmRhM2Q0NDY2YWNiZDU5ZTllN2Y2YjYyMjBiMmJhYTU2ODNlNzU1N2U=",
-       "commit": "da3d4466acbd59e9e7f6b6220b2baa5683e7557e",
-       "linkedCommit": "dc046463a5ce0a239230d46825b10263c6cb0726",
-       "type": "ENVIRONMENT",
-       "show": true,
-       "importance": 0,
-       "tags": [
-        "environment",
-        "package_manager",
-        "conda2"
-       ],
-       "message": "Added 1 conda2 package(s). ",
-       "timestamp": "2019-01-18T14:59:22+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUF4UVlBQUc4QUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAxQYAAG8AAAA=",
-         "show": false,
-         "importance": 0,
-         "type": "ENVIRONMENT"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "da3d4466acbd59e9e7f6b6220b2baa5683e7557e"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjJjYWI0NDRhMjc2NmNkNDRhMmZkYmVlYjRkOGNkODQ2MDI4ZmQ4ODI=",
-       "commit": "2cab444a2766cd44a2fdbeeb4d8cd846028fd882",
-       "linkedCommit": "e5fc944eb7399c52e364e978041a5e94c1e5a8a0",
-       "type": "ENVIRONMENT",
-       "show": true,
-       "importance": 0,
-       "tags": [
-        "environment",
-        "package_manager",
-        "pip"
-       ],
-       "message": "Added 1 pip package(s). ",
-       "timestamp": "2019-01-18T14:57:00+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFRZ1lBQUc4QUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAQgYAAG8AAAA=",
-         "show": false,
-         "importance": 0,
-         "type": "ENVIRONMENT"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "2cab444a2766cd44a2fdbeeb4d8cd846028fd882"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjM4YTM5MGRjMmQwMzcwNGI5MmQ5MDcyYTc3YzQzNjU2MDk3YWU0NDY=",
-       "commit": "38a390dc2d03704b92d9072a77c43656097ae446",
-       "linkedCommit": "71db4154f1985488e0175bf6b4482c9e7a129164",
-       "type": "INPUT_DATA",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "save",
-        "upload"
-       ],
-       "message": "Uploaded 3 new file(s). ",
-       "timestamp": "2019-01-18T14:56:42+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFrZ1FBQUhnQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAkgQAAHgAAAA=",
-         "show": false,
-         "importance": 255,
-         "type": "INPUT_DATA"
-        },
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFIZ1VBQUlRQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAHgUAAIQAAAA=",
-         "show": false,
-         "importance": 254,
-         "type": "INPUT_DATA"
-        },
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUF0Z1VBQUhnQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAtgUAAHgAAAA=",
-         "show": false,
-         "importance": 253,
-         "type": "INPUT_DATA"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "38a390dc2d03704b92d9072a77c43656097ae446"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjNiNDQ4NjZiMWJkN2E1M2E2NWQ5ZDlkMmNjNzA0ODYzMDk3ZDQ4M2E=",
-       "commit": "3b44866b1bd7a53a65d9d9d2cc704863097d483a",
-       "linkedCommit": "5c95892932549472b0dd45cbc1e85ced6c635fc7",
-       "type": "CODE",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "save",
-        "upload"
-       ],
-       "message": "Uploaded 3 new file(s). ",
-       "timestamp": "2019-01-18T14:55:33+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUE0Z0lBQUhnQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAA4gIAAHgAAAA=",
-         "show": false,
-         "importance": 255,
-         "type": "CODE"
-        },
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFiZ01BQUlRQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAbgMAAIQAAAA=",
-         "show": false,
-         "importance": 254,
-         "type": "CODE"
-        },
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFCZ1FBQUhnQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAABgQAAHgAAAA=",
-         "show": false,
-         "importance": 253,
-         "type": "CODE"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "3b44866b1bd7a53a65d9d9d2cc704863097d483a"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjNkZGM2ZmU3Y2JiYWVkNjkwNDZjNjk5YTk0ZThjYjJjOTFiMGQxM2U=",
-       "commit": "3ddc6fe7cbbaed69046c699a94e8cb2c91b0d13e",
-       "linkedCommit": "25364c89e10fe1768032eb0ba6ca1fdd928a5dc4",
-       "type": "CODE",
-       "show": true,
-       "importance": 255,
-       "tags": [
-        "directory-create"
-       ],
-       "message": "Created new Code directory `code/folder2`",
-       "timestamp": "2019-01-18T14:54:48+00:00",
-       "username": "uitest",
-       "detailObjects": [
-        {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFYQUlBQUhJQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAXAIAAHIAAAA=",
-         "show": false,
-         "importance": 0,
-         "type": "CODE"
-        }
-       ],
-       "__typename": "ActivityRecordObject"
-      },
-      "cursor": "3ddc6fe7cbbaed69046c699a94e8cb2c91b0d13e"
-     },
-     {
-      "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmJhMzY3OWQxOWY0MWI0YjIxZTYxMjBiMmNhNTBjNjk5ZDFhZGE3YzE=",
-       "commit": "ba3679d19f41b4b21e6120b2ca50c699d1ada7c1",
-       "linkedCommit": "c217ae390953123f544bf852d38bf91d6491838f",
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCY0OTUyZmFhNWY0Yjc5MGNiZmRlOTIzNjM1MzE2YjViNGY2MDg3NWQz",
+       "commit": "4952faa5f4b790cbfde923635316b5b4f60875d3",
+       "linkedCommit": "87972827b9dea0630aaa076abd37c81683cd3444",
        "type": "CODE",
        "show": true,
        "importance": 255,
@@ -186,12 +17,12 @@
         "directory-create"
        ],
        "message": "Created new Code directory `code/folder`",
-       "timestamp": "2019-01-18T14:54:41+00:00",
-       "username": "uitest",
+       "timestamp": "2020-02-03T15:10:07+00:00",
+       "username": "cbutler",
        "detailObjects": [
         {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUExZ0VBQUhJQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAA1gEAAHIAAAA=",
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBTGhNQUFISUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAALhMAAHIAAAA=",
          "show": false,
          "importance": 0,
          "type": "CODE"
@@ -199,13 +30,41 @@
        ],
        "__typename": "ActivityRecordObject"
       },
-      "cursor": "ba3679d19f41b4b21e6120b2ca50c699d1ada7c1"
+      "cursor": "4952faa5f4b790cbfde923635316b5b4f60875d3"
      },
      {
       "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjBkNWY2ZmFiNjNhMWUxN2YyMmYxZDY3OTUxN2E0ZWUxNWJiOTQ2MjQ=",
-       "commit": "0d5f6fab63a1e17f22f1d679517a4ee15bb94624",
-       "linkedCommit": "53908afacaa978c8f06d85df642e6315f76a9d55",
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCYzMzc4NjQyYzg4NDBkNTQ4NWE5NzlmZDlkYjUyM2Y3ZmJmODEyMjUw",
+       "commit": "3378642c8840d5485a979fd9db523f7fbf812250",
+       "linkedCommit": "a51cf4f7ffd0d984518616018c5df50c7d988551",
+       "type": "CODE",
+       "show": true,
+       "importance": 255,
+       "tags": [
+        "save",
+        "upload"
+       ],
+       "message": "Uploaded 1 new file(s). ",
+       "timestamp": "2020-02-03T15:09:40+00:00",
+       "username": "cbutler",
+       "detailObjects": [
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBa2hJQUFJZ0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAkhIAAIgAAAA=",
+         "show": false,
+         "importance": 255,
+         "type": "CODE"
+        }
+       ],
+       "__typename": "ActivityRecordObject"
+      },
+      "cursor": "3378642c8840d5485a979fd9db523f7fbf812250"
+     },
+     {
+      "node": {
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCYwOTY2MGExMTRhNDljOWI2YjM5OTVjZGU0YjcxYTdlYzE4YzYxNjk0",
+       "commit": "09660a114a49c9b6b3995cde4b71a7ec18c61694",
+       "linkedCommit": "781fb8f4e64e53eed17a206f5373adf72cb5426b",
        "type": "ENVIRONMENT",
        "show": true,
        "importance": 0,
@@ -213,13 +72,13 @@
         "environment",
         "base"
        ],
-       "message": "Added base: python2-minimal",
-       "timestamp": "2019-01-18T14:54:23+00:00",
-       "username": "uitest",
+       "message": "Added base: python3-data-science r10",
+       "timestamp": "2020-01-30T15:53:04+00:00",
+       "username": "cbutler",
        "detailObjects": [
         {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFod0FBQURzQkFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAhwAAADsBAAA=",
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBS3hFQUFGTUJBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAKxEAAFMBAAA=",
          "show": false,
          "importance": 0,
          "type": "ENVIRONMENT"
@@ -227,24 +86,292 @@
        ],
        "__typename": "ActivityRecordObject"
       },
-      "cursor": "0d5f6fab63a1e17f22f1d679517a4ee15bb94624"
+      "cursor": "09660a114a49c9b6b3995cde4b71a7ec18c61694"
      },
      {
       "node": {
-       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JjY4NjlmMTJjMDg5YjY0MjgzNDRhMmZjNWFmNzFlZTU2ZTYwYmI4ZTc=",
-       "commit": "6869f12c089b6428344a2fc5af71ee56e60bb8e7",
-       "linkedCommit": "b10612570197e6ebc9fe769eaea6bde15025b117",
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCY1NjZhMjBjMzFhNTk0MzdiZmM0NDdiNDRhNjcxOTFhZmMyYmQyNjY0",
+       "commit": "566a20c31a59437bfc447b44a67191afc2bd2664",
+       "linkedCommit": "718deb0bd637af32e8ecd6ef3054cde37c46bc46",
+       "type": "ENVIRONMENT",
+       "show": true,
+       "importance": 0,
+       "tags": [
+        "environment",
+        "package_manager",
+        "apt"
+       ],
+       "message": "Added 3 apt package(s). ",
+       "timestamp": "2020-01-30T15:53:03+00:00",
+       "username": "cbutler",
+       "detailObjects": [
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBbGc4QUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAlg8AAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBSFJBQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAHRAAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBb0JBQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAoBAAAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        }
+       ],
+       "__typename": "ActivityRecordObject"
+      },
+      "cursor": "566a20c31a59437bfc447b44a67191afc2bd2664"
+     },
+     {
+      "node": {
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCYwN2U1NjE5MjcwNWNjZDAwZjY4MGVkYWJiN2IyMDZiN2JmYmJiOWM5",
+       "commit": "07e56192705ccd00f680edabb7b206b7bfbbb9c9",
+       "linkedCommit": "d81f04506b6f823ace2a305c1071a38b5da218e3",
+       "type": "ENVIRONMENT",
+       "show": true,
+       "importance": 0,
+       "tags": [
+        "environment",
+        "package_manager",
+        "conda3"
+       ],
+       "message": "Added 29 conda3 package(s). ",
+       "timestamp": "2020-01-30T15:53:03+00:00",
+       "username": "cbutler",
+       "detailObjects": [
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBaHdBQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAhwAAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBQ2dFQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAACgEAAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBbFFFQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAlQEAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBR0FJQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAGAIAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBbndJQUFHc0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAnwIAAGsAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBSGdNQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAHgMAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBb1FNQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAoQMAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBSkFRQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAJAQAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBcXdRQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAqwQAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBTWdVQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAMgUAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBdVFVQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAuQUAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBUEFZQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAPAYAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBdndZQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAvwYAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBUWdjQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAQgcAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBeFFjQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAxQcAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBU0FnQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAASAgAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBeXdnQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAywgAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBVGdrQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAATgkAAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBMlFrQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAA2QkAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBWUFvQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAYAoAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBNHdvQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAA4woAAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBYmdzQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAbgsAAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBK1FzQUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAA+QsAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBZkF3QUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAfAwAAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBL3d3QUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAA/wwAAHMAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBaGcwQUFIY0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAhg0AAHcAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBRVE0QUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAEQ4AAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBbEE0QUFHOEFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAlA4AAG8AAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        },
+        {
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBRnc4QUFHc0FBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAFw8AAGsAAAA=",
+         "show": false,
+         "importance": 0,
+         "type": "ENVIRONMENT"
+        }
+       ],
+       "__typename": "ActivityRecordObject"
+      },
+      "cursor": "07e56192705ccd00f680edabb7b206b7bfbbb9c9"
+     },
+     {
+      "node": {
+       "id": "QWN0aXZpdHlSZWNvcmRPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCY0ZGUzNzFiMDdkZjc2ZjVkNjAyNTg2MmUzODRmMzlmNzA3MjY5MTEz",
+       "commit": "4de371b07df76f5d6025862e384f39f707269113",
+       "linkedCommit": "d6291fe4606999a5c4c844ec9dbc534c0266a566",
        "type": "LABBOOK",
        "show": true,
        "importance": 255,
        "tags": [],
-       "message": "Created new LabBook: uitest/ui-test-project",
-       "timestamp": "2019-01-18T14:54:21+00:00",
-       "username": "uitest",
+       "message": "Created new LabBook: cbutler/ui-test-project",
+       "timestamp": "2020-01-30T15:53:02+00:00",
+       "username": "cbutler",
        "detailObjects": [
         {
-         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZ1aXRlc3QmdWktdGVzdC1wcm9qZWN0JmxvZ181MDQ1OWI2OTFhODA3NTAxNmM5NjFjNzJlZWI5MTY2MVgxOW5YMTlzYzI0QUFBQUFBQUFBQUhNQUFBQT0=",
-         "key": "log_50459b691a8075016c961c72eeb91661X19nX19sc24AAAAAAAAAAHMAAAA=",
+         "id": "QWN0aXZpdHlEZXRhaWxPYmplY3Q6bGFiYm9vayZjYnV0bGVyJnVpLXRlc3QtcHJvamVjdCZsb2dfMjhkMTZkZTYyMWU1OTBkNTM3YTQzODBjMTc1Yzg4Y2JYMTluWDE5c2MyNEFBQUFBQUFBQUFITUFBQUE9",
+         "key": "log_28d16de621e590d537a4380c175c88cbX19nX19sc24AAAAAAAAAAHMAAAA=",
          "show": false,
          "importance": 0,
          "type": "LABBOOK"
@@ -252,11 +379,11 @@
        ],
        "__typename": "ActivityRecordObject"
       },
-      "cursor": "6869f12c089b6428344a2fc5af71ee56e60bb8e7"
+      "cursor": "4de371b07df76f5d6025862e384f39f707269113"
      }
     ],
     "pageInfo": {
-     "endCursor": "6869f12c089b6428344a2fc5af71ee56e60bb8e7",
+     "endCursor": "4de371b07df76f5d6025862e384f39f707269113",
      "hasNextPage": false,
      "hasPreviousPage": false,
      "startCursor": null

@@ -9,6 +9,7 @@
   position: relative;
 
   &.fullscreen {
+    // position: fixed;
     z-index: index($elements, modal);
   }
 

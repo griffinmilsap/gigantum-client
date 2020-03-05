@@ -142,7 +142,7 @@
     "build:local": "BUILD_TYPE='local' node scripts/build.js",
     "build:cloud": "BUILD_TYPE='cloud' node scripts/build.js",
     "build:local:prod": "BUILD_TYPE='local' BUILD_DIST='prod' node scripts/build.js",
-    "build:cloudProd": "BUILD_TYPE='cloud' BUILD_DIST='prod' node scripts/build.js",
+    "build:cloud:prod": "BUILD_TYPE='cloud' BUILD_DIST='prod' node scripts/build.js",
     "test": "TZ='Europe/London' jest --env=jsdom shared/fileBrowser activity dashboard",
     "test-update": "TZ='Europe/London' jest --env=jsdom shared/fileBrowser activity dashboard -u",
     "test-proxy": "USE_PROXY=true jest",

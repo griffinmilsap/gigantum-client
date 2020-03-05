@@ -22,6 +22,7 @@ import json
 import datetime
 from gtmcore.activity.records import ActivityDetailRecord, ActivityDetailType, ActivityRecord, ActivityType, \
     ActivityAction
+from gtmcore.activity.utils import DetailRecordList, ImmutableList
 
 
 class TestActivityRecord(object):
@@ -38,7 +39,7 @@ class TestActivityRecord(object):
         assert ar.show is True
         assert ar.importance is None
         assert not ar.tags
-        assert ar._detail_objects == []
+        assert len(ar.detail_objects) == 0
 
         ar = ActivityRecord(ActivityType.CODE,
                             show=False,
@@ -56,82 +57,65 @@ class TestActivityRecord(object):
         assert ar.message == "message 1"
         assert ar.show is False
         assert ar.importance == 23
-        assert ar.tags == ['a', 'b']
-        assert ar._detail_objects == []
+        assert ar.tags == ImmutableList(['a', 'b'])
+        assert len(ar.detail_objects) == 0
         assert ar.username == 'user1'
         assert ar.email == 'user1@test.com'
 
-    def test_add_detail_object(self):
-        """Test adding values to the detail object"""
-        ar = ActivityRecord(ActivityType.CODE,
-                            show=True,
-                            message="added some code",
-                            importance=50,
-                            linked_commit='aaaaaaaa')
-
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.add_value("text/plain", "this is some data")
-
-        ar.add_detail_object(adr)
-
-        assert len(ar._detail_objects) == 1
-        assert ar._detail_objects[0][0] is True
-        assert ar._detail_objects[0][1] == ActivityDetailType.CODE.value
-        assert ar._detail_objects[0][2] == 0
-        assert ar._detail_objects[0][3] == adr
-
     def test_add_detail_objects_sort(self):
         """Test adding values to the detail object"""
+        adrs = []
+        adr = ActivityDetailRecord(ActivityDetailType.CODE,
+                                   show = True,
+                                   importance = 100,
+                                   data={"text/plain": "second"})
+        adrs.append(adr)
+
+        adr = ActivityDetailRecord(ActivityDetailType.CODE,
+                                   show = True,
+                                   importance = 200,
+                                   data={"text/plain": "first"})
+        adrs.append(adr)
+
+        adr = ActivityDetailRecord(ActivityDetailType.CODE,
+                                   show = False,
+                                   importance = 0,
+                                   data={"text/plain": "sixth"})
+        adrs.append(adr)
+
+        adr = ActivityDetailRecord(ActivityDetailType.OUTPUT_DATA,
+                                   show = True,
+                                   importance = 201,
+                                   data={"text/plain": "forth"})
+        adrs.append(adr)
+
+        adr = ActivityDetailRecord(ActivityDetailType.RESULT,
+                                   show = True,
+                                   importance = 201,
+                                   data={"text/plain": "third"})
+        adrs.append(adr)
+
+        adr = ActivityDetailRecord(ActivityDetailType.INPUT_DATA,
+                                   show = False,
+                                   importance = 201,
+                                   data={"text/plain": "fifth"})
+        adrs.append(adr)
+
         ar = ActivityRecord(ActivityType.CODE,
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit='aaaaaaaa')
+                            linked_commit='aaaaaaaa',
+                            detail_objects=DetailRecordList(adrs))
 
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.show = True
-        adr.importance = 100
-        adr.add_value("text/plain", "second")
-        ar.add_detail_object(adr)
+        assert len(ar.detail_objects) == 6
 
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.show = True
-        adr.importance = 200
-        adr.add_value("text/plain", "first")
-        ar.add_detail_object(adr)
-
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.show = False
-        adr.importance = 0
-        adr.add_value("text/plain", "sixth")
-        ar.add_detail_object(adr)
-
-        adr = ActivityDetailRecord(ActivityDetailType.OUTPUT_DATA)
-        adr.show = True
-        adr.importance = 201
-        adr.add_value("text/plain", "forth")
-        ar.add_detail_object(adr)
-
-        adr = ActivityDetailRecord(ActivityDetailType.RESULT)
-        adr.show = True
-        adr.importance = 201
-        adr.add_value("text/plain", "third")
-        ar.add_detail_object(adr)
-
-        adr = ActivityDetailRecord(ActivityDetailType.INPUT_DATA)
-        adr.show = False
-        adr.importance = 201
-        adr.add_value("text/plain", "fifth")
-        ar.add_detail_object(adr)
-
-        assert len(ar._detail_objects) == 6
-
-        assert ar._detail_objects[0][3].data['text/plain'] == 'first'
-        assert ar._detail_objects[1][3].data['text/plain'] == 'second'
-        assert ar._detail_objects[2][3].data['text/plain'] == 'third'
-        assert ar._detail_objects[3][3].data['text/plain'] == 'forth'
-        assert ar._detail_objects[4][3].data['text/plain'] == 'fifth'
-        assert ar._detail_objects[5][3].data['text/plain'] == 'sixth'
+        assert ar.detail_objects[0].data['text/plain'] == 'first'
+        assert ar.detail_objects[1].data['text/plain'] == 'second'
+        assert ar.detail_objects[2].data['text/plain'] == 'third'
+        assert ar.detail_objects[3].data['text/plain'] == 'forth'
+        assert ar.detail_objects[4].data['text/plain'] == 'fifth'
+        assert ar.detail_objects[5].data['text/plain'] == 'sixth'
 
     def test_log_str_prop_errors(self):
         """Test the log string property"""
@@ -144,15 +128,15 @@ class TestActivityRecord(object):
             # Missing message
             _ = ar.log_str
 
+        adr = ActivityDetailRecord(ActivityDetailType.CODE,
+                                   data={"text/plain": "this is some data"})
+
         ar = ActivityRecord(ActivityType.CODE,
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit='aaaaaaaa')
-
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.add_value("text/plain", "this is some data")
-        ar.add_detail_object(adr)
+                            linked_commit='aaaaaaaa',
+                            detail_objects=DetailRecordList([adr]))
 
         with pytest.raises(ValueError):
             # Missing detail key for detail record
@@ -160,16 +144,16 @@ class TestActivityRecord(object):
 
     def test_log_str_prop(self):
         """Test the log string property"""
+        adr = ActivityDetailRecord(ActivityDetailType.CODE,
+                                   key='my_fake_detail_key',
+                                   data={'text/plain': 'this is some data'})
+
         ar = ActivityRecord(ActivityType.CODE,
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit='aaaaaaaa')
-
-        adr = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr.add_value("text/plain", "this is some data")
-        adr.key = "my_fake_detail_key"
-        ar.add_detail_object(adr)
+                            linked_commit='aaaaaaaa',
+                            detail_objects=DetailRecordList([adr]))
 
         assert ar.log_str == """_GTM_ACTIVITY_START_**
 msg:added some code**
@@ -197,98 +181,94 @@ _GTM_ACTIVITY_END_"""
         assert ar.importance == 50
         assert ar.linked_commit == "aaaaaaaa"
         assert ar.commit == "bbbbbb"
-        assert ar.tags == ['test']
+        assert ar.tags == ImmutableList(['test'])
         
-        assert len(ar._detail_objects) == 2
-        assert type(ar._detail_objects[0][3]) == ActivityDetailRecord
-        assert ar._detail_objects[0][3].type == ActivityDetailType.CODE
-        assert ar._detail_objects[0][3].action == ActivityAction.NOACTION
-        assert ar._detail_objects[0][3].key == "my_fake_detail_key"
-        assert ar._detail_objects[0][3].show is True
-        assert ar._detail_objects[0][3].importance == 255
-        assert ar._detail_objects[0][3].tags == []
-        assert ar._detail_objects[0][3].is_loaded is False
+        assert len(ar.detail_objects) == 2
+        assert type(ar.detail_objects[0]) == ActivityDetailRecord
+        assert ar.detail_objects[0].type == ActivityDetailType.CODE
+        assert ar.detail_objects[0].action == ActivityAction.NOACTION
+        assert ar.detail_objects[0].key == "my_fake_detail_key"
+        assert ar.detail_objects[0].show is True
+        assert ar.detail_objects[0].importance == 255
+        assert len(ar.detail_objects[0].tags) == 0
+        assert ar.detail_objects[0].is_loaded is False
 
-        assert type(ar._detail_objects[1][3]) == ActivityDetailRecord
-        assert ar._detail_objects[1][3].type == ActivityDetailType.RESULT
-        assert ar._detail_objects[1][3].action == ActivityAction.DELETE
-        assert ar._detail_objects[1][3].key == "my_fake_detail_key2"
-        assert ar._detail_objects[1][3].show is False
-        assert ar._detail_objects[1][3].importance == 0
-        assert ar._detail_objects[1][3].tags == []
-        assert ar._detail_objects[1][3].is_loaded is False
+        assert type(ar.detail_objects[1]) == ActivityDetailRecord
+        assert ar.detail_objects[1].type == ActivityDetailType.RESULT
+        assert ar.detail_objects[1].action == ActivityAction.DELETE
+        assert ar.detail_objects[1].key == "my_fake_detail_key2"
+        assert ar.detail_objects[1].show is False
+        assert ar.detail_objects[1].importance == 0
+        assert len(ar.detail_objects[1].tags) == 0
+        assert ar.detail_objects[1].is_loaded is False
 
     def test_update_detail_object(self):
         """Test converting to a dictionary"""
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    data={"text/plain": "first"})
+
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=0,
+                                    data={"text/plain": "second"})
+
         ar = ActivityRecord(ActivityType.CODE,
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit='aaaaaaaa')
+                            linked_commit='aaaaaaaa',
+                            detail_objects=DetailRecordList([adr1, adr2]))
 
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first")
-        ar.add_detail_object(adr1)
+        assert len(ar.detail_objects) == 2
+        assert ar.detail_objects[0].data['text/plain'] == 'first'
+        assert ar.detail_objects[1].data['text/plain'] == 'second'
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr2.show = True
-        adr2.importance = 0
-        adr2.add_value("text/plain", "second")
-        ar.add_detail_object(adr2)
+        adr2 = adr2.update(importance = 200)
 
-        assert len(ar._detail_objects) == 2
-        assert ar._detail_objects[0][3].data['text/plain'] == 'first'
-        assert ar._detail_objects[1][3].data['text/plain'] == 'second'
+        detail_objects = list(ar.detail_objects)
+        detail_objects[1] = adr2
+        ar = ar.update(detail_objects = DetailRecordList(detail_objects))
 
-        adr2.importance = 200
-
-        with ar.inspect_detail_objects():
-            ar.update_detail_object(adr2, 1)
-
-        assert len(ar._detail_objects) == 2
-        assert ar._detail_objects[0][3].data['text/plain'] == 'second'
-        assert ar._detail_objects[1][3].data['text/plain'] == 'first'
+        assert len(ar.detail_objects) == 2
+        assert ar.detail_objects[0].data['text/plain'] == 'second'
+        assert ar.detail_objects[1].data['text/plain'] == 'first'
 
     def test_trim_detail_objects(self):
         """"""
+        adr1 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=100,
+                                    data={"text/plain": "first"})
+
+        adr2 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=0,
+                                    data={"text/plain": "second"})
+
+        adr3 = ActivityDetailRecord(ActivityDetailType.CODE,
+                                    show=True,
+                                    importance=0,
+                                    data={"text/plain": "third"})
+
         ar = ActivityRecord(ActivityType.CODE,
                             show=True,
                             message="added some code",
                             importance=50,
-                            linked_commit='aaaaaaaa')
+                            linked_commit='aaaaaaaa',
+                            detail_objects=DetailRecordList([adr1, adr2, adr3]))
 
-        adr1 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr1.show = True
-        adr1.importance = 100
-        adr1.add_value("text/plain", "first")
-        ar.add_detail_object(adr1)
+        assert len(ar.detail_objects) == 3
+        assert ar.detail_objects[0].data['text/plain'] == 'first'
+        assert ar.detail_objects[1].data['text/plain'] == 'second'
+        assert ar.detail_objects[2].data['text/plain'] == 'third'
 
-        adr2 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr2.show = True
-        adr2.importance = 0
-        adr2.add_value("text/plain", "second")
-        ar.add_detail_object(adr2)
+        ar = ar.trim_detail_objects(2)
 
-        adr3 = ActivityDetailRecord(ActivityDetailType.CODE)
-        adr3.show = True
-        adr3.importance = 0
-        adr3.add_value("text/plain", "third")
-        ar.add_detail_object(adr3)
-
-        assert len(ar._detail_objects) == 3
-        assert ar._detail_objects[0][3].data['text/plain'] == 'first'
-        assert ar._detail_objects[1][3].data['text/plain'] == 'second'
-        assert ar._detail_objects[2][3].data['text/plain'] == 'third'
-
-        with ar.inspect_detail_objects():
-            ar.trim_detail_objects(2)
-
-        assert len(ar._detail_objects) == 2
-        assert ar._detail_objects[0][3].data['text/plain'] == 'first'
-        assert ar._detail_objects[1][3].data['text/plain'] == 'second'
+        assert len(ar.detail_objects) == 2
+        assert ar.detail_objects[0].data['text/plain'] == 'first'
+        assert ar.detail_objects[1].data['text/plain'] == 'second'
 
         with pytest.raises(ValueError):
-            with ar.inspect_detail_objects():
-                ar.trim_detail_objects(0)
+            ar.trim_detail_objects(0)

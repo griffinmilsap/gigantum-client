@@ -10,6 +10,7 @@ export default (
     isProcessing: false,
     isUploading: false,
     isSyncing: false,
+    isExporting: false,
   },
   action,
 ) => {
@@ -75,7 +76,17 @@ export default (
       },
     };
   }
-
+  if (action.type === types.IS_EXPORTING) {
+    const { namespace, isExporting } = action.payload;
+    return {
+      ...state,
+      [namespace]: {
+        ...state[namespace],
+        isExporting,
+        forceUpdate: uuidv4(),
+      },
+    };
+  }
 
   return state;
 };

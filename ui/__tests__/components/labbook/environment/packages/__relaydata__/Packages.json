@@ -1,0 +1,320 @@
+{
+ "data": {
+  "labbook": {
+   "environment": {
+    "packageDependencies": {
+     "edges": [
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDphcHQmbGliZ2wxLW1lc2EtZ2x4JmxhdGVzdA==",
+        "schema": 2,
+        "manager": "apt",
+        "package": "libgl1-mesa-glx",
+        "latestVersion": "19.0.8-0ubuntu0~18.04.3",
+        "docsUrl": null,
+        "description": "transitional dummy package",
+        "version": "latest",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MA=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDphcHQmbGlieGV4dDYmbGF0ZXN0",
+        "schema": 2,
+        "manager": "apt",
+        "package": "libxext6",
+        "latestVersion": "2:1.3.3-1",
+        "docsUrl": null,
+        "description": "X11 miscellaneous extension library",
+        "version": "latest",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MQ=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDphcHQmbGlieHJlbmRlcjEmbGF0ZXN0",
+        "schema": 2,
+        "manager": "apt",
+        "package": "libxrender1",
+        "latestVersion": "1:0.9.10-1",
+        "docsUrl": null,
+        "description": "X Rendering Extension client library",
+        "version": "latest",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "Mg=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmYm9rZWgmMS40Kg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "bokeh",
+        "latestVersion": "1.4.0",
+        "docsUrl": "http://bokeh.pydata.org/en/latest/docs/user_guide.html",
+        "description": "Statistical and novel interactive HTML plots for Python",
+        "version": "1.4*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "Mw=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmY2xvdWRwaWNrbGUmMS4yKg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "cloudpickle",
+        "latestVersion": "1.2.2",
+        "docsUrl": "https://pypi.python.org/pypi/cloudpickle/1.2.2",
+        "description": "Extended pickling support for Python objects",
+        "version": "1.2*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "NA=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmY3l0aG9uJjAuMjkq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "cython",
+        "latestVersion": "0.29.14",
+        "docsUrl": "http://cython.org/#documentation",
+        "description": "The Cython compiler for writing C extensions for the Python language",
+        "version": "0.29*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "NQ=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmZGFzay1jb3JlJjIuOSo=",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "dask-core",
+        "latestVersion": "2.10.1",
+        "docsUrl": "https://dask.org/",
+        "description": "Parallel Python with task scheduling",
+        "version": "2.9*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "Ng=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmZGlsbCYwLjMq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "dill",
+        "latestVersion": "0.3.1.1",
+        "docsUrl": "http://trac.mystic.cacr.caltech.edu/project/pathos/wiki/dill.html",
+        "description": "Serialize all of python (almost)",
+        "version": "0.3*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "Nw=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmaDVweSYyLjEwKg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "h5py",
+        "latestVersion": "2.10.0",
+        "docsUrl": "http://anaconda.org/conda-forge/h5py",
+        "description": "Read and write HDF5 files from Python",
+        "version": "2.10*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "OA=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmaGRmNSYxLjEwKg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "hdf5",
+        "latestVersion": "1.10.6",
+        "docsUrl": "http://anaconda.org/conda-forge/hdf5",
+        "description": "HDF5 is a data model, library, and file format for storing and managing data",
+        "version": "1.10*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "OQ=="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmaXB5d2lkZ2V0cyY3LjUq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "ipywidgets",
+        "latestVersion": "7.5.1",
+        "docsUrl": "https://ipywidgets.readthedocs.io/en/latest/",
+        "description": "Jupyter Interactive Widgets",
+        "version": "7.5*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTA="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmbWF0cGxvdGxpYiYzLjEq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "matplotlib",
+        "latestVersion": "3.1.3",
+        "docsUrl": "http://matplotlib.org/contents.html",
+        "description": "Publication quality figures in Python",
+        "version": "3.1*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTE="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmbmV0d29ya3gmMi40Kg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "networkx",
+        "latestVersion": "2.4",
+        "docsUrl": "http://networkx.github.io/documentation.html",
+        "description": "Python package for creating and manipulating complex networks",
+        "version": "2.4*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTI="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmbnVtYmEmMC40Nio=",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "numba",
+        "latestVersion": "0.48.0",
+        "docsUrl": "http://numba.pydata.org/",
+        "description": "NumPy aware dynamic Python compiler using LLVM",
+        "version": "0.46*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTM="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmbnVtZXhwciYyLjcq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "numexpr",
+        "latestVersion": "2.7.1",
+        "docsUrl": "https://github.com/pydata/numexpr/wiki/Numexpr-Users-Guide",
+        "description": "Fast numerical expression evaluator for NumPy.",
+        "version": "2.7*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTQ="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmbnVtcHkmMS4xNyo=",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "numpy",
+        "latestVersion": "1.17.5",
+        "docsUrl": "https://docs.scipy.org/doc/numpy/reference/",
+        "description": "Array processing for numbers, strings, records, and objects.",
+        "version": "1.17*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTU="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcGFuZGFzJjAuMjUq",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "pandas",
+        "latestVersion": "1.0.0",
+        "docsUrl": "http://anaconda.org/conda-forge/pandas",
+        "description": "High-performance, easy-to-use data structures and data analysis tools.",
+        "version": "0.25*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTY="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcGF0c3kmMC41Kg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "patsy",
+        "latestVersion": "0.5.1",
+        "docsUrl": "http://anaconda.org/conda-forge/patsy",
+        "description": "Describing statistical models in Python using symbolic formulas",
+        "version": "0.5*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTc="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcGlsbG93JjYuMio=",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "pillow",
+        "latestVersion": "7.0.0",
+        "docsUrl": "http://anaconda.org/conda-forge/pillow",
+        "description": "Pillow is the friendly PIL fork by Alex Clark and Contributors",
+        "version": "6.2*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTg="
+      },
+      {
+       "node": {
+        "id": "UGFja2FnZUNvbXBvbmVudDpjb25kYTMmcGxvdGx5LW9yY2EmMS4yKg==",
+        "schema": 2,
+        "manager": "conda3",
+        "package": "plotly-orca",
+        "latestVersion": null,
+        "docsUrl": null,
+        "description": null,
+        "version": "1.2*",
+        "fromBase": true,
+        "__typename": "PackageComponent"
+       },
+       "cursor": "MTk="
+      }
+     ],
+     "pageInfo": {
+      "hasNextPage": true,
+      "hasPreviousPage": false,
+      "startCursor": "MA==",
+      "endCursor": "MTk="
+     }
+    },
+    "id": "RW52aXJvbm1lbnQ6Y2J1dGxlciZ1aS10ZXN0LXByb2plY3Q="
+   },
+   "id": "TGFiYm9vazpjYnV0bGVyJnVpLXRlc3QtcHJvamVjdA=="
+  }
+ }
+}

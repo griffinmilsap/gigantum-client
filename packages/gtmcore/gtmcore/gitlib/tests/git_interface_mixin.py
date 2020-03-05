@@ -1,22 +1,3 @@
-# Copyright (c) 2017 FlashX, LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 import pytest
 from typing import Any
 import tempfile
@@ -106,7 +87,7 @@ def mock_initialized_filesystem_with_remote():
 
     # Init the empty repo
     git = get_fs_class()(config)
-    git.clone(bare_working_dir)
+    git.clone(bare_working_dir, working_dir)
 
     yield git, working_dir, bare_repo, bare_working_dir  # provide the fixture value
 
@@ -124,7 +105,8 @@ def populate_bare_repo(working_dir):
 
     # Init the empty repo
     git = get_fs_class()(config)
-    git.clone(working_dir)
+    # This will also set the working directory
+    git.clone(working_dir, scratch_working_dir)
 
     # Add a file to master and commit
     write_file(git, "test1.txt", "Original Content", commit_msg="initial commit")
@@ -232,12 +214,16 @@ class GitInterfaceMixin(object):
 
     def test_clone_repo(self, mock_initialized_remote):
         """Test trying to clone an existing repo dir"""
+
+        bare_working_dir = mock_initialized_remote[3]
+
         scratch_working_dir = os.path.join(tempfile.gettempdir(), uuid.uuid4().hex)
         os.makedirs(scratch_working_dir)
         config = {"backend": get_backend(), "working_directory": scratch_working_dir}
 
         git = self.get_git_obj(config)
-        git.clone(mock_initialized_remote[3])
+        # This will also set the working dir
+        git.clone(bare_working_dir, scratch_working_dir)
 
         assert len(git.repo.heads) == 1
         assert len(git.repo.remotes["origin"].fetch()) == 2
@@ -1273,7 +1259,7 @@ class GitInterfaceMixin(object):
 
         # Init the empty repo
         git_updater = get_fs_class()(config)
-        git_updater.clone(mock_initialized_remote[3])
+        git_updater.clone(mock_initialized_remote[3], scratch_working_dir)
         git_updater.checkout("test_branch")
 
         # Add a file to master and commit
@@ -1319,7 +1305,7 @@ class GitInterfaceMixin(object):
 
         # Init the empty repo
         git_updater = get_fs_class()(config)
-        git_updater.clone(mock_initialized_remote[3])
+        git_updater.clone(mock_initialized_remote[3], scratch_working_dir)
         git_updater.checkout("master")
 
         # Make sure it pulled content
@@ -1354,7 +1340,7 @@ class GitInterfaceMixin(object):
 
         # Init the empty repo
         git_updater = get_fs_class()(config)
-        git_updater.clone(mock_initialized_remote[3])
+        git_updater.clone(mock_initialized_remote[3], scratch_working_dir)
         git_updater.checkout("master")
 
         # Make sure it pulled content

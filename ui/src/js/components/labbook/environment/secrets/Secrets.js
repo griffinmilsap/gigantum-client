@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { createPaginationContainer, graphql } from 'react-relay';
+import Tooltip from 'Components/common/Tooltip';
 // components
 import SecretsCard from './SecretsCard';
 // utils
@@ -15,6 +16,7 @@ type Props = {
   name: string,
   owner: string,
   relay: Object,
+  isLocked: boolean,
 }
 
 class Secrets extends Component<Props> {
@@ -33,12 +35,14 @@ class Secrets extends Component<Props> {
       name,
       owner,
       relay,
+      isLocked,
     } = this.props;
     return (
       <div className="Secrets">
         <div className="Environment__headerContainer">
           <h4>
             Sensitive Files
+            <Tooltip section="sensitiveFiles" />
           </h4>
         </div>
         <div className="Secrets__sub-header">
@@ -60,6 +64,7 @@ class Secrets extends Component<Props> {
             relay={relay}
             secrets={environment.secretsFileMapping}
             secretsMutations={secretsMutations}
+            isLocked={isLocked}
           />
         </div>
       </div>

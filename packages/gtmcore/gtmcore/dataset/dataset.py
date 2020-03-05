@@ -4,12 +4,13 @@ import yaml
 import datetime
 import json
 
-from typing import (Dict, Optional, Union)
+from typing import (Optional, Union)
 
 from gtmcore.gitlib import GitAuthor
 from gtmcore.dataset.schemas import validate_dataset_schema
 from gtmcore.activity import ActivityStore, ActivityRecord, ActivityDetailType, ActivityType,\
     ActivityAction, ActivityDetailRecord
+from gtmcore.activity.utils import ImmutableList, DetailRecordList, TextData
 from gtmcore.dataset.storage import get_storage_backend
 from gtmcore.dataset.storage.backend import ManagedStorageBackend, UnmanagedStorageBackend
 
@@ -172,17 +173,19 @@ class Dataset(Repository):
         self.git.add(config_file)
         cm = self.git.commit("Updating backend config")
 
+        d = json.dumps(data, indent=2)
+        markdown_data = f"Updated dataset storage backend configuration:\n\n ```{d}```"
+        adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=255,
+                                   action=ActivityAction.EDIT, data=TextData('markdown', markdown_data))
+
         ar = ActivityRecord(ActivityType.DATASET,
                             message="Updated Dataset storage backend configuration",
                             show=True,
                             importance=255,
                             linked_commit=cm.hexsha,
-                            tags=['config'])
-        adr = ActivityDetailRecord(ActivityDetailType.DATASET, show=False, importance=255,
-                                   action=ActivityAction.EDIT)
-        d = json.dumps(data, indent=2)
-        adr.add_value('text/markdown', f"Updated dataset storage backend configuration:\n\n ```{d}```")
-        ar.add_detail_object(adr)
+                            detail_objects=DetailRecordList([adr]),
+                            tags=ImmutableList(['config']))
+
         ars = ActivityStore(self)
         ars.create_activity_record(ar)
 

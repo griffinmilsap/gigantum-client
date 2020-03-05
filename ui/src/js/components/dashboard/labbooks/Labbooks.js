@@ -44,8 +44,8 @@ class Labbooks extends Component {
       refetchLoading: false,
       selectedSection: 'local',
       showLoginPrompt: false,
-      orderBy: orderBy || 'modified_on',
-      sort: sort || 'desc',
+      orderBy: orderBy || props.orderBy,
+      sort: sort || props.sort,
       filterMenuOpen: false,
     };
   }

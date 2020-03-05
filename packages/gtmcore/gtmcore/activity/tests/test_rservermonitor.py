@@ -49,13 +49,13 @@ class TestRStudioServerMonitor:
         ars = a_store.get_activity_records()
 
         # details object [x][3] gets the x^th object
-        code_dict = a_store.get_detail_record(ars[0]._detail_objects[1][3].key).data
+        code_dict = a_store.get_detail_record(ars[0].detail_objects[1].key).data
 
         # check the code results
         assert(code_dict['text/markdown'][101:109] == 'y("knitr')
 
         # check part of an image
-        imgdata = a_store.get_detail_record(ars[1]._detail_objects[1][3].key).data['image/png'][0:20]
+        imgdata = a_store.get_detail_record(ars[1].detail_objects[1].key).data['image/png'][0:20]
         assert(imgdata == '/9j/4AAQSkZJRgABAQAA')
 
     def test_multiplecells(self, redis_client, mock_labbook):
@@ -75,8 +75,8 @@ class TestRStudioServerMonitor:
         ars = a_store.get_activity_records()
 
         # details object [x][3] gets the x^th object
-        cell_1 = a_store.get_detail_record(ars[0]._detail_objects[2][3].key).data
-        cell_2 = a_store.get_detail_record(ars[0]._detail_objects[3][3].key).data
+        cell_1 = a_store.get_detail_record(ars[0].detail_objects[2].key).data
+        cell_2 = a_store.get_detail_record(ars[0].detail_objects[3].key).data
 
         # if the cells were divided, there will be two records
         assert(cell_1['text/plain'][55:58] == 'pop')

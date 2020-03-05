@@ -41,7 +41,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         <a
           onClick={[Function]}
         >
-          Cloud
+          Gigantum Hub
         </a>
       </li>
       <div
@@ -96,7 +96,6 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
     </div>
     <div
       className="DashboardDropdown column-4-span-3 padding--0"
-      data-selenium-id="FilterByDropdown"
     >
       <div>
         Filter by:
@@ -105,7 +104,17 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
         className="Dropdown__filter-selector Dropdown Dropdown--collapsed"
         onClick={[Function]}
       >
-        All
+        <div
+          className="Dropdown__filter-selector"
+          data-selenium-id="FilterByDropdown"
+        >
+          All 
+          <span
+            className="Dropdown__filter-selector subtext"
+          >
+            (includes collaborators)
+          </span>
+        </div>
       </div>
       <ul
         className="Dropdown__menu box-shadow hidden"
@@ -114,7 +123,12 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
           className="DashboardDropdown__list-item"
           onClick={[Function]}
         >
-          All
+          All 
+          <span
+            className="subtext"
+          >
+            (includes collaborators)
+          </span>
            ✓ 
         </li>
         <li
@@ -122,14 +136,15 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
           onClick={[Function]}
         >
           My
-           Project
+           Projects
           
         </li>
         <li
           className="DashboardDropdown__list-item"
           onClick={[Function]}
         >
-          Shared with me
+          Collaborator's
+           Projects
           
         </li>
       </ul>
@@ -278,7 +293,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
       </div>
       <a
         className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-        href="/projects/uitest/ui-test-remote"
+        href="/projects/cbutler/ui-test-project"
         onClick={[Function]}
       >
         <div
@@ -298,6 +313,8 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               onClick={[Function]}
               onMouseOut={[Function]}
               onMouseOver={[Function]}
+              role="presentation"
+              type="button"
             >
               <div
                 className="ContainerStatus__text"
@@ -321,97 +338,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             <h5
               className="LocalLabbooks__panel-title"
               onClick={[Function]}
-            >
-              <span>
-                <span
-                  className=""
-                >
-                  ui-test-remote
-                </span>
-              </span>
-            </h5>
-          </div>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
-          >
-            uitest
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
-          >
-            <span
-              className="bold"
-            >
-              Created:
-            </span>
-             
-            Fri Jan 18 2019
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
-          >
-            <span
-              className="bold"
-            >
-              Modified:
-            </span>
-             
-            Fri Jan 18 2019
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
-          >
-            <span>
-               No description provided
-            </span>
-          </p>
-        </div>
-      </a>
-      <a
-        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-        href="/projects/uitest/ui-test-project"
-        onClick={[Function]}
-      >
-        <div
-          className="LocalLabbooks__row--icons"
-          data-selenium-id="LocalLabbookPanel"
-        >
-          <div
-            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
-            data-tooltip="loading"
-          />
-          <div
-            className="LocalLabbooks__containerStatus"
-          >
-            <div
-              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
-              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
-              onClick={[Function]}
-              onMouseOut={[Function]}
-              onMouseOver={[Function]}
-            >
-              <div
-                className="ContainerStatus__text"
-              >
-                
-              </div>
-              <div
-                className="ContainerStatus__toggle"
-              >
-                <div
-                  className="ContainerStatus__toggle-btn"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="LocalLabbooks__row--text"
-        >
-          <div>
-            <h5
-              className="LocalLabbooks__panel-title"
-              onClick={[Function]}
+              role="presentation"
             >
               <span>
                 <span
@@ -425,7 +352,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
           >
-            uitest
+            cbutler
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -436,7 +363,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Created:
             </span>
              
-            Fri Jan 18 2019
+            Thu Jan 30 2020
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -447,103 +374,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Modified:
             </span>
              
-            Fri Jan 18 2019
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
-          >
-            <span>
-              <span
-                className=""
-              >
-                This is a ui test project
-
-              </span>
-            </span>
-          </p>
-        </div>
-      </a>
-      <a
-        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-        href="/projects/uitest/test-tt"
-        onClick={[Function]}
-      >
-        <div
-          className="LocalLabbooks__row--icons"
-          data-selenium-id="LocalLabbookPanel"
-        >
-          <div
-            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
-            data-tooltip="loading"
-          />
-          <div
-            className="LocalLabbooks__containerStatus"
-          >
-            <div
-              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
-              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
-              onClick={[Function]}
-              onMouseOut={[Function]}
-              onMouseOver={[Function]}
-            >
-              <div
-                className="ContainerStatus__text"
-              >
-                
-              </div>
-              <div
-                className="ContainerStatus__toggle"
-              >
-                <div
-                  className="ContainerStatus__toggle-btn"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="LocalLabbooks__row--text"
-        >
-          <div>
-            <h5
-              className="LocalLabbooks__panel-title"
-              onClick={[Function]}
-            >
-              <span>
-                <span
-                  className=""
-                >
-                  test-tt
-                </span>
-              </span>
-            </h5>
-          </div>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
-          >
-            uitest
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
-          >
-            <span
-              className="bold"
-            >
-              Created:
-            </span>
-             
-            Fri Jan 11 2019
-          </p>
-          <p
-            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
-          >
-            <span
-              className="bold"
-            >
-              Modified:
-            </span>
-             
-            Fri Jan 11 2019
+            Mon Feb 03 2020
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -556,7 +387,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
       </a>
       <a
         className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-        href="/projects/uitest/new-project"
+        href="/projects/cbutler/test-sync"
         onClick={[Function]}
       >
         <div
@@ -576,6 +407,8 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               onClick={[Function]}
               onMouseOut={[Function]}
               onMouseOver={[Function]}
+              role="presentation"
+              type="button"
             >
               <div
                 className="ContainerStatus__text"
@@ -599,12 +432,13 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             <h5
               className="LocalLabbooks__panel-title"
               onClick={[Function]}
+              role="presentation"
             >
               <span>
                 <span
                   className=""
                 >
-                  new-project
+                  test-sync
                 </span>
               </span>
             </h5>
@@ -612,7 +446,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
           >
-            uitest
+            cbutler
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -623,7 +457,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Created:
             </span>
              
-            Wed Jan 16 2019
+            Mon Jan 13 2020
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -634,7 +468,105 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Modified:
             </span>
              
-            Thu Jan 24 2019
+            Mon Jan 13 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+              <span
+                className=""
+              >
+                sdassad
+              </span>
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/cbutler/test"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  test
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            cbutler
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Tue Jan 07 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Wed Jan 08 2020
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -647,7 +579,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
       </a>
       <a
         className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
-        href="/projects/uitest/awful-intersections-demo"
+        href="/projects/gigantum-examples/scikit-learn-in-gigantum"
         onClick={[Function]}
       >
         <div
@@ -667,6 +599,8 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               onClick={[Function]}
               onMouseOut={[Function]}
               onMouseOver={[Function]}
+              role="presentation"
+              type="button"
             >
               <div
                 className="ContainerStatus__text"
@@ -690,12 +624,13 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
             <h5
               className="LocalLabbooks__panel-title"
               onClick={[Function]}
+              role="presentation"
             >
               <span>
                 <span
                   className=""
                 >
-                  awful-intersections-demo
+                  scikit-learn-in-gigantum
                 </span>
               </span>
             </h5>
@@ -703,7 +638,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
           >
-            uitest
+            gigantum-examples
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -714,7 +649,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Created:
             </span>
              
-            Thu May 24 2018
+            Wed Nov 06 2019
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
@@ -725,7 +660,7 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               Modified:
             </span>
              
-            Fri Jan 11 2019
+            Mon Nov 11 2019
           </p>
           <p
             className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
@@ -734,8 +669,482 @@ exports[`DashboardLocal Renders a snapshot 1`] = `
               <span
                 className=""
               >
-                A fun demo LabBook to automatically find and generate cringe-worthy maps of horrible intersections
+                An intro the Gigantum pre-configured data science base, using scikit-learn
               </span>
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/cbutler/private-test"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  private-test
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            cbutler
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Wed Sep 04 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Fri Jan 17 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+               No description provided
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/cbutler/netflix-stats"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  netflix-stats
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            cbutler
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Sat Jan 25 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Mon Jan 27 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+               No description provided
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/cbutler/kjjjj"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  kjjjj
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            cbutler
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Wed Jan 08 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Mon Jan 13 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+               No description provided
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/dmk/bash-kernel-example"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  bash-kernel-example
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            dmk
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Sun Oct 20 2019
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Tue Jan 07 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+              <span
+                className=""
+              >
+                An example showing how to combine pip and docker snippets to add a kernel
+              </span>
+            </span>
+          </p>
+        </div>
+      </a>
+      <a
+        className="Card Card--225 Card--text column-4-span-3 flex flex--column justify--space-between"
+        href="/projects/cbutler/adasddas"
+        onClick={[Function]}
+      >
+        <div
+          className="LocalLabbooks__row--icons"
+          data-selenium-id="LocalLabbookPanel"
+        >
+          <div
+            className="Tooltip-Listing LocalLabbookPanel__loading Tooltip-data Tooltip-data--small"
+            data-tooltip="loading"
+          />
+          <div
+            className="LocalLabbooks__containerStatus"
+          >
+            <div
+              className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+              data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
+              onClick={[Function]}
+              onMouseOut={[Function]}
+              onMouseOver={[Function]}
+              role="presentation"
+              type="button"
+            >
+              <div
+                className="ContainerStatus__text"
+              >
+                
+              </div>
+              <div
+                className="ContainerStatus__toggle"
+              >
+                <div
+                  className="ContainerStatus__toggle-btn"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="LocalLabbooks__row--text"
+        >
+          <div>
+            <h5
+              className="LocalLabbooks__panel-title"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <span>
+                <span
+                  className=""
+                >
+                  adasddas
+                </span>
+              </span>
+            </h5>
+          </div>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--owner "
+          >
+            cbutler
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Created:
+            </span>
+             
+            Wed Jan 22 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--metadata"
+          >
+            <span
+              className="bold"
+            >
+              Modified:
+            </span>
+             
+            Mon Jan 27 2020
+          </p>
+          <p
+            className="LocalLabbooks__paragraph LocalLabbooks__paragraph--description"
+          >
+            <span>
+               No description provided
             </span>
           </p>
         </div>

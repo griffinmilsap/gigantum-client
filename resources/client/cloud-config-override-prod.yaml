@@ -9,7 +9,7 @@ flask:
   TESTING: false
 
 auth:
-  identity_manager: browser
+  identity_manager: anonymous
 
 git:
   backend: filesystem-shim
@@ -22,13 +22,10 @@ git:
       object_service: api.gigantum.com/object-v1
   working_directory: /mnt/gigantum
 
-
 environment:
   iframe:
     enabled: true
     allowed_origin: gigantum.com
-
-
 
 # LabBook Container Configuration
 container:
@@ -41,7 +38,6 @@ container:
   # If null, no limit
   # To set enter a float for the CPU allocation desired. e.g. 4 CPUs available, 1.5 limits container to 1.5 CPUs
   cpu: 1
-
 
 # Dispatcher and permitted number of workers -
 # NOTE! Only the default queue is burstable

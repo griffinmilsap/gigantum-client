@@ -7,8 +7,11 @@ from lmsrvcore.auth.user import get_logged_in_username
 from lmsrvcore.api.interfaces import GitRepository
 
 
-class BundledApp(graphene.ObjectType, interfaces=(graphene.relay.Node, GitRepository)):
+class BundledApp(graphene.ObjectType):
     """ Represents a bundled application """
+    class Meta:
+        interfaces = (graphene.relay.Node, GitRepository)
+
     app_name = graphene.String(required=True, description='Name of the bundled app')
     description = graphene.String(description='Description of the bundled app')
     port = graphene.Int(description='Port on which the bundled app is exposed internally')

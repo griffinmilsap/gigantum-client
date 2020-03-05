@@ -6,19 +6,126 @@
     "edges": [
      {
       "node": {
-       "id": "RGF0YXNldDp1aXRlc3QmdWktdGVzdC1kYXRhc2V0",
-       "name": "ui-test-dataset",
-       "description": "This is a testing dataset",
-       "owner": "uitest",
-       "createdOnUtc": "2019-01-11T17:10:02+00:00",
-       "modifiedOnUtc": "2019-01-11T17:15:23+00:00",
+       "id": "RGF0YXNldDpjYnV0bGVyLXRlc3Qmenh6eGM=",
+       "name": "zxzxc",
+       "description": "",
+       "owner": "cbutler-test",
+       "createdOnUtc": "2019-09-04T15:01:54+00:00",
+       "modifiedOnUtc": "2019-09-04T15:01:54+00:00",
+       "overview": {
+        "numFiles": 0,
+        "totalBytes": "0",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmNidXRsZXItdGVzdCZ6eHp4Yw=="
+       },
        "__typename": "Dataset"
       },
       "cursor": "MA=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDpjYnV0bGVyJnhkZGRkZA==",
+       "name": "xddddd",
+       "description": "",
+       "owner": "cbutler",
+       "createdOnUtc": "2019-07-09T14:59:58+00:00",
+       "modifiedOnUtc": "2019-08-15T16:11:00+00:00",
+       "overview": {
+        "numFiles": 4,
+        "totalBytes": "36194446",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmNidXRsZXImeGRkZGRk"
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "MQ=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDpjYnV0bGVyJnVpLXRlc3QtZGF0YXNldA==",
+       "name": "ui-test-dataset",
+       "description": "",
+       "owner": "cbutler",
+       "createdOnUtc": "2020-01-30T16:00:02+00:00",
+       "modifiedOnUtc": "2020-01-30T16:00:02+00:00",
+       "overview": {
+        "numFiles": 0,
+        "totalBytes": "0",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmNidXRsZXImdWktdGVzdC1kYXRhc2V0"
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "Mg=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDp0eWxlcmNhc2FibGFuY2Emc3Vtb2xvZ2ljLWRhdGE=",
+       "name": "sumologic-data",
+       "description": "This is the sumologic data for the user/download analysis. ",
+       "owner": "tylercasablanca",
+       "createdOnUtc": "2019-04-10T17:13:14+00:00",
+       "modifiedOnUtc": "2019-06-21T16:48:43+00:00",
+       "overview": {
+        "numFiles": 29,
+        "totalBytes": "10361006",
+        "id": "RGF0YXNldE92ZXJ2aWV3OnR5bGVyY2FzYWJsYW5jYSZzdW1vbG9naWMtZGF0YQ=="
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "Mw=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDpnaWdhbnR1bS1leGFtcGxlcyZzdGFjay1vdmVyZmxvdy1kZXYtc3VydmV5LTE4",
+       "name": "stack-overflow-dev-survey-18",
+       "description": "Results from the Stack Overflow Developer Survey in 2018",
+       "owner": "gigantum-examples",
+       "createdOnUtc": "2019-03-05T20:14:11+00:00",
+       "modifiedOnUtc": "2019-03-05T20:15:50+00:00",
+       "overview": {
+        "numFiles": 4,
+        "totalBytes": "196776692",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmdpZ2FudHVtLWV4YW1wbGVzJnN0YWNrLW92ZXJmbG93LWRldi1zdXJ2ZXktMTg="
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "NA=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDpkbWsmZGF0YXNldC1kZWJ1Zy1kcy0y",
+       "name": "dataset-debug-ds-2",
+       "description": "sdfasdfasdf",
+       "owner": "dmk",
+       "createdOnUtc": "2019-03-07T00:32:22+00:00",
+       "modifiedOnUtc": "2019-03-07T00:32:23+00:00",
+       "overview": {
+        "numFiles": 0,
+        "totalBytes": "0",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmRtayZkYXRhc2V0LWRlYnVnLWRzLTI="
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "NQ=="
+     },
+     {
+      "node": {
+       "id": "RGF0YXNldDpjYnV0bGVyJmFzYWRkc2Fkcw==",
+       "name": "asaddsads",
+       "description": "",
+       "owner": "cbutler",
+       "createdOnUtc": "2019-11-06T18:01:28+00:00",
+       "modifiedOnUtc": "2020-01-23T17:05:13+00:00",
+       "overview": {
+        "numFiles": 13,
+        "totalBytes": "51773449",
+        "id": "RGF0YXNldE92ZXJ2aWV3OmNidXRsZXImYXNhZGRzYWRz"
+       },
+       "__typename": "Dataset"
+      },
+      "cursor": "Ng=="
      }
     ],
     "pageInfo": {
-     "endCursor": "MA==",
+     "endCursor": "Ng==",
      "hasNextPage": false,
      "hasPreviousPage": false,
      "startCursor": "MA=="

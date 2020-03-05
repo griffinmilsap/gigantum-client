@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
 // store
 import store from 'JS/redux/store';
 // config
@@ -54,6 +55,7 @@ class Tooltip extends Component {
   render() {
     const { props, state } = this;
     const { section } = props;
+    const place = (section === 'descriptionOverview') ? 'right' : null;
     const toolTipCSS = classNames({
       Tooltip: props.isVisible,
       hidden: !props.isVisible,
@@ -65,21 +67,13 @@ class Tooltip extends Component {
       [section]: true,
       'Tooltip__toggle--active': state.toolTipExpanded,
     });
-    const messsageCSS = classNames({
-      Tooltip__message: state.toolTipExpanded,
-      hidden: !state.toolTipExpanded,
-      [section]: true,
-    });
-    const pointerCSS = classNames({
-      Tooltip__pointer: state.toolTipExpanded,
-      hidden: !state.toolTipExpanded,
-      [section]: true,
-    });
     return (
       <div className={toolTipCSS}>
         <div
           className={toggleCSS}
-          onClick={() => this.setState({ toolTipExpanded: !state.toolTipExpanded })}
+          data-tip={config.getTooltipText(section)}
+          data-for={`Tooltip--${section}`}
+          data-event="click focus"
         >
           { !state.toolTipExpanded
             && (
@@ -91,11 +85,11 @@ class Tooltip extends Component {
             )
           }
         </div>
-
-        <div className={pointerCSS} />
-        <div className={messsageCSS}>
-          {config.getTooltipText(section)}
-        </div>
+        <ReactTooltip
+          id={`Tooltip--${section}`}
+          globalEventOff="click"
+          place={place}
+        />
 
       </div>
     );

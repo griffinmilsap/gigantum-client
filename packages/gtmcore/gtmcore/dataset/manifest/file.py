@@ -51,7 +51,7 @@ class ManifestFileCache(object):
 
         self.ignore_file = os.path.join(dataset.root_dir, ".gigantumignore")
 
-        self._redis_client = None
+        self._redis_client: Optional[redis.StrictRedis] = None
         self._manifest: OrderedDict = OrderedDict()
         self._current_checkout_id = self.dataset.checkout_id
         self._persist_queue: List[PersistTask] = list()
@@ -150,16 +150,15 @@ class ManifestFileCache(object):
         Returns:
             OrderedDict
         """
+        manifest_data = OrderedDict()
         if self.redis_client.exists(self.manifest_cache_key):
             # Load from cache
-            manifest_data = json.loads(self.redis_client.get(self.manifest_cache_key).decode("utf-8"),
-                                       object_pairs_hook=OrderedDict)
-            self.redis_client.expire(self.manifest_cache_key, 3600)
-
+            manifest_cached_data_bytes = self.redis_client.get(self.manifest_cache_key)
+            if manifest_cached_data_bytes:
+                manifest_data = json.loads(manifest_cached_data_bytes.decode("utf-8"), object_pairs_hook=OrderedDict)
+                self.redis_client.expire(self.manifest_cache_key, 3600)
         else:
             # Load from files
-            manifest_data = OrderedDict()
-
             for manifest_file in glob.glob(os.path.join(self.dataset.root_dir, 'manifest', 'manifest-*')):
                 manifest_data = OrderedDict(**manifest_data, **self._load_manifest_file(manifest_file))
 

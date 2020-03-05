@@ -116,15 +116,24 @@ export class LocalLabbooks extends Component {
         && res.data.labbookList
         && res.data.labbookList.localById) {
         const containerListCopy = new Map(state.containerList);
-
+        let brokenCount = 0;
         res.data.labbookList.localById.forEach((node) => {
+          if (
+            node.environment.imageStatus === null
+            && node.environment.containerStatus === null
+          ) {
+            brokenCount += 1;
+          }
           containerListCopy.set(node.id, node);
         });
         if (self.mounted) {
-          self.setState({ containerList: containerListCopy });
+          const delay = (brokenCount !== res.data.labbookList.localById.length) ? 100 : 10000;
+          if (!brokenCount !== res.data.labbookList.localById.length) {
+            self.setState({ containerList: containerListCopy });
+          }
           this.containerLookup = setTimeout(() => {
             self._containerLookup();
-          }, 10000);
+          }, delay);
         }
       }
     });

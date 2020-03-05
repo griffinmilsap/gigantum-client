@@ -21,7 +21,8 @@
   "outputDataFiles": "This displays a Project's most recent Output Data files.",
   "outputDataBrowser": "This section is where you can add and remove Output Data files. To add files, just drag and drop into the section below. \n Note: Individual files above 1.8GB are currently unsupported.",
   "createLabbook": "Clicking on the 'Create New' button will open the new Project window, letting you name and select a Base for the new Project.",
-  "importLabbook": "Clicking on the Import Existing' button transition the card to Import mode. \n You can import by using a URL of a published Project or by uploading an exported Project's .zip file. \n You can also directly import Projects that have been shared with you in the Cloud view.",
+  "importLabbook": "Click on the 'Import Existing' button to import a Project into this Client instance.\nYou can use a URL of a published Project or upload an exported Project.\nYou can also import Projects that have been shared with you in by clicking on the 'Gigantum Hub' tab above.",
   "sortLabbook": "This will allow you to sort Projects. \n Projects will display by most recently modified by default.",
-  "cloudLocal": "This allows you to switch between Local and Cloud Project listings. Both Projects you have created and Projects that have been shared with you will be visible."
+  "cloudLocal": "This allows you to switch between Local and Cloud Project listings. Both Projects you have created and Projects that have been shared with you will be visible.",
+  "sensitiveFiles": "Use Sensitive Files to include a password, API key, or other sensitive data in a Project that is protected against versioning and syncing."
 }

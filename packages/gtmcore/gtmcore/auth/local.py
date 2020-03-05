@@ -1,31 +1,12 @@
-# Copyright (c) 2017 FlashX, LLC
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-from gtmcore.auth.identity import IdentityManager, User, AuthenticationError
-from gtmcore.configuration import Configuration
+from typing import Optional
 import os
 import json
 import jose
 import redis_lock
 from redis import StrictRedis
 
-from typing import Optional
+from gtmcore.auth.identity import IdentityManager, User, AuthenticationError
+from gtmcore.configuration import Configuration
 
 from gtmcore.logging import LMLogger
 logger = LMLogger.get_logger()
@@ -41,7 +22,7 @@ class LocalIdentityManager(IdentityManager):
 
         self.auth_dir = os.path.join(self.config.config['git']['working_directory'], '.labmanager', 'identity')
 
-        self._lock_redis_client = None
+        self._lock_redis_client: Optional[StrictRedis] = None
 
     # Override the user property to automatically try to load the user from disk
     @property
@@ -57,6 +38,10 @@ class LocalIdentityManager(IdentityManager):
 
     def is_authenticated(self, access_token: Optional[str] = None, id_token: Optional[str] = None) -> bool:
         """Method to check if the user is currently authenticated in the context of this identity manager
+
+        Args:
+            access_token(str): API access JSON web token from Auth0
+            id_token(str): ID JSON web token from Auth0
 
         Returns:
             bool

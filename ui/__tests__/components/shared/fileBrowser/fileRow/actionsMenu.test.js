@@ -8,7 +8,7 @@ import codeData from 'Tests/components/labbook/code/__relaydata__/CodeBrowser.js
 // components
 import ActionsMenu from 'Components/shared/fileBrowser/fileRow/ActionsMenu';
 
-let edge = codeData.data.labbook.code.allFiles.edges[2]
+let edge = codeData.data.labbook.code.allFiles.edges[1]
 
 const mutationData = {
   owner: 'uitest',
@@ -40,13 +40,14 @@ const fixtures = {
 
 describe('ActionsMenu Component', () => {
   it('Renders a snapshot', () => {
-
     const wrapper = renderer.create(
-       <ActionsMenu {...fixtures}/>
+      <ActionsMenu
+        {...fixtures}
+      />,
     );
 
     const tree = wrapper.toJSON();
 
     expect(tree).toMatchSnapshot();
-  })
+  });
 });

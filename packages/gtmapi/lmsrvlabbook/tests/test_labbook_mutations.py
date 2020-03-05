@@ -140,7 +140,7 @@ class TestLabBookServiceMutations(object):
         assert os.path.exists(lb_root_dir)
 
         ds = im.create_dataset('default', 'default', "dataset2", storage_type="gigantum_object_v1", description="test")
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "default", "dataset2", lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "default", "dataset2", lb, 'default')
 
         delete_query = f"""
         mutation delete {{
@@ -187,7 +187,7 @@ class TestLabBookServiceMutations(object):
 
         ds = im.create_dataset('default', 'default', "dataset22", storage_type="gigantum_object_v1", description="test")
         ds_root_dir = ds.root_dir
-        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "default", "dataset22", lb)
+        im.link_dataset_to_labbook(f"{ds.root_dir}/.git", "default", "dataset22", lb, 'default')
         im.delete_dataset('default', 'default', "dataset22")
 
         delete_query = f"""

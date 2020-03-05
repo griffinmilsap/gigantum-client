@@ -701,7 +701,7 @@ Data Science Quickstart using Jupyterlab, numpy, and Matplotlib. A great base fo
                                     'data': [
                                         [
                                             'text/plain',
-                                            'Created new LabBook: default/test-lab-book1'
+                                            'Created new Project: default/test-lab-book1'
                                         ]
                                     ],
                                     'importance': 0,
@@ -713,7 +713,7 @@ Data Science Quickstart using Jupyterlab, numpy, and Matplotlib. A great base fo
                             ],
                             'email': 'jane@doe.com',
                             'importance': 255,
-                            'message': 'Created new LabBook: default/test-lab-book1',
+                            'message': 'Created new Project: default/test-lab-book1',
                             'show': True,
                             'tags': [
                             ],

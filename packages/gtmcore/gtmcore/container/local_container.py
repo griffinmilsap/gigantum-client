@@ -14,7 +14,6 @@ from docker.models.containers import Container
 from gtmcore.container.container import ContainerOperations, _check_allowed_args, logger
 from gtmcore.container.exceptions import ContainerBuildException, ContainerException
 
-from gtmcore.inventory.inventory import InventoryManager
 from gtmcore.labbook import LabBook
 
 
@@ -86,15 +85,25 @@ class LocalProjectContainer(ContainerOperations):
         try:
             # From: https://docker-py.readthedocs.io/en/stable/api.html#docker.api.build.BuildApiMixin.build
             # This builds the image and generates output status text.
+            status_counter = 0
             for line in self._client.api.build(path=self.env_dir, tag=self.image_tag, pull=True, nocache=nocache,
                                                forcerm=True):
                 ldict = json.loads(line)
                 stream = (ldict.get("stream") or "")
                 if feedback_callback:
                     feedback_callback(stream)
+
+                # Unlike the stream above, which reports the results of running commands, status is more of an ongoing
+                # report and will keep returning the same status over and over
                 status = (ldict.get("status") or "")
-                if feedback_callback:
-                    feedback_callback(status)
+                if feedback_callback and status:
+                    if status.startswith('Digest:') or status.startswith('Status:'):
+                        feedback_callback('\n' + status)
+                    else:
+                        # The details aren't that important. We just want to convey that something's happening
+                        if status_counter == 0:
+                            feedback_callback('. ')
+                        status_counter = (status_counter + 1) % 5
 
                 if 'successfully built' in stream.lower():
                     # When built, final line is in form of "Successfully built 02faas3"
@@ -164,7 +173,8 @@ class LocalProjectContainer(ContainerOperations):
     # Working with Containers
 
     def run_container(self, cmd: Optional[str] = None, image_name: Optional[str] = None, environment: List[str] = None,
-                      volumes: Optional[Dict] = None, wait_for_output=False, container_name: Optional[str] = None, **run_args) \
+                      volumes: Optional[Dict] = None, wait_for_output=False, container_name: Optional[str] = None,
+                      **run_args) \
             -> Optional[str]:
         """ Start a Docker container, by default for the Project connected to this instance.
 

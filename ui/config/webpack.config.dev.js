@@ -152,6 +152,9 @@ module.exports = {
         enforce: 'pre',
         loader: "eslint-loader",
         include: paths.appSrc,
+        exclude: [
+          /\__tests__/
+        ]
       },
       // ** ADDING/UPDATING LOADERS **
       // The "file" loader handles all assets unless explicitly excluded.
@@ -164,6 +167,7 @@ module.exports = {
       // In production, they would get copied to the `build` folder.
       {
         exclude: [
+          /\__tests__/,
           /\.html$/,
           /\.(js|jsx)$/,
           /\.css$/,
@@ -196,6 +200,9 @@ module.exports = {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: require.resolve('babel-loader'),
+        exclude: [
+          /\__tests__/
+        ],
         options: {
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -206,6 +213,9 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.submodules,
+        exclude: [
+          /\__tests__/
+        ],
         loader: require.resolve('babel-loader'),
         options: {
 

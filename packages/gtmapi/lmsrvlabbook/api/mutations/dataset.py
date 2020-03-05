@@ -2,7 +2,6 @@ import graphene
 import base64
 import os
 import flask
-import requests
 
 from gtmcore.inventory.inventory import InventoryManager, InventoryException
 from gtmcore.logging import LMLogger
@@ -13,6 +12,7 @@ from lmsrvcore.auth.user import get_logged_in_username, get_logged_in_author
 from lmsrvcore.utilities import configure_git_credentials
 from gtmcore.activity import ActivityStore, ActivityType, ActivityDetailType, ActivityRecord, \
     ActivityDetailRecord
+from gtmcore.activity.utils import ImmutableDict, TextData, DetailRecordList, ImmutableList
 
 
 from lmsrvlabbook.api.objects.dataset import Dataset
@@ -22,6 +22,7 @@ from gtmcore.dispatcher import Dispatcher, jobs
 from lmsrvlabbook.api.connections.dataset import DatasetConnection
 from lmsrvlabbook.api.objects.dataset import DatasetConfigurationParameterInput
 from lmsrvlabbook.api.connections.labbook import Labbook, LabbookConnection
+from lmsrvcore.auth.identity import tokens_from_request_context
 
 
 logger = LMLogger.get_logger()
@@ -285,7 +286,7 @@ class ModifyDatasetLink(graphene.relay.ClientIDMutation):
                     dataset_url = f"{ds.root_dir}/.git"
 
                 # Link the dataset to the labbook
-                ds = im.link_dataset_to_labbook(dataset_url, dataset_owner, dataset_name, lb)
+                ds = im.link_dataset_to_labbook(dataset_url, dataset_owner, dataset_name, lb, logged_in_username)
                 ds.namespace = dataset_owner
 
                 # Preload the dataloader
@@ -335,11 +336,8 @@ class DeleteDataset(graphene.ClientIDMutation):
         if remote:
             logger.info(f"Deleting remote Dataset {owner}/{dataset_name}")
 
-            # Extract valid Bearer and ID tokens
-            access_token = flask.g.get('access_token', None)
-            id_token = flask.g.get('id_token', None)
-            if not access_token or not id_token:
-                raise ValueError("Deleting a remote Dataset requires a valid session.")
+            # Get tokens from request context
+            access_token, id_token = tokens_from_request_context(tokens_required=True)
 
             try:
                 ds = InventoryManager().load_dataset(logged_in_user, owner, dataset_name,
@@ -414,14 +412,18 @@ class SetDatasetDescription(graphene.relay.ClientIDMutation):
             ds.git.add(os.path.join(ds.root_dir, '.gigantum/gigantum.yaml'))
             commit = ds.git.commit('Updating description')
 
-            adr = ActivityDetailRecord(ActivityDetailType.LABBOOK, show=False)
-            adr.add_value('text/plain', f"Updated Dataset description: {description}")
+            adr = ActivityDetailRecord(ActivityDetailType.LABBOOK,
+                                       show=False,
+                                       data=TextData('plain',
+                                                     f"Updated Dataset description: {description}"))
+
             ar = ActivityRecord(ActivityType.LABBOOK,
                                 message="Updated Dataset description",
                                 linked_commit=commit.hexsha,
-                                tags=["dataset"],
-                                show=False)
-            ar.add_detail_object(adr)
+                                tags=ImmutableList(["dataset"]),
+                                show=False,
+                                detail_objects=DetailRecordList([adr]))
+
             ars = ActivityStore(ds)
             ars.create_activity_record(ar)
         return SetDatasetDescription(updated_dataset=Dataset(owner=owner, name=dataset_name))

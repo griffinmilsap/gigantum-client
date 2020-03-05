@@ -7,7 +7,12 @@
   "globals":{
     "localStorage": true,
     "sessionStorage": true,
-    "window": true
+    "window": true,
+    "jest": true,
+    "describe": true,
+    "it": true,
+    "test": true,
+    "expect": true,
   },
   "rules": {
     "import/no-cycle": 2,

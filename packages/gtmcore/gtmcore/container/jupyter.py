@@ -55,11 +55,11 @@ def start_jupyter(project_container: ContainerOperations, check_reachable: bool 
 
         return suffix
     elif len(jupyter_ps) == 0:
-        token = str(uuid.uuid4()).replace('-', '')
+        new_token = uuid.uuid4().hex.replace('-', '')
         if proxy_prefix and proxy_prefix[0] != '/':
             proxy_prefix = f'/{proxy_prefix}'
-        _start_jupyter_process(project_container, token, proxy_prefix)
-        suffix = f'{proxy_prefix or ""}/lab/tree/code?token={token}'
+        _start_jupyter_process(project_container, new_token, proxy_prefix)
+        suffix = f'{proxy_prefix or ""}/lab/tree/code?token={new_token}'
 
         if check_reachable:
             check_jupyter_reachable(lb_ip_addr, DEFAULT_JUPYTER_PORT, f'{proxy_prefix or ""}')

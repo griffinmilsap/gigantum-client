@@ -28,8 +28,10 @@ from gtmcore.dispatcher import Dispatcher, JobKey
 logger = LMLogger.get_logger()
 
 
-class JobStatus(graphene.ObjectType, interfaces=(graphene.relay.Node,)):
+class JobStatus(graphene.ObjectType):
     """A query to get the status of a background task launched with the Dispatcher"""
+    class Meta:
+        interfaces = (graphene.relay.Node,)
 
     # The Dispatcher returns a unique opaque id of the background job.
     job_key = graphene.Field(graphene.String)
