@@ -55,7 +55,9 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
       >
         <div
           className="Tooltip__toggle createLabbook"
-          onClick={[Function]}
+          data-event="click focus"
+          data-for="Tooltip--createLabbook"
+          data-tip="Clicking on the 'Create New' button will open the new Project window, letting you name and select a Base for the new Project."
         >
           <div
             className="Tooltip__glow-container"
@@ -70,13 +72,40 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           </div>
         </div>
         <div
-          className="hidden createLabbook"
+          className="__react_component_tooltip place-top type-dark "
+          data-id="tooltip"
+          id="Tooltip--createLabbook"
         />
+      </div>
+      <div
+        className="hidden importLabbook"
+        data-selenium-id="Tooltip"
+      >
         <div
-          className="hidden createLabbook"
+          className="Tooltip__toggle importLabbook"
+          data-event="click focus"
+          data-for="Tooltip--importLabbook"
+          data-tip="Click on the 'Import Existing' button to import a Project into this Client instance.
+You can use a URL of a published Project or upload an exported Project.
+You can also import Projects that have been shared with you in by clicking on the 'Gigantum Hub' tab above."
         >
-          Clicking on the 'Create New' button will open the new Project window, letting you name and select a Base for the new Project.
+          <div
+            className="Tooltip__glow-container"
+          >
+            <div
+              className="Tooltip__glow-ring-outer"
+            >
+              <div
+                className="Tooltip__glow-ring-inner"
+              />
+            </div>
+          </div>
         </div>
+        <div
+          className="__react_component_tooltip place-top type-dark "
+          data-id="tooltip"
+          id="Tooltip--importLabbook"
+        />
       </div>
       <div
         className="hidden"
@@ -99,7 +128,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           className="LocalLabbooks__containerStatus"
         >
           <div
-            className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+            className="ContainerStatus__container-state ContainerStatus__containerStatus--state undefined box-shadow"
             data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
             onClick={[Function]}
             onMouseOut={[Function]}
@@ -109,9 +138,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           >
             <div
               className="ContainerStatus__text"
-            >
-              
-            </div>
+            />
             <div
               className="ContainerStatus__toggle"
             >
@@ -193,7 +220,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           className="LocalLabbooks__containerStatus"
         >
           <div
-            className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+            className="ContainerStatus__container-state ContainerStatus__containerStatus--state undefined box-shadow"
             data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
             onClick={[Function]}
             onMouseOut={[Function]}
@@ -203,9 +230,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           >
             <div
               className="ContainerStatus__text"
-            >
-              
-            </div>
+            />
             <div
               className="ContainerStatus__toggle"
             >
@@ -291,7 +316,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           className="LocalLabbooks__containerStatus"
         >
           <div
-            className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+            className="ContainerStatus__container-state ContainerStatus__containerStatus--state undefined box-shadow"
             data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
             onClick={[Function]}
             onMouseOut={[Function]}
@@ -301,9 +326,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           >
             <div
               className="ContainerStatus__text"
-            >
-              
-            </div>
+            />
             <div
               className="ContainerStatus__toggle"
             >
@@ -385,7 +408,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           className="LocalLabbooks__containerStatus"
         >
           <div
-            className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+            className="ContainerStatus__container-state ContainerStatus__containerStatus--state undefined box-shadow"
             data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
             onClick={[Function]}
             onMouseOut={[Function]}
@@ -395,9 +418,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           >
             <div
               className="ContainerStatus__text"
-            >
-              
-            </div>
+            />
             <div
               className="ContainerStatus__toggle"
             >
@@ -483,7 +504,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           className="LocalLabbooks__containerStatus"
         >
           <div
-            className="ContainerStatus__container-state ContainerStatus__containerStatus--state loading box-shadow"
+            className="ContainerStatus__container-state ContainerStatus__containerStatus--state undefined box-shadow"
             data-tooltip="Rebuild Required, container will attempt to rebuild before starting."
             onClick={[Function]}
             onMouseOut={[Function]}
@@ -493,9 +514,7 @@ exports[`LocalLabbooks LocalLabbooks snapshot 1`] = `
           >
             <div
               className="ContainerStatus__text"
-            >
-              
-            </div>
+            />
             <div
               className="ContainerStatus__toggle"
             >

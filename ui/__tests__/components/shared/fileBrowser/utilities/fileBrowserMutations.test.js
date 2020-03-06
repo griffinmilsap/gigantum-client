@@ -4,9 +4,9 @@ import FileBrowserMutations from 'Components/shared/fileBrowser/utilities/FileBr
 import DeleteLabbookFilesMutation from 'Mutations/fileBrowser/DeleteLabbookFilesMutation';
 import MakeLabbookDirectoryMutation from 'Mutations/fileBrowser/MakeLabbookDirectoryMutation';
 import MoveLabbookFileMutation from 'Mutations/fileBrowser/MoveLabbookFileMutation';
-import DownloadDatasetFilesMutation from 'Mutations/DownloadDatasetFilesMutation';
+import DownloadDatasetFilesMutation from 'Mutations/fileBrowser/DownloadDatasetFilesMutation';
 import CompleteBatchUploadTransactionMutation from 'Mutations/fileBrowser/CompleteBatchUploadTransactionMutation';
-import store from 'JS/redux/store';
+
 
 const mutationData = {
   owner: 'uitest',
@@ -20,7 +20,7 @@ const mutationData = {
 jest.mock('Mutations/fileBrowser/DeleteLabbookFilesMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/MakeLabbookDirectoryMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/MoveLabbookFileMutation', () => jest.fn());
-jest.mock('Mutations/DownloadDatasetFilesMutation', () => jest.fn());
+jest.mock('Mutations/fileBrowser/DownloadDatasetFilesMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/CompleteBatchUploadTransactionMutation', () => jest.fn());
 
 

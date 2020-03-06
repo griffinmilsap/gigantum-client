@@ -2,7 +2,7 @@
       // vendor
       import React from 'react';
       import renderer from 'react-test-renderer';
-      import {mount} from 'enzyme';
+      import { mount } from 'enzyme';
       import relayTestingUtils from '@gigantum/relay-testing-utils';
       // components;
       import OutputBrowser from 'Components/labbook/outputData/OutputBrowser';

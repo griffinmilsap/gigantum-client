@@ -1,21 +1,17 @@
 
-      import React from 'react'
-      import renderer from 'react-test-renderer';
-      import {mount} from 'enzyme'
-      import Collaborators from 'Components/labbook/labbookHeader/branchMenu/collaborators/Collaborators';
+import React from 'react'
+import renderer from 'react-test-renderer';
+import { mount } from 'enzyme'
+import Collaborators from 'Components/labbook/labbookHeader/branchMenu/collaborators/Collaborators';
 
-      import relayTestingUtils from '@gigantum/relay-testing-utils'
+import relayTestingUtils from '@gigantum/relay-testing-utils'
 
-      test('Test Collaborators', () => {
+test('Test Collaborators', () => {
+  const wrapper = renderer.create(
+     <Collaborators />,
+  );
 
-        const wrapper = renderer.create(
+  const tree = wrapper.toJSON()
 
-           <Collaborators />
-
-        );
-
-        const tree = wrapper.toJSON()
-
-        expect(tree).toMatchSnapshot()
-
-      })
+  expect(tree).toMatchSnapshot();
+});

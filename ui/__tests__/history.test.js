@@ -11,12 +11,16 @@ describe('Test create history', () => {
   it('has a replace method', () => {
     history.replace('labbooks/');
     const renderedComponent = shallow(
-      <Dashboard history={history} footerWorkerCallback={() => {}} match={{
-        params: {
-          id: 'labbbooks',
-        },
-      }}/>,
-);
+      <Dashboard
+        history={history}
+        footerWorkerCallback={() => {}}
+        match={{
+          params: {
+            id: 'labbbooks',
+          },
+        }}
+     />,
+    );
     expect(renderedComponent).toMatchSnapshot();
     // expect(history.).toBeTruthy()
   });

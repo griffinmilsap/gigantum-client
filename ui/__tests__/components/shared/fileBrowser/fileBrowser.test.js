@@ -18,7 +18,7 @@ import codeDataFavorites from 'Tests/components/labbook/code/__relaydata__/CodeF
 import DeleteLabbookFilesMutation from 'Mutations/fileBrowser/DeleteLabbookFilesMutation';
 import MakeLabbookDirectoryMutation from 'Mutations/fileBrowser/MakeLabbookDirectoryMutation';
 import MoveLabbookFileMutation from 'Mutations/fileBrowser/MoveLabbookFileMutation';
-import DownloadDatasetFilesMutation from 'Mutations/DownloadDatasetFilesMutation';
+import DownloadDatasetFilesMutation from 'Mutations/fileBrowser/DownloadDatasetFilesMutation';
 import CompleteBatchUploadTransactionMutation from 'Mutations/fileBrowser/CompleteBatchUploadTransactionMutation';
 
 const auth = new Auth();
@@ -53,7 +53,7 @@ const fixtures = {
 jest.mock('Mutations/fileBrowser/DeleteLabbookFilesMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/MakeLabbookDirectoryMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/MoveLabbookFileMutation', () => jest.fn());
-jest.mock('Mutations/DownloadDatasetFilesMutation', () => jest.fn());
+jest.mock('Mutations/fileBrowser/DownloadDatasetFilesMutation', () => jest.fn());
 jest.mock('Mutations/fileBrowser/CompleteBatchUploadTransactionMutation', () => jest.fn());
 
 
@@ -62,60 +62,65 @@ const FileBrowser = FileBrowserDropZone.DecoratedComponent;
 
 describe('FileBrowser component', () => {
   it('Test FileBrowser Rendering', () => {
-        const component = renderer.create(<Provider store={store}><FileBrowserDropZone.DecoratedComponent
-              {...fixtures}
-            /></Provider>);
+    const component = renderer.create(
+      <Provider store={store}>
+        <FileBrowserDropZone.DecoratedComponent
+          {...fixtures}
+        />
+      </Provider>,
+    );
 
-        let tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-   });
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 
-   const component = mount(<FileBrowserDropZone.DecoratedComponent {...fixtures } />);
+  const component = mount(
+    <FileBrowserDropZone.DecoratedComponent {...fixtures} />,
+  );
 
-   let deleteCount = 0;
-   const MockFn = jest.fn();
-   const mockDeleteMutation = new MockFn();
-   component._deleteMutation = mockDeleteMutation;
+  let deleteCount = 0;
+  const MockFn = jest.fn();
+  const mockDeleteMutation = new MockFn();
+  component._deleteMutation = mockDeleteMutation;
 
-   it('Sorts by date', () => {
-     component.find('.FileBrowser__header--date').simulate('click');
-     expect(component.state().sort).toEqual('modified');
-   });
+  it('Sorts by date', () => {
+    component.find('.FileBrowser__header--date').simulate('click');
+    expect(component.state().sort).toEqual('modified');
+  });
 
-   it('Multiselect selects all', () => {
-     component.find('.CheckboxMultiselect').simulate('click');
-     expect(component.state('multiSelect')).toEqual('all');
-   });
+  it('Multiselect selects all', () => {
+    component.find('.CheckboxMultiselect').simulate('click');
+    expect(component.state('multiSelect')).toEqual('all');
+  });
 
-   it('Cancel delete popup', () => {
-     component.find('.File__btn--delete').simulate('click');
-     expect(component.state('popupVisible')).toEqual(false);
-   });
+  it('Cancel delete popup', () => {
+    component.find('.File__btn--delete').simulate('click');
+    expect(component.state('popupVisible')).toEqual(false);
+  });
 
-   it('Updates search input', () => {
-     const evt = {
-       target: {
-         value: 'png',
-       },
-     };
-     component.find('.FileBrowser__input').simulate('change', evt);
-     expect(component.state('search')).toEqual('png');
-   });
+  it('Updates search input', () => {
+    const evt = {
+      target: {
+        value: 'png',
+      },
+    };
+    component.find('.FileBrowser__input').simulate('change', evt);
+    expect(component.state('search')).toEqual('png');
+  });
 
 
-   it('Sorts by az', () => {
-     component.find('.FileBrowser__header--name').simulate('click');
-     expect(component.state('sort')).toEqual('az');
-   });
+  it('Sorts by az', () => {
+    component.find('.FileBrowser__header--name').simulate('click');
+    expect(component.state('sort')).toEqual('az');
+  });
 
-   it('Sorts by size', () => {
-     component.find('.FileBrowser__header--size').simulate('click');
-     expect(component.state('sort')).toEqual('size');
-   });
+  it('Sorts by size', () => {
+    component.find('.FileBrowser__header--size').simulate('click');
+    expect(component.state('sort')).toEqual('size');
+  });
 
-   it('Sorts by modified', () => {
-     component.find('.FileBrowser__header--date').simulate('click');
-     expect(component.state('sort')).toEqual('modified');
-   });
-
+  it('Sorts by modified', () => {
+    component.find('.FileBrowser__header--date').simulate('click');
+    expect(component.state('sort')).toEqual('modified');
+  });
 });

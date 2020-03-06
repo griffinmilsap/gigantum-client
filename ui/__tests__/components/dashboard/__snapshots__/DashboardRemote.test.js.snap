@@ -50,7 +50,9 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
       >
         <div
           className="Tooltip__toggle cloudLocal"
-          onClick={[Function]}
+          data-event="click focus"
+          data-for="Tooltip--cloudLocal"
+          data-tip="This allows you to switch between Local and Cloud Project listings. Both Projects you have created and Projects that have been shared with you will be visible."
         >
           <div
             className="Tooltip__glow-container"
@@ -65,13 +67,10 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
           </div>
         </div>
         <div
-          className="hidden cloudLocal"
+          className="__react_component_tooltip place-top type-dark "
+          data-id="tooltip"
+          id="Tooltip--cloudLocal"
         />
-        <div
-          className="hidden cloudLocal"
-        >
-          This allows you to switch between Local and Cloud Project listings. Both Projects you have created and Projects that have been shared with you will be visible.
-        </div>
       </div>
     </ul>
   </div>
@@ -160,7 +159,7 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
         className="Dropdown__sort-selector Dropdown Dropdown--collapsed"
         onClick={[Function]}
       >
-        Modified Date (Newest)
+        Z-A
       </div>
       <ul
         className="Dropdown__menu box-shadow hidden"
@@ -170,7 +169,7 @@ exports[`DashboardRemote Renders a snapshot 1`] = `
           onClick={[Function]}
         >
           Modified Date (Newest)
-           ✓ 
+          
         </li>
         <li
           className="DashboardDropdown__list-item"

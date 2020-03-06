@@ -17,7 +17,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
       >
         <div
           className="Tooltip__toggle userNote"
-          onClick={[Function]}
+          data-event="click focus"
+          data-for="Tooltip--userNote"
+          data-tip="This menu can be used to create a note. A note is added to the current point in the Activity Feed and can be viewed by collaborators when synced. 
+ The note editor supports markdown."
         >
           <div
             className="Tooltip__glow-container"
@@ -32,14 +35,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
           </div>
         </div>
         <div
-          className="hidden userNote"
+          className="__react_component_tooltip place-top type-dark "
+          data-id="tooltip"
+          id="Tooltip--userNote"
         />
-        <div
-          className="hidden userNote"
-        >
-          This menu can be used to create a note. A note is added to the current point in the Activity Feed and can be viewed by collaborators when synced. 
- The note editor supports markdown.
-        </div>
       </div>
       <div
         data-selenium-id="CreateBranch"
@@ -105,7 +104,11 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                 >
                   <div
                     className="Tooltip__toggle activitySubmenu"
-                    onClick={[Function]}
+                    data-event="click focus"
+                    data-for="Tooltip--activitySubmenu"
+                    data-tip="A dot between two activity records indicates the availability of the rollback menu. 
+ This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
+ When choosing to rollback a new branch is created at the specified point."
                   >
                     <div
                       className="Tooltip__glow-container"
@@ -120,15 +123,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    className="hidden activitySubmenu"
+                    className="__react_component_tooltip place-top type-dark "
+                    data-id="tooltip"
+                    id="Tooltip--activitySubmenu"
                   />
-                  <div
-                    className="hidden activitySubmenu"
-                  >
-                    A dot between two activity records indicates the availability of the rollback menu. 
- This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
- When choosing to rollback a new branch is created at the specified point.
-                  </div>
                 </div>
                 <button
                   className="Rollback__button"
@@ -202,7 +200,11 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                 >
                   <div
                     className="Tooltip__toggle activitySubmenu"
-                    onClick={[Function]}
+                    data-event="click focus"
+                    data-for="Tooltip--activitySubmenu"
+                    data-tip="A dot between two activity records indicates the availability of the rollback menu. 
+ This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
+ When choosing to rollback a new branch is created at the specified point."
                   >
                     <div
                       className="Tooltip__glow-container"
@@ -217,15 +219,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    className="hidden activitySubmenu"
+                    className="__react_component_tooltip place-top type-dark "
+                    data-id="tooltip"
+                    id="Tooltip--activitySubmenu"
                   />
-                  <div
-                    className="hidden activitySubmenu"
-                  >
-                    A dot between two activity records indicates the availability of the rollback menu. 
- This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
- When choosing to rollback a new branch is created at the specified point.
-                  </div>
                 </div>
                 <button
                   className="Rollback__button"
@@ -331,7 +328,11 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                 >
                   <div
                     className="Tooltip__toggle activitySubmenu"
-                    onClick={[Function]}
+                    data-event="click focus"
+                    data-for="Tooltip--activitySubmenu"
+                    data-tip="A dot between two activity records indicates the availability of the rollback menu. 
+ This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
+ When choosing to rollback a new branch is created at the specified point."
                   >
                     <div
                       className="Tooltip__glow-container"
@@ -346,15 +347,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    className="hidden activitySubmenu"
+                    className="__react_component_tooltip place-top type-dark "
+                    data-id="tooltip"
+                    id="Tooltip--activitySubmenu"
                   />
-                  <div
-                    className="hidden activitySubmenu"
-                  >
-                    A dot between two activity records indicates the availability of the rollback menu. 
- This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
- When choosing to rollback a new branch is created at the specified point.
-                  </div>
                 </div>
                 <button
                   className="Rollback__button"
@@ -428,7 +424,11 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                 >
                   <div
                     className="Tooltip__toggle activitySubmenu"
-                    onClick={[Function]}
+                    data-event="click focus"
+                    data-for="Tooltip--activitySubmenu"
+                    data-tip="A dot between two activity records indicates the availability of the rollback menu. 
+ This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
+ When choosing to rollback a new branch is created at the specified point."
                   >
                     <div
                       className="Tooltip__glow-container"
@@ -443,15 +443,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    className="hidden activitySubmenu"
+                    className="__react_component_tooltip place-top type-dark "
+                    data-id="tooltip"
+                    id="Tooltip--activitySubmenu"
                   />
-                  <div
-                    className="hidden activitySubmenu"
-                  >
-                    A dot between two activity records indicates the availability of the rollback menu. 
- This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
- When choosing to rollback a new branch is created at the specified point.
-                  </div>
                 </div>
                 <button
                   className="Rollback__button"
@@ -525,7 +520,11 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                 >
                   <div
                     className="Tooltip__toggle activitySubmenu"
-                    onClick={[Function]}
+                    data-event="click focus"
+                    data-for="Tooltip--activitySubmenu"
+                    data-tip="A dot between two activity records indicates the availability of the rollback menu. 
+ This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
+ When choosing to rollback a new branch is created at the specified point."
                   >
                     <div
                       className="Tooltip__glow-container"
@@ -540,15 +539,10 @@ exports[`LabbookActivityContainer Renders a snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    className="hidden activitySubmenu"
+                    className="__react_component_tooltip place-top type-dark "
+                    data-id="tooltip"
+                    id="Tooltip--activitySubmenu"
                   />
-                  <div
-                    className="hidden activitySubmenu"
-                  >
-                    A dot between two activity records indicates the availability of the rollback menu. 
- This menu will allow you to rollback to a previous state, including code, data, and environment configuration. 
- When choosing to rollback a new branch is created at the specified point.
-                  </div>
                 </div>
                 <button
                   className="Rollback__button"

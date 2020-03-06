@@ -10,113 +10,113 @@ import relayTestingUtils from '@gigantum/relay-testing-utils';
 import { MemoryRouter } from 'react-router';
 
 const variables = { first: 20, owner: 'uitest', name: 'ui-test-labbook' };
-export default variables;
 
 test('Test Routes Rendering', () => {
-      const auth = new Auth();
-      auth.isAuthenticated = function () { return true; };
-      auth.login = function () { return true; };
-      auth.logout = function () { return true; };
+  const auth = new Auth();
+  auth.isAuthenticated = () => true;
+  auth.login = () => true;
+  auth.logout = () => true;
 
-      const component = renderer.create(
+  const component = renderer.create(
+    relayTestingUtils.relayWrap(<Routes />, {}, config.data),
+  );
+  let tree = component.toJSON();
 
-          relayTestingUtils.relayWrap(<Routes />, {}, config.data),
-
-      );
-      let tree = component.toJSON();
-
-      expect(tree).toMatchSnapshot();
+  expect(tree).toMatchSnapshot();
 });
 
 
 describe('Test Routes View Change', () => {
+  const auth = new Auth();
+  auth.isAuthenticated = () => true;
+  auth.login = () => true;
+  auth.logout = () => true;
 
-      const auth = new Auth();
-      auth.isAuthenticated = function () { return true; };
-      auth.login = function () { return true; };
-      auth.logout = function () { return true; };
+  const component = shallow(<Routes />);
 
-      const component = shallow(<Routes />);
+  it('renders header routes', () => {
+    component.find('.Header__nav-item').at(0).simulate('click');
+    expect(component).toMatchSnapshot();
+  });
 
-      it('renders header routes', () => {
-        component.find('.Header__nav-item').at(0).simulate('click');
-        expect(component).toMatchSnapshot();
-      });
-
-      it('renders header routes', () => {
-        component.find('.Header__nav-item').at(1).simulate('click');
-        expect(component).toMatchSnapshot();
-      });
+  it('renders header routes', () => {
+    component.find('.Header__nav-item').at(1).simulate('click');
+    expect(component).toMatchSnapshot();
+  });
 });
 
 
 describe('Test Router', () => {
-      const auth = new Auth();
-      auth.isAuthenticated = function () { return true; };
-      auth.login = function () { return true; };
-      auth.logout = function () { return true; };
+  const auth = new Auth();
+  auth.isAuthenticated = () => true;
+  auth.login = () => true;
+  auth.logout = () => true;
 
-      const component = mount(<MemoryRouter initialEntries={['/labbooks/']}>
-                                <Routes
-                                  history={history}
-                                />
-                              </MemoryRouter>);
+  const component = mount(
+    <MemoryRouter initialEntries={['/labbooks/']}>
+      <Routes
+        history={history}
+      />
+    </MemoryRouter>,
+  );
 
-      it('check history props is labbook', () => {
-        expect(component.node.history.location.pathname === '/labbooks/').toBeTruthy();
-      });
+  it('check history props is labbook', () => {
+    expect(component.node.history.location.pathname === '/labbooks/').toBeTruthy();
+  });
 
 
-      it('check history props is datasets', () => {
-        component.node.history.replace('/datasets/');
-        expect(component.node.history.location.pathname === '/datasets/').toBeTruthy();
-      });
+  it('check history props is datasets', () => {
+    component.node.history.replace('/datasets/');
+    expect(component.node.history.location.pathname === '/datasets/').toBeTruthy();
+  });
 
-      // if('test datasets snapshot'){
-      //   expect(component.node).toMatchSnapshot();
-      // }
+  // if('test datasets snapshot'){
+  //   expect(component.node).toMatchSnapshot();
+  // }
 });
 
 
 describe('Test Labbooks routes', () => {
-      const auth = new Auth();
-      auth.isAuthenticated = function () { return true; };
-      auth.login = function () { return true; };
-      auth.logout = function () { return true; };
+  const auth = new Auth();
+  auth.isAuthenticated = () => true;
+  auth.login = () => true;
+  auth.logout = () => true;
 
-      it('with data', () => {
-        const component = shallow(
-          <MemoryRouter initialEntries={[`/labbooks/${variables.name}/`]}>
-              <Routes
-                history={history}
-              />
-            </MemoryRouter>,
-        );
-        expect(component).toMatchSnapshot();
-      });
-      it('without data', () => {
-        const component = shallow(
-            <MemoryRouter initialEntries={[`/labbooks/${variables.name}/`]}>
-              <Routes
-                history={history}
-              />
-            </MemoryRouter>,
-        );
 
-        expect(component).toMatchSnapshot();
-      });
+  it('with data', () => {
+    const component = shallow(
+      <MemoryRouter initialEntries={[`/labbooks/${variables.name}/`]}>
+        <Routes
+          history={history}
+        />
+      </MemoryRouter>,
+    );
+    expect(component).toMatchSnapshot();
+  });
 
-      it('test callback', () => {
-        const component = shallow(
-            <MemoryRouter initialEntries={['/callback']}>
+  it('without data', () => {
+    const component = shallow(
+      <MemoryRouter initialEntries={[`/labbooks/${variables.name}/`]}>
+        <Routes
+          history={history}
+        />
+      </MemoryRouter>,
+    );
 
-              <Routes
-                history={history}
-              />
+    expect(component).toMatchSnapshot();
+  });
 
-            </MemoryRouter>,
-        );
+  it('test callback', () => {
+    const component = shallow(
+      <MemoryRouter initialEntries={['/callback']}>
+        <Routes
+          history={history}
+        />
+      </MemoryRouter>,
+    );
 
-        expect(component).toMatchSnapshot();
-      });
+    expect(component).toMatchSnapshot();
+  });
 });
+
+export default variables;
