@@ -911,6 +911,14 @@ snapshots['TestLabBookServiceQueries.test_list_files_code 1'] = {
                                 'key': 'test_file2.txt',
                                 'size': '15'
                             }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnVudHJhY2tlZC8=',
+                                'isDir': True,
+                                'key': 'untracked/',
+                                'size': '0'
+                            }
                         }
                     ]
                 },
@@ -1002,6 +1010,14 @@ snapshots['TestLabBookServiceQueries.test_list_files_many 1'] = {
                                 'key': 'test_file2.txt',
                                 'size': '15'
                             }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnVudHJhY2tlZC8=',
+                                'isDir': True,
+                                'key': 'untracked/',
+                                'size': '0'
+                            }
                         }
                     ]
                 }
@@ -1014,6 +1030,14 @@ snapshots['TestLabBookServiceQueries.test_list_files_many 1'] = {
                                 'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZpbnB1dCZzdWJkaXIv',
                                 'isDir': True,
                                 'key': 'subdir/',
+                                'size': '0'
+                            }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZpbnB1dCZ1bnRyYWNrZWQv',
+                                'isDir': True,
+                                'key': 'untracked/',
                                 'size': '0'
                             }
                         }
@@ -1043,9 +1067,9 @@ snapshots['TestLabBookServiceQueries.test_list_files_many 1'] = {
                         {
                             'node': {
                                 'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZvdXRwdXQmdW50cmFja2VkLw==',
+                                'isDir': True,
                                 'key': 'untracked/',
-                                'size': '0',
-                                'isDir': True
+                                'size': '0'
                             }
                         }
                     ]
@@ -1075,6 +1099,14 @@ snapshots['TestLabBookServiceQueries.test_list_files_many 2'] = {
                                 'isDir': False,
                                 'key': 'test_file2.txt',
                                 'size': '15'
+                            }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnVudHJhY2tlZC8=',
+                                'isDir': True,
+                                'key': 'untracked/',
+                                'size': '0'
                             }
                         }
                     ]
@@ -1106,7 +1138,6 @@ snapshots['TestLabBookServiceQueries.test_list_files_many 2'] = {
             'output': {
                 'files': {
                     'edges': [
-
                     ]
                 }
             }
@@ -1143,6 +1174,14 @@ snapshots['TestLabBookServiceQueries.test_list_files 1'] = {
                                 'key': 'test2.txt',
                                 'size': '5'
                             }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnVudHJhY2tlZC8=',
+                                'isDir': True,
+                                'key': 'untracked/',
+                                'size': '0'
+                            }
                         }
                     ]
                 }
@@ -1158,6 +1197,14 @@ snapshots['TestLabBookServiceQueries.test_list_all_files_many 1'] = {
             'code': {
                 'allFiles': {
                     'edges': [
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnVudHJhY2tlZC8=',
+                                'isDir': True,
+                                'key': 'untracked/',
+                                'size': '0'
+                            }
+                        },
                         {
                             'node': {
                                 'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZjb2RlJnRlc3RfZmlsZTEudHh0',
@@ -1185,6 +1232,14 @@ snapshots['TestLabBookServiceQueries.test_list_all_files_many 1'] = {
                                 'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZpbnB1dCZzdWJkaXIv',
                                 'isDir': True,
                                 'key': 'subdir/',
+                                'size': '0'
+                            }
+                        },
+                        {
+                            'node': {
+                                'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZpbnB1dCZ1bnRyYWNrZWQv',
+                                'isDir': True,
+                                'key': 'untracked/',
                                 'size': '0'
                             }
                         },
@@ -1222,9 +1277,9 @@ snapshots['TestLabBookServiceQueries.test_list_all_files_many 1'] = {
                         {
                             'node': {
                                 'id': 'TGFiYm9va0ZpbGU6ZGVmYXVsdCZsYWJib29rMSZvdXRwdXQmdW50cmFja2VkLw==',
+                                'isDir': True,
                                 'key': 'untracked/',
-                                'size': '0',
-                                'isDir': True
+                                'size': '0'
                             }
                         },
                         {

@@ -7,6 +7,7 @@ import json
 import redis
 import glob
 import copy
+
 from gtmcore.logging import LMLogger
 
 if TYPE_CHECKING:
@@ -151,20 +152,20 @@ class ManifestFileCache(object):
             OrderedDict
         """
         manifest_data = OrderedDict()
-        if self.redis_client.exists(self.manifest_cache_key):
+        cache_bytes = self.redis_client.get(self.manifest_cache_key)
+        if cache_bytes:
             # Load from cache
-            manifest_cached_data_bytes = self.redis_client.get(self.manifest_cache_key)
-            if manifest_cached_data_bytes:
-                manifest_data = json.loads(manifest_cached_data_bytes.decode("utf-8"), object_pairs_hook=OrderedDict)
-                self.redis_client.expire(self.manifest_cache_key, 3600)
+            manifest_data = json.loads(cache_bytes.decode(),
+                                       object_pairs_hook=OrderedDict)
+            self.redis_client.expire(self.manifest_cache_key, 3600)
         else:
             # Load from files
             for manifest_file in glob.glob(os.path.join(self.dataset.root_dir, 'manifest', 'manifest-*')):
-                manifest_data = OrderedDict(**manifest_data, **self._load_manifest_file(manifest_file))
+                manifest_data.update(self._load_manifest_file(manifest_file))
 
             # Check for legacy manifest and load if needed
             if os.path.exists(self._legacy_manifest_file):
-                manifest_data = OrderedDict(**manifest_data, **self._load_legacy_manifest())
+                manifest_data.update(self._load_legacy_manifest())
 
             # Cache manifest data
             if manifest_data:

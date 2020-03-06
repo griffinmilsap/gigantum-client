@@ -1451,8 +1451,9 @@ class TestLabBookServiceQueries(object):
         d = r['data']['labbook']['modifiedOnUtc']
         modified_on_2 = aniso8601.parse_datetime(d)
 
-        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_1).total_seconds() < 30
-        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_2).total_seconds() < 30
+        # On a local machine, this might take only 3 seconds! But on CI it can go very slow for unknown reasons
+        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_1).total_seconds() < 40
+        assert (datetime.datetime.now(tz=datetime.timezone.utc) - modified_on_2).total_seconds() < 40
         assert modified_on_2 > modified_on_1
 
     @responses.activate

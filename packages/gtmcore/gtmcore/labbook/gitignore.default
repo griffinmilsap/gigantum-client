@@ -1,16 +1,15 @@
 .DS_Store
-**/.DS_Store
-/**/.DS_Store
 
 # Make a directory for intermediary files that should NOT ever be tracked
-output/untracked
+/code/untracked
+/input/untracked
+/output/untracked
 
 # Ignore the checkout context file, because it should always get recreated when a repo moves or is checked out
-.gigantum/.checkout
-.gigantum/activity/log/.detaildb
-.gigantum/env/Dockerfile
-.gigantum/env/certificates/
-.gigantum/env/jupyter_notebook_config.py
+/.gigantum/.checkout
+/.gigantum/activity/log/.detaildb
+/.gigantum/env/Dockerfile
+/.gigantum/env/certificates/
 
 # Python ignores from https://github.com/github/gitignore/blob/master/Python.gitignore
 # Byte-compiled / optimized / DLL files
@@ -43,5 +42,3 @@ coverage.xml
 
 # R
 .Rhistory
-
-

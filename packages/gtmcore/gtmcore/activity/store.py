@@ -42,7 +42,7 @@ class ActivityStore(object):
         # Params used during detail object serialization
         if self.repository.client_config.config['detaildb']['options']['compress']:
             self.compress_details: bool = self.repository.client_config.config['detaildb']['options']['compress']
-            self.compress_min_bytes = self.repository.client_config.config['detaildb']['options']['compress_min_bytes']
+            self.compress_min_bytes: int = self.repository.client_config.config['detaildb']['options']['compress_min_bytes']
         else:
             self.compress_details = False
             self.compress_min_bytes = 0

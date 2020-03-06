@@ -201,8 +201,15 @@ class Environment(graphene.ObjectType):
         if not self._base_component_data:
             self._base_component_data = cm.base_fields
 
-        available_bases = cm.bases.get_base_versions(self._base_component_data['repository'],
-                                                     self._base_component_data['id'])
+        try:
+            available_bases = cm.bases.get_base_versions(self._base_component_data['repository'],
+                                                         self._base_component_data['id'])
+        except ValueError:
+            # Could not load the base versions. You probably don't have access to this base repository or have your
+            # client configured with the base repository. We'll just return the current revision as latest so the
+            # update button remains disabled.
+            return self._base_component_data['revision']
+
         # The first item in the available bases list is the latest base. This is a list of tuples (revision, base data)
         latest_revision, _ = available_bases[0]
         return int(latest_revision)

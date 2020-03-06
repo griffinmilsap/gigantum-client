@@ -183,7 +183,6 @@ class LabbookWorkflow(GitWorkflow):
         Returns:
             Boolean indicating whether a migration was performed (False if already up-to-date)
         """
-
         if self.repository.schema == CURRENT_LABBOOK_SCHEMA:
             logger.info(f"{str(self.labbook)} already migrated.")
             return False
@@ -198,8 +197,10 @@ class LabbookWorkflow(GitWorkflow):
         gitworkflows_utils.migrate_labbook_schema(self.labbook)
         self.repository = im.load_labbook_from_directory(self.labbook.root_dir)
 
-        gitworkflows_utils.migrate_labbook_untracked_space(self.labbook)
-        self.repository = im.load_labbook_from_directory(self.labbook.root_dir)
+        added_missing = im.ensure_untracked_spaces(self.repository)
+        if not added_missing:
+            # No missing untracked folders were added, so we need to do the sweep here
+            self.labbook.sweep_uncommitted_changes()
 
         # Pushes up the new master branch
         if self.repository.has_remote:

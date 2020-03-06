@@ -79,7 +79,7 @@ class ChunkUploadMutation(object):
     def py_secure_filename(filename: str) -> str:
         """Method to clean up provided filenames to be safe, relative paths
 
-        This function removes leading slashes, control characters, '..' and '.' in directories, and replaces \/:*"<>|?
+        This function removes leading slashes, control characters, '..' and '.' in directories, and replaces \\/:*"<>|?
         with underscores.
 
 

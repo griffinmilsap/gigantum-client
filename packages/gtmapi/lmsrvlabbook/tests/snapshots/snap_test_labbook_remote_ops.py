@@ -7,80 +7,6 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestLabBookRemoteOperations.test_list_remote_labbooks_created 1'] = {
-    'data': {
-        'labbookList': {
-            'remoteLabbooks': {
-                'edges': [
-                    {
-                        'cursor': 'eyJwYWdlIjogMSwgIml0ZW0iOiAxfQ==',
-                        'node': {
-                            'creationDateUtc': '2018-08-30T18:01:33.312Z',
-                            'description': 'No Description',
-                            'id': 'UmVtb3RlTGFiYm9vazp0ZXN0ZXImdGVzdC1wcm9qLTE=',
-                            'isLocal': False,
-                            'modifiedDateUtc': '2018-08-30T18:01:33.312Z',
-                            'name': 'test-proj-1',
-                            'owner': 'tester'
-                        }
-                    },
-                    {
-                        'cursor': 'eyJwYWdlIjogMSwgIml0ZW0iOiAzfQ==',
-                        'node': {
-                            'creationDateUtc': '2018-08-29T18:01:33.312Z',
-                            'description': 'No Description',
-                            'id': 'UmVtb3RlTGFiYm9vazp0ZXN0ZXImdGVzdC1wcm9qLTI=',
-                            'isLocal': False,
-                            'modifiedDateUtc': '2018-09-01T18:01:33.312Z',
-                            'name': 'test-proj-2',
-                            'owner': 'tester'
-                        }
-                    }
-                ],
-                'pageInfo': {
-                    'hasNextPage': True
-                }
-            }
-        }
-    }
-}
-
-snapshots['TestLabBookRemoteOperations.test_list_remote_labbooks_created 2'] = {
-    'data': {
-        'labbookList': {
-            'remoteLabbooks': {
-                'edges': [
-                    {
-                        'cursor': 'eyJwYWdlIjogMSwgIml0ZW0iOiAzfQ==',
-                        'node': {
-                            'creationDateUtc': '2018-08-29T18:01:33.312Z',
-                            'description': 'No Description',
-                            'id': 'UmVtb3RlTGFiYm9vazp0ZXN0ZXImdGVzdC1wcm9qLTI=',
-                            'modifiedDateUtc': '2018-09-01T18:01:33.312Z',
-                            'name': 'test-proj-2',
-                            'owner': 'tester'
-                        }
-                    },
-                    {
-                        'cursor': 'eyJwYWdlIjogMSwgIml0ZW0iOiAxfQ==',
-                        'node': {
-                            'creationDateUtc': '2018-08-30T18:01:33.312Z',
-                            'description': 'No Description',
-                            'id': 'UmVtb3RlTGFiYm9vazp0ZXN0ZXImdGVzdC1wcm9qLTE=',
-                            'modifiedDateUtc': '2018-08-30T18:01:33.312Z',
-                            'name': 'test-proj-1',
-                            'owner': 'tester'
-                        }
-                    }
-                ],
-                'pageInfo': {
-                    'hasNextPage': False
-                }
-            }
-        }
-    }
-}
-
 snapshots['TestLabBookRemoteOperations.test_list_remote_labbooks_az 1'] = {
     'data': {
         'labbookList': {
@@ -92,11 +18,11 @@ snapshots['TestLabBookRemoteOperations.test_list_remote_labbooks_az 1'] = {
                             'creationDateUtc': '2019-06-05T01:06:06.760185Z',
                             'description': 'my test project',
                             'id': 'UmVtb3RlTGFiYm9vazpkZW1vLXVzZXImdGVzdC1wdWJsaXNoLW1heS00',
+                            'importUrl': 'https://repo.gigantum.io/demo-user/test-publish-may-4.git',
                             'isLocal': False,
                             'modifiedDateUtc': '2019-09-12T15:35:11.664Z',
                             'name': 'test-publish-may-4',
-                            'owner': 'demo-user',
-                            "importUrl": "https://repo.gigantum.io/demo-user/test-publish-may-4.git"
+                            'owner': 'demo-user'
                         }
                     },
                     {
@@ -105,11 +31,11 @@ snapshots['TestLabBookRemoteOperations.test_list_remote_labbooks_az 1'] = {
                             'creationDateUtc': '2019-07-22T11:06:37.435584Z',
                             'description': 'Testing public project visibility.',
                             'id': 'UmVtb3RlTGFiYm9vazpkZW1vLXVzZXImdGVzdC1wdWJsaWMtcHJvamVjdA==',
+                            'importUrl': 'https://repo.gigantum.io/demo-user/test-public-project.git',
                             'isLocal': False,
                             'modifiedDateUtc': '2019-09-12T15:17:23.414Z',
                             'name': 'test-public-project',
-                            'owner': 'demo-user',
-                            "importUrl": "https://repo.gigantum.io/demo-user/test-public-project.git"
+                            'owner': 'demo-user'
                         }
                     }
                 ],

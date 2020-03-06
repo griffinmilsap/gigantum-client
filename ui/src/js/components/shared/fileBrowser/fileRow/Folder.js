@@ -548,7 +548,8 @@ class Folder extends Component {
     let fileKeys = children && Object.keys(children).filter(child => children[child].edge && !children[child].edge.node.isDir) || [];
     fileKeys = this._childSort(fileKeys, props.sort, props.reverse, children, 'files');
     const childrenKeys = folderKeys.concat(fileKeys);
-    const isUntrackedDirectory = (node.key === 'untracked/') && (props.section === 'output');
+    const isUntrackedDirectory = (node.key === 'untracked/')
+      && (props.section !== 'data');
 
     // declare css here
     const folderRowCSS = classNames({

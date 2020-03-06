@@ -653,8 +653,12 @@ class FileBrowser extends Component {
   _childSort = (array, type, reverse, children, section) => {
     const { props } = this;
     array.sort((a, b) => {
-      const isAUntracked = (a === 'untracked') && (section === 'folder') && (props.section === 'output');
-      const isBUntracked = (b === 'untracked') && (section === 'folder') && (props.section === 'output');
+      const isAUntracked = (a === 'untracked')
+        && (section === 'folder')
+        && (props.section !== 'data');
+      const isBUntracked = (b === 'untracked')
+        && (section === 'folder')
+        && (props.section !== 'data');
       let lowerA;
       let lowerB;
 

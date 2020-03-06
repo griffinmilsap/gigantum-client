@@ -405,8 +405,12 @@ class Repository(object):
             mmsg = f"{modcnt} modified file(s). " if modcnt > 0 else ""
             dmsg = f"{delcnt} deleted file(s). " if delcnt > 0 else ""
 
-            message = f"{extra_msg or ''}" \
-                      f"{'Uploaded ' if upload else ''}" \
+            if extra_msg:
+                # we ensure a space between extra_msg and the remaining message string
+                extra_msg = extra_msg.strip() + ' '
+            else:
+                extra_msg = ''
+            message = f"{extra_msg}{'Uploaded ' if upload else ''}" \
                       f"{nmsg}{mmsg}{dmsg}"
 
             # This is used to handle if you try to delete an empty directory. This shouldn't technically happen, but if
