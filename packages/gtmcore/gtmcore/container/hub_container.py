@@ -170,8 +170,7 @@ class HubProjectContainer(ContainerOperations):
         Returns:
             If wait_for_output is specified, the stdout of the cmd. Otherwise, or if stdout cannot be obtained, None.
         """
-        logger.info(f"HubProjectContainer.run_container()")
-        logger.info(f"volumes: {volumes}")
+        logger.info(f"HubProjectContainer.run_container() - volumes: {volumes} - cmd: {cmd}")
         url = f"{self._launch_service}/v1/project"
         data = {"client_id": self._client_id,
                 "project_id": None,
@@ -207,8 +206,7 @@ class HubProjectContainer(ContainerOperations):
                                          exc_info=True)
                     finally:
                         self.stop_container(container_name=image_name)
-                        # Give the k8s reconciler a bit of a cushion so everything is consistent.
-                        time.sleep(2)
+
                         if result is None:
                             raise ContainerException(f"An error occurred while trying to exec into {image_name}")
 
@@ -248,7 +246,7 @@ class HubProjectContainer(ContainerOperations):
         return self.labbook.owner, self.labbook.name
 
     def stop_container(self, container_name: Optional[str] = None) -> bool:
-        """ Stop the given labbook.
+        """ Stop the given labbook. Blocks until the operation completes.
 
         If there's an exception other than a NotFound, that exception is raised.
 
@@ -268,12 +266,23 @@ class HubProjectContainer(ContainerOperations):
         project_cr_phase = response.json()["state"]
 
         if project_cr_phase == "STOPPED":
+            # Wait up to 10 seconds for the container to stop completely. Once the container no longer
+            # exists, querying for its status will return a 404, which results in None from
+            # `self.query_container`
+            for _ in range(10):
+                if self.query_container(container_name=container_name) is None:
+                    break
+                else:
+                    time.sleep(1)
+
             return True
 
         return False
 
     def query_container(self, container_name: Optional[str] = None) -> Optional[str]:
         """Query the Project container and get its status. E.g., "running" or "stopped"
+
+        Will retry for 5 seconds if an error occurs.
 
         Returns:
             String of container status - "stopped", "running", etc., or None if container is NotFound
@@ -288,7 +297,7 @@ class HubProjectContainer(ContainerOperations):
         url = f"{self._launch_service}/v1/client/{self._client_id}/namespace/{namespace}/project/{project}"
 
         project_cr_phase = None
-        for cnt in range(10):
+        for cnt in range(5):
             try:
                 response = requests.get(url)
                 if response.status_code == 200:
@@ -306,7 +315,7 @@ class HubProjectContainer(ContainerOperations):
             time.sleep(1)
 
         if not project_cr_phase:
-            logger.error(f"Failed to fetch container status after 10 seconds.")
+            logger.error(f"Failed to fetch container status after 5 seconds.")
             return None
 
         if project_cr_phase == "PENDING":

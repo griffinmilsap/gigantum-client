@@ -67,7 +67,7 @@ def test_rename_file_project_file_browser(driver: selenium.webdriver, *args, **k
         "Expected sample-upload.txt to be the first file in input data"
 
     file_browser_elts.rename_file_button().click()
-    file_browser_elts.rename_file_input().send_keys("_rename")
+    file_browser_elts.rename_input_file("sample-upload.txt", "_rename")
     file_browser_elts.confirm_file_rename_button().click()
     driver.refresh()
     file_browser_elts.file_information.wait_to_appear()
@@ -102,8 +102,10 @@ def test_delete_file_project_file_browser(driver: selenium.webdriver, *args, **k
     driver.refresh()
     file_browser_elts.file_browser_area.wait_to_appear()
 
-    assert "Drag and drop files here" in file_browser_elts.file_browser_message.find().text, \
-        f"Expected file browser to be empty, but instead found {file_browser_elts.file_browser_message.find().text}"
+    # Expect to be empty
+    file_contents = file_browser_elts.input_file_browser_contents_list
+    assert len(file_contents) == 1, "Expected file browser to be empty but more than 1 file/directory exists"
+    assert file_contents[0] == 'untracked', "Expected file browser to be empty, but still have untracked folder"
 
                
 def test_dataset_file_browser(driver: selenium.webdriver, *args, **kwargs):

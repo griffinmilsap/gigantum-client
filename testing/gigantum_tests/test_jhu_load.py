@@ -9,7 +9,8 @@ from testutils import CssElement
 from testutils.graphql_helpers import delete_local_project
 
 
-def test_jhu_neurodata_import(driver: selenium.webdriver, *args, **kwargs):
+# Currently we skip this test
+def __test_jhu_neurodata_import(driver: selenium.webdriver, *args, **kwargs):
     """
     Test that featured public projects import and build successfully.
     """

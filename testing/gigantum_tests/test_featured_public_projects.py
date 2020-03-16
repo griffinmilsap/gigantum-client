@@ -15,7 +15,7 @@ def test_import_projects_via_url(driver: selenium.webdriver, *args, **kwargs):
         driver
     """
     featured_public_projects = ["gigantum.com/meg297/military-expenditure-gdp-population",
-                                "gigantum.com/gigantum-examples/awful-intersections-demo"]
+                                "gigantum.com/gigantum-examples/scikit-learn-in-gigantum"]
 
     testutils.log_in(driver)
     testutils.GuideElements(driver).remove_guide()
@@ -58,7 +58,6 @@ def test_import_projects_via_zip_file(driver: selenium.webdriver, *args, **kwarg
 
         assert project_control.container_status_stopped.find().is_displayed(), \
             f"Project {project_zip_file} was not imported successfully via zip file"
-
     finally:
         try:
             delete_local_project(username, "sample-prj")

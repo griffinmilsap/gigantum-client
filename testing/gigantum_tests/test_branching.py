@@ -56,6 +56,11 @@ def test_delete_file_local_branch(driver: selenium.webdriver, *args, **kwargs):
     branch_elts = testutils.BranchElements(driver)
     branch_elts.create_local_branch("test-branch")
 
+    contents = file_browser_elts.input_file_browser_contents_list
+    assert len(contents) == 2, "Expected sample-upload.txt to appear in test-branch before deletion"
+    assert contents[0] == 'untracked', "Expected sample-upload.txt to appear in test-branch before deletion"
+    assert contents[1] == 'sample-upload.txt', "Expected sample-upload.txt to appear in test-branch before deletion"
+
     logging.info("Deleting the file in input data tab while on test-branch")
     file_browser_elts.trash_can_button.wait_to_appear().click()
     file_browser_elts.confirm_delete_file_button.wait_to_appear().click()
@@ -69,5 +74,6 @@ def test_delete_file_local_branch(driver: selenium.webdriver, *args, **kwargs):
 
     logging.info(f"Checking that file deleted in input data tab while on test-branch does not appear in master branch")
 
-    assert "Drag and drop files here" in file_browser_elts.file_browser_message.find().text, \
-        "Expected sample-upload.txt to not appear in master branch"
+    contents = file_browser_elts.input_file_browser_contents_list
+    assert len(contents) == 1, "Expected sample-upload.txt to not appear in master branch"
+    assert contents[0] == 'untracked', "Expected sample-upload.txt to not appear in master branch"

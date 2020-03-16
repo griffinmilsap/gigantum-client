@@ -115,7 +115,14 @@ def log_in(driver: selenium.webdriver, user_index: int = 0) -> str:
     # Set the ID and ACCESS TOKENS -- Used as headers for GraphQL mutations
     access_token = driver.execute_script("return window.localStorage.getItem('access_token')")
     id_token = driver.execute_script("return window.localStorage.getItem('id_token')")
-    active_username = driver.execute_script("return window.localStorage.getItem('username')")
+    for _ in range(3):
+        active_username = driver.execute_script("return window.localStorage.getItem('username')")
+        if active_username:
+            break
+        else:
+            time.sleep(1)
+    else:
+        raise ValueError("Failed to extract username from Chrome cache to verify authentication.")
 
     assert active_username == username, \
         f"Username from credentials.txt ({username}) must match chrome cache ({active_username})"

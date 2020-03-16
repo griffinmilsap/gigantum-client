@@ -147,8 +147,8 @@ const checkFileSize = (files, promptType, owner, labbookName) => {
   const oneHundredMB = 10 * tenMB;
   const fiveHundredMB = oneHundredMB * 5;
   const fifteenGigs = oneHundredMB * 150;
-  const filesAllowed = [];
-  const fileSizePrompt = [];
+  let filesAllowed = [];
+  let fileSizePrompt = [];
   const fileSizeNotAllowed = [];
   let index = 0;
 
@@ -198,6 +198,11 @@ const checkFileSize = (files, promptType, owner, labbookName) => {
     }
   }
   filesRecursionCount(files[index]);
+
+  if (fileSizeNotAllowed.length || fileSizePrompt.length) {
+    fileSizePrompt = fileSizePrompt.concat(filesAllowed);
+    filesAllowed = [];
+  }
 
   return {
     fileSizeNotAllowed,

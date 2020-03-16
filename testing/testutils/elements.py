@@ -134,7 +134,7 @@ class SideBarElements(UiComponent):
     def logout_button(self):
         return CssElement(self.driver, "#logout")
 
-    def do_logout(self, username):
+    def do_logout(self, username=None):
         """Perform logout."""
         logging.info(f"Logging out as {username}")
         self.username_button.wait_to_appear().click()
@@ -662,11 +662,17 @@ class RStudioElements(UiComponent):
 class FileBrowserElements(UiComponent):
     @property
     def file_browser_area(self):
-        return CssElement(self.driver, ".Dropbox")
+        return CssElement(self.driver, ".FileBrowser")
 
     @property
     def file_browser_message(self):
         return CssElement(self.driver, ".Dropbox--menu")
+
+    @property
+    def input_file_browser_contents_list(self):
+        # method to load the file/directory names in the input file browser for testing. Sort of a hack but it works.
+        contents = self.driver.find_element_by_css_selector(".FileBrowser__body").text
+        return [x for x in contents.split('\n')[0::2] if x not in ['a few seconds ago', 'a minute ago']]
 
     @property
     def file_information(self):
@@ -676,9 +682,10 @@ class FileBrowserElements(UiComponent):
     def rename_file_button(self):
         return CssElement(self.driver, ".Btn__rename")
 
-    @property
-    def rename_file_input(self):
-        return CssElement(self.driver, ".File__container input")
+    def rename_input_file(self, current_filename: str, suffix: str):
+        # A method that adds a string to a file name in the input file browser. Sort of a hack for now but it works.
+        self.driver.find_element_by_xpath(f"//input[@value='{current_filename}']").click()
+        self.driver.find_element_by_xpath(f"//input[@value='{current_filename}']").send_keys(suffix)
 
     @property
     def confirm_file_rename_button(self):
@@ -1073,7 +1080,6 @@ class DatasetElements(UiComponent):
         project_control_elts = ProjectControlElements(self.driver)
         waiting_start = time.time()
         while "Added remote" not in project_control_elts.footer_notification_message.find().text:
-            logging.warning("Dataset is being published")
             time.sleep(0.5)
             if time.time() - waiting_start > 45:
                 raise ValueError(f'Timed out waiting for dataset {dataset_title} to publish')
@@ -1084,7 +1090,7 @@ class DatasetElements(UiComponent):
         cloud_project_elts.publish_project_button.wait_to_appear(nsec=20).click()
         logging.info(f"Publishing project {project_title} with unpublished linked dataset {dataset_title} "
                      f"as private to cloud")
-        time.sleep(60)
+        time.sleep(30)
         self.publish_project_linked_dataset_button.wait_to_appear(nsec=20).click()
         self.publish_project_linked_dataset_private_button.wait_to_appear().click()
         self.driver.find_element_by_css_selector(f".Radio input[id='{username}/{dataset_title}_private'] "

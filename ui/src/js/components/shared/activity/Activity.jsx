@@ -557,6 +557,8 @@ class Activity extends Component<Props> {
       stickyDate,
     } = this.state;
     const {
+      owner,
+      name,
       activeBranch,
       diskLow,
       sectionType,
@@ -636,6 +638,8 @@ class Activity extends Component<Props> {
             >
               <Tooltip section="userNote" />
               <CreateBranch
+                owner={owner}
+                name={name}
                 selected={selectedNode}
                 activeBranch={activeBranch}
                 modalVisible={createBranchVisible}

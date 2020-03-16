@@ -16,6 +16,8 @@ from .cleanup import delete_local_datasets, delete_projects_on_disk, delete_proj
 from .actions import list_remote_projects
 from .graphql_helpers import delete_remote_project, list_remote_datasets, delete_dataset
 
+import testutils
+
 
 class TestResult(object):
     name: str
@@ -138,21 +140,29 @@ class TestRunner:
         remote_projects = list_remote_projects()
         for owner, project_name in remote_projects:
             if 'selenium-project-' in project_name:
-                delete_remote_project(owner, project_name)
+                try:
+                    delete_remote_project(owner, project_name)
+                except Exception as e:
+                    logging.warning(f"Failed to remove remote project for {owner}/{project_name}: {e}")
 
         remote_datasets = list_remote_datasets()
         for owner, dataset_name in remote_datasets:
             if 'selenium-dataset-' in dataset_name:
 
                 # deleting remote datasets is in a try catch block so that the clean
-                # up process will not halt whenthe remote dataset being deleted has
+                # up process will not halt when the remote dataset being deleted has
                 # no local copy, which causes the graph ql query to return an error
                 try:
-                    delete_dataset(owner, dataset_name)
+                    delete_dataset(owner, dataset_name, delete_local=False, delete_remote=True)
                 except Exception as e:
-                    logging.warning(e)
+                    logging.warning(f"Failed to remove remote dataset for {owner}/{dataset_name}: {e}")
 
         delete_local_datasets()
+
+        # log out
+        side_bar_elts = testutils.SideBarElements(driver)
+        driver.get(f"{os.environ['GIGANTUM_HOST']}")
+        side_bar_elts.do_logout()
 
     def _upload_to_s3(self):
         s3client = boto3.resource('s3')

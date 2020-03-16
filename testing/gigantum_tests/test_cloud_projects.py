@@ -142,3 +142,4 @@ def test_publish_collaborator(driver: selenium.webdriver, *args, ** kwargs):
 
     assert "fatal" in del_cloud_project_stderr, f"Expected to not see a remote set for project {project_title}, " \
                                                 f"but got {del_cloud_project_stderr}"
+

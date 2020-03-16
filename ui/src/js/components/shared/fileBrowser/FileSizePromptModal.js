@@ -42,7 +42,10 @@ class FileSizePromptModal extends PureComponent {
             </div>
             <div className="FileSizePromptModal__subheader flex justify--space-between">
               <div className="flex flex--column align-items--center justify--center">
-                <div className="FileSizePromptModal__subheader-title">Code File Size Limits</div>
+                <div className="FileSizePromptModal__subheader-title">
+                  {section}
+                  &nbsp;File Size Limits
+                </div>
                 <ul>
                   <li>{warning}</li>
                   <li>{limit}</li>
@@ -58,7 +61,7 @@ class FileSizePromptModal extends PureComponent {
 
               <p className="FileSizePromptModal__upload-text align-self--center">{ uploadPromptText }</p>
               {
-                (section !== 'code')
+                (section === 'input')
                 && (
                   <p className="FileSizePromptModal__tip-text align-self--center">
                     Tip: Try using a Dataset to manage large input files. Datasets support individual files up to 15GB without a large performance penalty, support downloading individual files, provide deduplication, and more.

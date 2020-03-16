@@ -223,6 +223,7 @@ class CustomDockerfile extends Component<Props> {
             <button
               className={editDockerfileButtonCSS}
               data-tooltip="Container must be turned off to edit docker snippets"
+              disabled={isLocked}
               onClick={() => this._editDockerfile()}
               type="button"
             >
