@@ -69,12 +69,12 @@ RUN apt-get -y update && \
     ln -sf python3.7m-config /usr/bin/python3m-config && \
     # Install Git from source to use OpenSSL for better enterprise network support.
     mkdir /tmp/gitbuild && cd /tmp/gitbuild && \
-	# Get the latest git tarball
+    # Get the latest git tarball
     git_tarball_url="https://www.github.com$(curl 'https://github.com/git/git/tags' | grep -o "/git/git/archive/v2\..*\.tar\.gz" | sort -r | head -1 | tr -d '\n')" && \
     curl -L --retry 5 "${git_tarball_url}" --output "git-source.tar.gz" && \
-	tar -xf "git-source.tar.gz" --strip 1 && \
-	# Configure the custom git build to use openSSL
-	make configure && \
+    tar -xf "git-source.tar.gz" --strip 1 && \
+    # Configure the custom git build to use openSSL
+    make configure && \
     ./configure --prefix=/usr/local --with-openssl NO_TCLTK=1 NO_GETTEXT=1 && \
     # Build and install git
     make -j2 && \
@@ -82,7 +82,7 @@ RUN apt-get -y update && \
     cd /tmp && rm -rf ./gitbuild && \
     # Get the latest git LFS binary
     mkdir /tmp/lfs_install && cd /tmp/lfs_install && \
-	git_lfs_tarball_url="https://www.github.com$(curl 'https://github.com/git-lfs/git-lfs/releases' | grep -o "/git-lfs/git-lfs/releases/download/v2..*/git-lfs-linux-amd64-v2..*.tar.gz" | sort -r | head -1 | tr -d '\n')" && \
+    git_lfs_tarball_url="https://www.github.com$(curl 'https://github.com/git-lfs/git-lfs/releases' | grep -o "/git-lfs/git-lfs/releases/download/v2..*/git-lfs-linux-amd64-v2..*.tar.gz" | sort -r | head -1 | tr -d '\n')" && \
     curl -L --retry 5 "${git_lfs_tarball_url}" --output "git-lfs.tar.gz" && \
     tar -xf "git-lfs.tar.gz" && \
     # Configure Git-LFS

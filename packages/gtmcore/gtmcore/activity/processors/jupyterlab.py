@@ -59,13 +59,13 @@ class JupyterLabCodeProcessor(ActivityProcessor):
         """Method to update a result object based on code and result data
 
         Args:
-            result_obj(ActivityNote): An object containing the note
-            data(list): A list of ExecutionData instances containing the data for this record
-            status(dict): A dict containing the result of git status from gitlib
-            metadata(str): A dictionary containing Dev Env specific or other developer defined data
+            result_obj: An object containing the note
+            data: A list of ExecutionData instances containing the data for this record
+            status: A dict containing the result of git status from gitlib
+            metadata: A dictionary containing Dev Env specific or other developer defined data
 
         Returns:
-            ActivityRecord
+            ActivityRecord with code details
         """
         # If there was some code, assume a cell was executed
         result_cnt = 0
@@ -100,13 +100,13 @@ class JupyterLabPlaintextProcessor(ActivityProcessor):
         """Method to update a result object based on code and result data
 
         Args:
-            result_obj(ActivityNote): An object containing the note
-            data(list): A list of ExecutionData instances containing the data for this record
-            status(dict): A dict containing the result of git status from gitlib
-            metadata(str): A dictionary containing Dev Env specific or other developer defined data
+            result_obj: An object containing the note
+            data: A list of ExecutionData instances containing the data for this record
+            status: A dict containing the result of git status from gitlib
+            metadata: A dictionary containing Dev Env specific or other developer defined data
 
         Returns:
-            ActivityNote
+            ActivityRecord with displayed text details
         """
         # Only store up to 64kB of plain text result data (if the user printed a TON don't save it all)
         truncate_at = 64 * 1000
@@ -153,13 +153,13 @@ class JupyterLabImageExtractorProcessor(ActivityProcessor):
         """Method to update a result object based on code and result data
 
         Args:
-            result_obj(ActivityNote): An object containing the note
-            data(list): A list of ExecutionData instances containing the data for this record
-            status(dict): A dict containing the result of git status from gitlib
-            metadata(str): A dictionary containing Dev Env specific or other developer defined data
+            result_obj: An object containing the note
+            data: A list of ExecutionData instances containing the data for this record
+            status: A dict containing the result of git status from gitlib
+            metadata: A dictionary containing Dev Env specific or other developer defined data
 
         Returns:
-            ActivityNote
+            ActivityRecord with image details
         """
         supported_image_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']
 

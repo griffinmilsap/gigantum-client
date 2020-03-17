@@ -79,7 +79,7 @@ def _create_temp_work_dir(override_dict: dict = None, lfs_enabled: bool = True):
     config = Configuration()
     merge_dict(config.config, default_override_config)
     if override_dict:
-        config.config.update(override_dict)
+        merge_dict(config.config, override_dict)
 
     config_file = os.path.join(unit_test_working_dir, "temp_config.yaml")
     config.save(config_file)
@@ -308,6 +308,20 @@ def mock_config_file_with_auth_browser():
     yield conf_file, working_dir, token_data
     shutil.rmtree(working_dir)
 
+@pytest.fixture(scope="module")
+def mock_config_file_with_auth_anon_review():
+    """A pytest fixture that creates a temporary directory and a config file to match. Deletes directory after test"""
+    overrides = {
+        'auth': {
+            'identity_manager': 'anon_review'
+        },
+        'anon_review_secret': '1234'
+    }
+
+    conf_file, working_dir = _create_temp_work_dir(override_dict=overrides)
+
+    yield conf_file
+    shutil.rmtree(working_dir)
 
 @pytest.fixture(scope="module")
 def mock_config_file_with_auth_anonymous():

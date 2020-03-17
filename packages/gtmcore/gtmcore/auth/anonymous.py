@@ -5,7 +5,6 @@ import base64
 
 from gtmcore.logging import LMLogger
 from gtmcore.auth.identity import IdentityManager, User, AuthenticationError
-from gtmcore.configuration import Configuration
 from gtmcore.workflows.gitlab import check_and_add_user
 
 logger = LMLogger.get_logger()
@@ -15,10 +14,11 @@ class AnonymousIdentityManager(IdentityManager):
     """Class for authenticating a user and accessing user identity in a no-cache mode suitable for web hosting.
     Additionally, supports anonymous use"""
 
-    def __init__(self, config_obj: Configuration) -> None:
-        """Constructor"""
-        # Call super constructor
-        IdentityManager.__init__(self, config_obj=config_obj)
+    # Create anonymous user identity instance
+    anon_user = User(email="anonymous@gigantum.com",
+                     username="anonymous",
+                     given_name="Anonymous",
+                     family_name="User")
 
     @property
     def allow_server_access(self) -> bool:
@@ -49,8 +49,8 @@ class AnonymousIdentityManager(IdentityManager):
         # Check if the user has already logged into this instance
         if not os.path.exists(os.path.join(working_directory, username)):
             # Create user dir
-            pathlib.Path(os.path.join(working_directory, username, username, 'labbooks')).mkdir(parents=True,
-                                                                                                exist_ok=True)
+            pathlib.Path(working_directory, username, username, 'labbooks').mkdir(parents=True,
+                                                                                  exist_ok=True)
 
             # Add user to backend if needed, if a real user.
             if not self.is_anonymous(access_token):
@@ -64,11 +64,11 @@ class AnonymousIdentityManager(IdentityManager):
         """Method to check if the user is currently authenticated in the context of this identity manager
 
         Args:
-            access_token(str): API access JSON web token from Auth0
-            id_token(str): ID JSON web token from Auth0 (not needed for this middleware)
+            access_token: API access JSON web token from Auth0
+            id_token: ID JSON web token from Auth0 (not needed for this middleware)
 
         Returns:
-            bool
+            Is there a valid access token?
         """
         if not access_token:
             # If no access token, you aren't authenticated and can't be checked to be anonymous
@@ -81,8 +81,7 @@ class AnonymousIdentityManager(IdentityManager):
 
         return is_authenticated
 
-    @staticmethod
-    def is_anonymous(access_token: str) -> bool:
+    def is_anonymous(self, access_token: str) -> bool:
         """Method to determine if the user is running anonymously
 
         Anonymous access_token are indicated via a specially crafted string that mirrors the JWT structure, but is in
@@ -147,11 +146,7 @@ class AnonymousIdentityManager(IdentityManager):
 
         if self.is_anonymous(access_token):
             # Create user identity instance
-            self.user = User()
-            self.user.email = "anonymous@gigantum.com"
-            self.user.username = "anonymous"
-            self.user.given_name = "Anonymous"
-            self.user.family_name = "User"
+            self.user = self.anon_user
         else:
             # Validate JWT token
             token_payload = self.validate_jwt_token(id_token, self.config.config['auth']['client_id'],

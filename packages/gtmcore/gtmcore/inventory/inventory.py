@@ -6,7 +6,6 @@ from pathlib import Path
 
 from natsort import natsorted
 from pkg_resources import resource_filename
-import pathlib
 import subprocess
 import glob
 
@@ -394,6 +393,7 @@ class InventoryManager(object):
                     gigantum_dir / 'env' / 'base',
                     gigantum_dir / 'env' / 'custom',
                     gigantum_dir / 'env' / 'package_manager',
+                    # The .gitkeep in .gigantum/activity is used by the hub to check project status
                     gigantum_dir / 'activity',
                     gigantum_dir / 'activity' / 'log',
                     gigantum_dir / 'activity' / 'index',
@@ -781,7 +781,7 @@ class InventoryManager(object):
         git_module_dir = os.path.join(labbook.root_dir, '.git', 'modules', f"{dataset_namespace}&{dataset_name}")
 
         if not os.path.exists(absolute_submodule_root):
-            pathlib.Path(absolute_submodule_root).mkdir(parents=True, exist_ok=True)
+            Path(absolute_submodule_root).mkdir(parents=True, exist_ok=True)
 
         if os.path.exists(absolute_submodule_dir) and os.path.exists(git_module_dir):
             # Seem to be trying to link a dataset after a reset removed the dataset. Clean up first.

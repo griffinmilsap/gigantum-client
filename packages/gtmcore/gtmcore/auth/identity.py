@@ -17,12 +17,12 @@ from gtmcore.workflows import ZipExporter
 
 logger = LMLogger.get_logger()
 
-
 # Dictionary of supported implementations.
 SUPPORTED_IDENTITY_MANAGERS = {
     'local': ["gtmcore.auth.local", "LocalIdentityManager"],
     'browser': ["gtmcore.auth.browser", "BrowserIdentityManager"],
-    'anonymous': ["gtmcore.auth.anonymous", "AnonymousIdentityManager"]
+    'anonymous': ["gtmcore.auth.anonymous", "AnonymousIdentityManager"],
+    'anon_review': ["gtmcore.auth.anon_review", "AnonymousReviewIdentityManager"]
 }
 
 
@@ -47,7 +47,8 @@ class IdentityManager(metaclass=abc.ABCMeta):
 
         # Always validate the at_hash claim, except when testing due to the password grant not returning the at_hash
         # claim in Auth0 (which is used during testing)
-        # TODO: This should be able to be removed once jose merges #76
+        # TODO #1289: This can be removed as jose has merged https://github.com/mpdavis/python-jose/pull/76
+        #  You will need to update python-jose to >= 3.1.0
         self.validate_at_hash_claim = True
 
     @property
@@ -71,14 +72,11 @@ class IdentityManager(metaclass=abc.ABCMeta):
         """
         return True
 
-    @staticmethod
-    def is_anonymous(access_token: str) -> bool:
+    def is_anonymous(self, access_token: str) -> bool:
         """Method to determine if the user is running anonymously. For most auth middleware this simply returns False,
         as only the anonymous auth middleware supports anonymous users.
 
-        Anonymous access_token are indicated via a specially crafted base64 encoded string with the format:
-
-            GIGANTUM-ANONYMOUS-USER&<UUID>
+        See subclass implementation in gtmcore/auth/anonymous.py for reference.
 
         Args:
             access_token(str): The current access_token
