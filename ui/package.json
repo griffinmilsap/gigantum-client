@@ -124,7 +124,7 @@
     "react-virtualized": "^9.21.0",
     "react-youtube": "^7.6.0",
     "redux": "^4.0.1",
-    "relay-compiler": "4.0.0",
+    "relay-compiler": "8.0.0",
     "relay-runtime": "4.0.0",
     "run-options": "0.0.4",
     "simplemde": "^1.11.2",
