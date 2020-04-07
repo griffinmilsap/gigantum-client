@@ -16,6 +16,7 @@ from gtmcore.activity.processors.jupyterlab import JupyterLabCodeProcessor, \
     JupyterLabPlaintextProcessor, JupyterLabImageExtractorProcessor, JupyterLabCellVisibilityProcessor
 from gtmcore.activity.processors.core import ActivityShowBasicProcessor, GenericFileChangeProcessor, \
     ActivityDetailLimitProcessor, ActivityDetailProgressProcessor
+from gtmcore.activity.processors.elevator import ElevatorProcessor
 from gtmcore.activity import ActivityType
 from gtmcore.dispatcher import Dispatcher, jobs
 from gtmcore.logging import LMLogger
@@ -170,6 +171,7 @@ class JupyterLabNotebookMonitor(ActivityMonitor):
         Returns:
             None
         """
+        self.add_processor(ElevatorProcessor())
         self.add_processor(JupyterLabCodeProcessor())
         self.add_processor(GenericFileChangeProcessor())
         self.add_processor(JupyterLabPlaintextProcessor())
@@ -198,8 +200,8 @@ class JupyterLabNotebookMonitor(ActivityMonitor):
             if self.kernel_status == 'busy' and msg['content']['execution_state'] == 'idle':
                 self.set_busy_state(False)
 
-                if self.current_cell.cell_error is False and self.current_cell.is_empty() is False:
-                    # Current cell did not error and has content
+                if self.current_cell.is_empty() is False:
+                    # Current cell has content
                     # Add current cell to collection of cells ready to process
                     self.cell_data.append(self.current_cell)
 
@@ -260,7 +262,13 @@ class JupyterLabNotebookMonitor(ActivityMonitor):
             t_start = time.time()
 
             # Process collected data and create an activity record
-            activity_record = self.process(ActivityType.CODE, list(reversed(self.cell_data)), {"path": metadata["path"]})
+            metadata_in = dict(
+                path = metadata["path"],
+                user = self.user,
+                name = self.author.name if self.author is not None else None,
+                email = self.author.email if self.author is not None else None
+            )
+            activity_record = self.process(ActivityType.CODE, list(reversed(self.cell_data)), metadata_in)
 
             # Commit changes to the related Notebook file
             commit = self.commit_labbook()

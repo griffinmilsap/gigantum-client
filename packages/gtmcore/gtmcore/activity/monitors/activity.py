@@ -34,13 +34,13 @@ class ActivityMonitor(metaclass=abc.ABCMeta):
 
         # Populate GitAuthor instance if available
         if author_name:
-            author: Optional[GitAuthor] = GitAuthor(name=author_name, email=author_email)
+            self.author: Optional[GitAuthor] = GitAuthor(name=author_name, email=author_email)
         else:
-            author = None
+            self.author = None
 
         # Load Lab Book instance
         im = InventoryManager(config_file)
-        self.labbook = im.load_labbook(user, owner, labbook_name, author=author)
+        self.labbook = im.load_labbook(user, owner, labbook_name, author=self.author)
         self.user = user
         self.owner = owner
         self.labbook_name = labbook_name
